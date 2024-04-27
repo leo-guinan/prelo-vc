@@ -7,18 +7,13 @@ import {UserMenu} from '@/components/user-menu'
 import {SidebarMobile} from './sidebar-mobile'
 import {SidebarToggle} from './sidebar-toggle'
 import {ContextSidebar} from "@/components/context-sidebar";
-import {isUserAdmin} from "@/app/actions/admin";
 
 async function UserOrLogin() {
     const session = await auth()
-    const isAdmin = await isUserAdmin(session?.user?.id)
     return (
         <>
             {session?.user ? (
                 <>
-                    <SidebarMobile>
-                        <ContextSidebar userId={session.user.id} isAdmin={isAdmin}/>
-                    </SidebarMobile>
                     <SidebarToggle/>
                 </>
             ) : (

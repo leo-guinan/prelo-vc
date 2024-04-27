@@ -11,10 +11,10 @@ import { Header } from '@/components/header'
 export const metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
-    default: 'My AI Cofounder',
-    template: `%s - My AI Cofounder`
+    default: 'Score My Deck',
+    template: `%s - Score My Deck`
   },
-  description: 'The cofounder that lets you work at the speed of thought.',
+  description: 'Determine how investable your pitch deck is with Score My Deck',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
