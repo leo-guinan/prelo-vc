@@ -87,6 +87,7 @@ const FileUpload: React.FC = () => {
         }
 
         try {
+            setLoading(true);
             // Example: POST request using fetch
             const response = await fetch(uploadUrl, {
                 method: 'PUT',
@@ -99,14 +100,17 @@ const FileUpload: React.FC = () => {
             if (response.ok) {
                 console.log('File uploaded successfully');
                 setUploadSuccess(true)
-
                 // Handle response here
             } else {
+                setLoading(false);
                 throw new Error('Failed to upload file');
+
             }
         } catch (error) {
             console.error('Error uploading file:', error);
             setErrorMessage('Error uploading file. Please try again.');
+            setFile(null);
+            setLoading(false);
         }
     };
     const [dragActive, setDragActive] = useState(false);

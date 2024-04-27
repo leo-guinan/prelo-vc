@@ -37,5 +37,5 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         return null
     }
 
-    return <PitchDeckAnalysis pitchDeckAnalysis={pitchDeckDocument.content} uuid={pitchDeckDocument.uuid} scores={scores}/>
+    return <PitchDeckAnalysis pitchDeckAnalysis={pitchDeckDocument.content} uuid={pitchDeckDocument.uuid} scores={scores} complete={pitchDeckDocument.status ==="complete"}/>
 }

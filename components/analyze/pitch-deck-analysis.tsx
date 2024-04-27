@@ -7,60 +7,36 @@ import {CodeBlock} from "@/components/ui/codeblock";
 import {MemoizedReactMarkdown} from "@/components/markdown";
 import LoadingSpinner from "@/components/analyze/loading-spinner";
 import Scores from "@/components/analyze/scores";
+import {PitchDeckScores} from "@/lib/types";
 
 interface PitchDeckAnalysisProps {
     pitchDeckAnalysis: string
+    complete: boolean
     uuid: string
-    scores: {
-        market: {
-            'score': number
-            'reason': string
-        },
-        team: {
-            'score': number
-            'reason': string
-        },
-        founder: {
-            'score': number
-            'reason': string
-        },
-        product: {
-            'score': number
-            'reason': string
-        },
-        traction: {
-            'score': number
-            'reason': string
-
-        }
-    }
+    scores: PitchDeckScores
 }
 
 const steps = [
     "Uploading pitch deck",
-    "Processing pitch deck",
     "Analyzing pitch deck",
     "Generating report",
-    "Displaying report"
 ]
 
-export default function PitchDeckAnalysis({pitchDeckAnalysis, uuid, scores}: PitchDeckAnalysisProps) {
+export default function PitchDeckAnalysis({pitchDeckAnalysis, uuid, scores, complete}: PitchDeckAnalysisProps) {
     const client = useRef<W3CWebSocket | null>(null)
     const [displayedReport, setDisplayedReport] = useState<string>(pitchDeckAnalysis)
     const [currentStep, setCurrentStep] = useState<number>(0)
+    const [displayedScores, setDisplayedScores] = useState<PitchDeckScores>(scores)
+    const [isComplete, setIsComplete] = useState<boolean>(complete)
     useEffect(() => {
 
         const connectSocket = () => {
 
-            // client.current = new W3CWebSocket(`ws://localhost:3000/api/socket/`)
             if (uuid) {
                 client.current = new W3CWebSocket(
                     `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`
                 )
 
-                // client.current = new W3CWebSocket(
-                //     `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}cofounder/${sessionId}/`
-                // )
 
                 client.current.onopen = () => {
                     console.log("WebSocket Client Connected")
@@ -69,6 +45,26 @@ export default function PitchDeckAnalysis({pitchDeckAnalysis, uuid, scores}: Pit
                 client.current.onmessage = (message: IMessageEvent) => {
                     const data = JSON.parse(message.data.toString())
                     console.log(data)
+                    if (data.status) {
+                        switch(data.status) {
+                            case "RA":
+                                setCurrentStep(1)
+                                break
+                            case "RR":
+                                setCurrentStep(2)
+                                break
+                            case "CP":
+                                setCurrentStep(3)
+                                break
+                            default:
+                                setCurrentStep(0)
+
+                        }
+                    }
+                    if (data.scores) {
+                        setDisplayedScores(data.scores)
+                        setIsComplete(true)
+                    }
                     setDisplayedReport(data.message)
                 }
 
@@ -88,11 +84,15 @@ export default function PitchDeckAnalysis({pitchDeckAnalysis, uuid, scores}: Pit
     }, [uuid])
     return (
         <div>
-            <LoadingSpinner steps={steps} currentStep={currentStep}/>
+            {!isComplete && (
+                <LoadingSpinner steps={steps} currentStep={currentStep}/>
+            )}
             <div className="text-base leading-6 cursor-text select-all flex flex-col w-full">
                 <div className="w-full mx-auto">
                     <div className="max-w-3xl mx-auto">
-                        <Scores scores={scores}/>
+                        {isComplete && (
+                            <Scores scores={displayedScores}/>
+                        )}
                     </div>
                 </div>
 

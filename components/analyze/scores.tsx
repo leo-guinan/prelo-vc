@@ -24,6 +24,10 @@ interface ScoresProps {
             score: number
             reason: string
 
+        },
+        final: {
+            score: number
+            reason: string
         }
     }
 }
@@ -31,26 +35,20 @@ interface ScoresProps {
 export default function Scores({scores}: ScoresProps) {
     const [data, setData] = useState<ChartData<"radar"> | null>(null)
     useEffect(() => {
-        console.log(scores)
         if (scores) {
-            console.log(scores.market.score)
-            console.log(scores.team.score)
-            console.log(scores.founder.score)
-            console.log(scores.product.score)
-            console.log(scores.traction.score)
             setData({
-                labels: ['Market', 'Team', 'Founder/Market Fit', 'Product', 'Traction'],
+                labels: ['Market', 'Team', 'Founder/Market Fit', 'Product', 'Traction', 'Final Score'],
                 datasets: [
                     {
                         label: 'Your Startup',
-                        data: [scores.market.score, scores.team.score, scores.founder.score, scores.product.score, scores.traction.score],
+                        data: [scores.market.score ?? 0, scores.team.score ?? 0, scores.founder.score ?? 0, scores.product.score ?? 0, scores.traction.score ?? 0],
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1
                     },
                     {
                         label: 'Average Startup',
-                        data: [5, 5, 5, 5, 5],
+                        data: [5, 5, 5, 5, 5, 5],
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
