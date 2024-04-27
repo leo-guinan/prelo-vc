@@ -4,9 +4,6 @@ import {auth} from '@/auth'
 import {Button} from '@/components/ui/button'
 import {IconSeparator} from '@/components/ui/icons'
 import {UserMenu} from '@/components/user-menu'
-import {SidebarMobile} from './sidebar-mobile'
-import {SidebarToggle} from './sidebar-toggle'
-import {ContextSidebar} from "@/components/context-sidebar";
 
 async function UserOrLogin() {
     const session = await auth()
@@ -14,7 +11,6 @@ async function UserOrLogin() {
         <>
             {session?.user ? (
                 <>
-                    <SidebarToggle/>
                 </>
             ) : (
                 <Link href="/" target="_blank" rel="nofollow">
