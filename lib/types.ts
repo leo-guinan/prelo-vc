@@ -27,3 +27,9 @@ export interface PitchDeckScores {
     }
 
 }
+
+export interface AnalysisChatMessage {
+    id: string
+    content: string
+    role: string
+}

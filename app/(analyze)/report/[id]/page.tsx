@@ -2,8 +2,9 @@ import {redirect} from 'next/navigation'
 
 import {auth} from '@/auth'
 import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
-import {getPitchDeck, getScores} from "@/app/actions/analyze";
+import {getAnalysisChat, getPitchDeck, getScores} from "@/app/actions/analyze";
 import {prisma} from "@/lib/utils";
+import AnalysisChat from "@/components/analyze/chat";
 
 interface PitchDeckPageProps {
     params: {
@@ -26,9 +27,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     })
 
     if (!pitchDeck) {
-        return {
-            error: "Pitch deck not found"
-        }
+       return null
     }
 
     const scores = await getScores(pitchDeck.backendId)
@@ -37,5 +36,12 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         return null
     }
 
-    return <PitchDeckAnalysis pitchDeckAnalysis={pitchDeckDocument.content} uuid={pitchDeckDocument.uuid} scores={scores} complete={pitchDeckDocument.status ==="complete"}/>
+    const response = await getAnalysisChat(Number(params.id))
+    if ('error' in response) {
+        console.log(response.error)
+        return null
+    }
+
+    return <AnalysisChat pitchDeckAnalysis={pitchDeckDocument.content} uuid={pitchDeckDocument.uuid} scores={scores}
+                         complete={pitchDeckDocument.status === "complete"} messages={response.messages}/>
 }
