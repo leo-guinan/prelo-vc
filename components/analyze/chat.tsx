@@ -146,7 +146,7 @@ export default function AnalysisChat({messages, pitchDeckAnalysis, uuid, scores,
     return (
         <>
             <div className={'pb-[200px] pt-4 md:pt-10'}>
-                {messages.length ? (
+                {displayedMessages.length ? (
                     <>
                         <ChatList messages={displayedMessages}/>
                         <ChatScrollAnchor/>
@@ -155,7 +155,7 @@ export default function AnalysisChat({messages, pitchDeckAnalysis, uuid, scores,
                     <EmptyScreen currentStep={currentStep}/>
                 )}
             </div>
-            {messages.length > 0 && (
+            {displayedMessages.length > 0 && (
                 <ChatPanel
                     isLoading={isLoading}
                     input={input}
