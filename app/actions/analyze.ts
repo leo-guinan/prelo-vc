@@ -5,6 +5,7 @@ import {auth} from "@/auth";
 import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
+import {redirect} from "next/navigation";
 
 export async function getUploadUrl(filename: string): Promise<{ url: string, pitchDeckId: number } | {
     error: string
@@ -110,7 +111,18 @@ export async function getDocument(documentId: string, dbName = "myaicofounder", 
 }
 
 export async function getScores(pitchDeckId: number) {
-    const url = `${process.env.PRELO_API_URL as string}get_scores/?pitch_deck_id=${pitchDeckId}`
+    const pitchDeck = await prisma.pitchDeckRequest.findUnique({
+        where: {
+            id: pitchDeckId
+        }
+    })
+    if (!pitchDeck) {
+        return {
+            error: "Pitch deck not found"
+        }
+    }
+
+    const url = `${process.env.PRELO_API_URL as string}get_scores/?pitch_deck_id=${pitchDeck.backendId}`
 
     const rawScoreResponse = await fetch(url, {
         method: 'GET',
@@ -124,6 +136,17 @@ export async function getScores(pitchDeckId: number) {
         return {
             error: "Scores not found"
         }
+    }
+
+    if(pitchDeck.name === "Loading deck name...") {
+        await prisma.pitchDeckRequest.update({
+            where: {
+                id: pitchDeckId
+            },
+            data: {
+                name: rawScore.name
+            }
+        })
     }
     return rawScore.scores
 }
@@ -162,6 +185,7 @@ export async function getAnalysisChat(id: number) {
     console.log(document)
 
     if (document.status !== "complete") {
+        console.log("Document not complete")
         return {
             id: document.uuid,
             title: "Chat",
@@ -221,9 +245,9 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
     }
 
     const history = new MongoDBChatMessageHistory({
-            collection: collection,
-            sessionId: `${uuid}_chat`,
-        })
+        collection: collection,
+        sessionId: `${uuid}_chat`,
+    })
     await history.addUserMessage(message.content)
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}founder/send/`, {
@@ -241,6 +265,25 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
     const parsed = await sendMessageResponse.json()
 
     console.log("Parsed", parsed)
-    return parsed.request_id
+    return parsed.message
 
+}
+
+export async function clearCurrentDeck() {
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+    await prisma.user.update({
+        where: {
+            id: session.user.id
+        },
+        data: {
+            currentDeckId: null
+        }
+    })
+    console.log("Clear.")
+    redirect("/")
 }

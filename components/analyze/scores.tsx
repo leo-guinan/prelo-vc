@@ -1,5 +1,4 @@
-import RadarChart from "@/components/analyze/radar";
-import {ChartData} from "chart.js";
+import {CircularProgressBar} from "@/components/analyze/score";
 import {useEffect, useState} from "react";
 
 interface ScoresProps {
@@ -33,50 +32,27 @@ interface ScoresProps {
 }
 
 export default function Scores({scores}: ScoresProps) {
-    const [data, setData] = useState<ChartData<"radar"> | null>(null)
+    const [displayScores, setDisplayScores] = useState<boolean>(false)
+
     useEffect(() => {
-        if (scores) {
-            setData({
-                labels: ['Market', 'Team', 'Founder/Market Fit', 'Product', 'Traction', 'Final Score'],
-                datasets: [
-                    {
-                        label: 'Your Startup',
-                        data: [scores.market.score ?? 0, scores.team.score ?? 0, scores.founder.score ?? 0, scores.product.score ?? 0, scores.traction.score ?? 0],
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Average Startup',
-                        data: [5, 5, 5, 5, 5, 5],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }
-
-                ]
-            })
+        if (scores.market && scores.team && scores.founder && scores.product && scores.traction) {
+            setDisplayScores(true)
         }
-    }, [scores]);
-
-    const options = {
-        scales: {
-            r: {
-                angleLines: {
-                    display: false
-                },
-                suggestedMin: 0,
-                suggestedMax: 10
-            }
-        }
-    };
+    });
 
     return (
-        <div>
-            <h1>Pitch Deck Scores</h1>
-            {data && (
-                <RadarChart data={data} options={options}/>
+        <>
+            {displayScores && (
+                <div className="flex flex-row w-full justify-center mx-auto">
+                    <CircularProgressBar progress={scores.market.score} color="#5CE1E6" title="Market"/>
+                    <CircularProgressBar progress={scores.team.score} color="#FF9494" title="Team"/>
+                    <CircularProgressBar progress={scores.founder.score} color="#FFCC2F"
+                                         title="Founder/Market Fit"/>
+                    <CircularProgressBar progress={scores.product.score} color="#FF9494" title="Product"/>
+                    <CircularProgressBar progress={scores.traction.score} color="#5CE1E6" title="Traction"/>
+                </div>
             )}
-        </div>
+        {/*    TODO: Loading state for scores with skeleton*/}
+        </>
     );
 }

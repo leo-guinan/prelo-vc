@@ -8,6 +8,8 @@ import {useEffect, useRef, useState} from "react";
 import {ICloseEvent, IMessageEvent, w3cwebsocket as W3CWebSocket} from "websocket";
 import {PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
+import Scores from "@/components/analyze/scores";
+import {nanoid} from "@/lib/utils";
 
 interface PreloChatMessage {
     id: string
@@ -17,13 +19,12 @@ interface PreloChatMessage {
 
 interface AnalysisChatProps {
     messages: PreloChatMessage[]
-    pitchDeckAnalysis: string
-    complete: boolean
     uuid: string
     scores: PitchDeckScores
+    title: string
 }
 
-export default function AnalysisChat({messages, pitchDeckAnalysis, uuid, scores, complete}: AnalysisChatProps) {
+export default function AnalysisChat({messages, uuid, scores, title}: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
@@ -126,15 +127,16 @@ export default function AnalysisChat({messages, pitchDeckAnalysis, uuid, scores,
                 return
             }
 
-            setDisplayedMessages([...displayedMessages, {
-                content: message.content,
-                role: message.role,
-                id: "temp"
-            },
+            setDisplayedMessages([...displayedMessages,
                 {
-                    content: "...",
+                    content: message.content,
+                    role: message.role,
+                    id: "temp"
+                },
+                {
+                    content: response,
                     role: 'assistant',
-                    id: response
+                    id: nanoid()
                 }
             ])
         } catch (e) {
@@ -148,6 +150,8 @@ export default function AnalysisChat({messages, pitchDeckAnalysis, uuid, scores,
             <div className={'pb-[200px] pt-4 md:pt-10'}>
                 {displayedMessages.length ? (
                     <>
+                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{title}</h1>
+                        <Scores scores={scores}/>
                         <ChatList messages={displayedMessages}/>
                         <ChatScrollAnchor/>
                     </>

@@ -15,14 +15,16 @@ datasource db {
 }
 
 model User {
-  id                String             @id @default(cuid())
-  createdAt         DateTime           @default(now())
-  email             String             @unique
-  emailVerified     DateTime?
-  name              String?
-  stripeCustomerId  String?
-  image             String?
-  role              String             @default("user")
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  email            String    @unique
+  emailVerified    DateTime?
+  name             String?
+  stripeCustomerId String?
+  image            String?
+  role             String    @default("user")
+  currentDeckId    Int?
+
   pitchDeckRequests PitchDeckRequest[]
   sessions          Session[]
   accounts          Account[]
@@ -36,6 +38,7 @@ model PitchDeckRequest {
   backendId Int
   ownerId   String
   owner     User      @relation(fields: [ownerId], references: [id])
+  name      String?
 }
 
 model Session {

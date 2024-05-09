@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/nexus-chat.iml" filepath="$PROJECT_DIR$/.idea/nexus-chat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/score-my-deck.iml" filepath="$PROJECT_DIR$/.idea/score-my-deck.iml" />
     </modules>
   </component>
 </project>
