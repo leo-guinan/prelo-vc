@@ -2,7 +2,7 @@ import {redirect} from 'next/navigation'
 
 import {auth} from '@/auth'
 import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
-import {getAnalysisChat, getPitchDeck, getScores} from "@/app/actions/analyze";
+import {getAnalysisChat, getPitchDeck, getScores, triggerCheck} from "@/app/actions/analyze";
 import {formatToday, prisma} from "@/lib/utils";
 import AnalysisChat from "@/components/analyze/chat";
 
@@ -28,6 +28,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     if (!pitchDeck) {
        return null
     }
+    await triggerCheck();
 
     const scores = await getScores(pitchDeck.id)
     const response = await getAnalysisChat(Number(params.id))

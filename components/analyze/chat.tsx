@@ -30,7 +30,8 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
     const [input, setInput] = useState('')
     const client = useRef<W3CWebSocket | null>(null)
     const [currentStep, setCurrentStep] = useState<number>(0)
-
+    const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
+    const [displayedTitle, setDisplayedTitle] = useState<string>(title)
 
     useEffect(() => {
 
@@ -54,6 +55,14 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
 
                 client.current.onmessage = (message: IMessageEvent) => {
                     const data = JSON.parse(message.data.toString())
+
+                    if(data.scores) {
+                        setLoadedScores(data.scores)
+                    }
+                    if(data.name) {
+                        setDisplayedTitle(data.name)
+                    }
+
                     if (data.status) {
                         switch (data.status) {
                             case "RA":
@@ -150,8 +159,8 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
             <div className={'pb-[200px] pt-4 md:pt-10'}>
                 {displayedMessages.length ? (
                     <>
-                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{title}</h1>
-                        <Scores scores={scores}/>
+                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">{displayedTitle}</h1>
+                        <Scores scores={loadedScores}/>
                         <ChatList messages={displayedMessages}/>
                         <ChatScrollAnchor/>
                     </>

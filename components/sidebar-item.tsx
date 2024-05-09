@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import {useEffect, useState} from 'react'
 
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
@@ -11,6 +12,8 @@ import {buttonVariants} from '@/components/ui/button'
 import {useLocalStorage} from '@/lib/hooks/use-local-storage'
 import {cn, formatToday} from '@/lib/utils'
 import {PitchDeckRequest} from "@prisma/client/edge";
+import {getDeckName} from "@/app/actions/analyze";
+import {ClipboardIcon} from "@/components/ui/icons";
 
 interface SidebarItemProps {
     index: number
@@ -24,11 +27,21 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
     const isActive = pathname === `/report/${deck.id}`;
     const [newChatId, setNewChatId] = useLocalStorage('newChatId', null);
     const shouldAnimate = false;
-    if (!deck?.id) return null;
 
-    const name = deck?.name || formatToday(deck?.createdAt);
+    const [name, setName] = useState(deck?.name || formatToday(deck?.createdAt))
     const formattedDate = formatToday(deck?.createdAt);
     const showDate = name !== formattedDate;
+
+    useEffect(() => {
+        const checkForName = async () => {
+            if (!deck?.name || deck.name.includes('.pdf')) {
+                deck.name = deck.name || formattedDate;
+                setName(await getDeckName(deck.id));
+            }
+        }
+        checkForName()
+    })
+    if (!deck?.id) return null;
 
     return (
         <motion.div
@@ -58,12 +71,10 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
                     isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
                 )}
             >
-                <div className="flex flex-col justify-between items-center w-full">
-                    <div
-                        className="relative flex-1 select-none overflow-hidden text-ellipsis break-all"
-                        title={name}
-                    >
-                        <span className="whitespace-nowrap">
+                <div className="flex flex-col justify-between items-start w-full max-w-full overflow-hidden">
+                    <div className="flex flex-row items-center w-full truncate">
+                        <ClipboardIcon className="mr-2 shrink-0"/>
+                        <span className="truncate shrink">
                             {name}
                         </span>
                     </div>

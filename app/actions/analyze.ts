@@ -133,9 +133,7 @@ export async function getScores(pitchDeckId: number) {
     const rawScore = await rawScoreResponse.json()
     console.log(rawScore)
     if (!rawScore.scores) {
-        return {
-            error: "Scores not found"
-        }
+        return null
     }
 
     if(pitchDeck.name === "Loading deck name...") {
@@ -182,8 +180,6 @@ export async function getAnalysisChat(id: number) {
             error: document.error
         }
     }
-    console.log(document)
-
     if (document.status !== "complete") {
         console.log("Document not complete")
         return {
@@ -203,7 +199,6 @@ export async function getAnalysisChat(id: number) {
     });
 
     const messages = await memory.chatHistory.getMessages();
-    console.log(messages)
     return {
         id: document.uuid,
         title: "Chat",
@@ -285,5 +280,57 @@ export async function clearCurrentDeck() {
         }
     })
     console.log("Clear.")
-    redirect("/")
+    return redirect("/")
+}
+
+export async function getDeckName(id: number) {
+
+    const pitchDeckRequest = await prisma.pitchDeckRequest.findUnique({
+        where: {
+            id,
+        }
+    })
+
+    if (!pitchDeckRequest) {
+        return {
+            error: "Pitch deck not found"
+        }
+    }
+
+    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}get_name/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({
+            deck_id: pitchDeckRequest.backendId
+        })
+    })
+
+    const parsed = await sendMessageResponse.json()
+
+    if (parsed.name) {
+        await prisma.pitchDeckRequest.update({
+            where: {
+                id
+            },
+            data: {
+                name: parsed.name
+            }
+        })
+    }
+
+    return parsed.name
+}
+
+export async function triggerCheck() {
+     await fetch(`${process.env.PRELO_API_URL as string}check_decks/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({})
+    })
 }

@@ -3,7 +3,7 @@ import { SidebarDesktop } from '@/components/sidebar-desktop'
 interface ContextLayoutProps {
   children: React.ReactNode
 }
-export const revalidate = 300 // revalidate the data at most every 5 minutes
+export const fetchCache = 'force-no-store'
 
 export default async function AnalysisLayout({ children }: ContextLayoutProps) {
   return (

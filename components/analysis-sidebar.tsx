@@ -8,6 +8,7 @@ import {cn} from "@/lib/utils";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {clearCurrentDeck} from "@/app/actions/analyze";
+import {SyntheticEvent} from "react";
 
 interface ChatHistoryProps {
     userId?: string
@@ -20,7 +21,8 @@ export function AnalysisSidebar({userId, decks }: ChatHistoryProps) {
 
     const router = useRouter();
 
-    const clearExisting = async () => {
+    const clearExisting = async (e: SyntheticEvent) => {
+        e.preventDefault()
         await clearCurrentDeck();
     }
 
