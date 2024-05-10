@@ -136,7 +136,7 @@ export async function getScores(pitchDeckId: number) {
         return null
     }
 
-    if(pitchDeck.name === "Loading deck name...") {
+    if (pitchDeck.name === "Loading deck name...") {
         await prisma.pitchDeckRequest.update({
             where: {
                 id: pitchDeckId
@@ -214,9 +214,6 @@ export async function getAnalysisChat(id: number) {
 }
 
 export async function sendChatMessage(uuid: string, message: { content: string, role: "user" | "assistant" }) {
-    const client = new MongoClient(process.env.MONGO_URL || "");
-    await client.connect();
-    const collection = client.db("scoremydeck").collection("scoremydeck_memory");
     const session = await auth()
 
     if (!session?.user) {
@@ -239,11 +236,6 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
         }
     }
 
-    const history = new MongoDBChatMessageHistory({
-        collection: collection,
-        sessionId: `${uuid}_chat`,
-    })
-    await history.addUserMessage(message.content)
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}founder/send/`, {
         method: "POST",
@@ -284,48 +276,52 @@ export async function clearCurrentDeck() {
 }
 
 export async function getDeckName(id: number) {
-
-    const pitchDeckRequest = await prisma.pitchDeckRequest.findUnique({
-        where: {
-            id,
-        }
-    })
-
-    if (!pitchDeckRequest) {
-        return {
-            error: "Pitch deck not found"
-        }
-    }
-
-    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}get_name/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
-        },
-        body: JSON.stringify({
-            deck_id: pitchDeckRequest.backendId
-        })
-    })
-
-    const parsed = await sendMessageResponse.json()
-
-    if (parsed.name) {
-        await prisma.pitchDeckRequest.update({
+    try {
+        const pitchDeckRequest = await prisma.pitchDeckRequest.findUnique({
             where: {
-                id
-            },
-            data: {
-                name: parsed.name
+                id,
             }
         })
-    }
 
-    return parsed.name
+        if (!pitchDeckRequest) {
+            return {
+                error: "Pitch deck not found"
+            }
+        }
+
+        const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}get_name/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_id: pitchDeckRequest.backendId
+            })
+        })
+
+        const parsed = await sendMessageResponse.json()
+
+        if (parsed.name) {
+            await prisma.pitchDeckRequest.update({
+                where: {
+                    id
+                },
+                data: {
+                    name: parsed.name
+                }
+            })
+        }
+
+        return parsed.name
+    } catch (e) {
+        console.error(e)
+        return null
+    }
 }
 
 export async function triggerCheck() {
-     await fetch(`${process.env.PRELO_API_URL as string}check_decks/`, {
+    await fetch(`${process.env.PRELO_API_URL as string}check_decks/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -24,7 +24,7 @@ export default function LoginWithProvider() {
     return (
         <div className="w-full max-w-md p-6 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
             <div className="space-y-4">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Login</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-50">Login</h1>
                 <p className="text-gray-600 dark:text-gray-300">Enter your email below to login to your account</p>
             </div>
             <div className="space-y-4">
@@ -42,7 +42,7 @@ export default function LoginWithProvider() {
                     />
                 </div>
                 <button
-                    className="w-full bg-gray-900 text-white dark:bg-gray-800 dark:text-gray-100 rounded-md py-2 flex items-center justify-center"
+                    className="w-full bg-gray-900 text-white dark:bg-gray-800 dark:text-zinc-50 rounded-md py-2 flex items-center justify-center"
                     type="submit"
                     onClick={handleSignIn} disabled={isLoading}
                 >

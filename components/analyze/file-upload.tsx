@@ -7,6 +7,7 @@ import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import {CloudUploadIcon} from "@/components/ui/icons";
 
 function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
@@ -156,19 +157,17 @@ const FileUpload: React.FC = () => {
             <Card className="w-full max-w-lg">
                 <CardHeader>
                     {errorMessage && <div style={{color: 'red'}}>{errorMessage}</div>}
-
-
-                    <div>Upload your PDF</div>
-                    <div>Drag and drop your PDF file here to upload.</div>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4 py-6">
                     <div className="grid w-full gap-1.5">
                         <Label
-                            className="border border-dashed rounded-lg w-full p-4 flex items-center justify-center gap-2 text-sm cursor-pointer"
+                            className="border border-dashed bg-standard dark:bg-zinc-50 text-zinc-50 dark:text-gray-900 rounded-lg w-4/5 mx-auto p-8 flex items-center justify-center gap-2 text-xl cursor-pointer hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50"
                             htmlFor="pdf"
                         >
-                            <span>Choose a file or drag it here.</span>
-                            <span className="ml-auto font-semibold">Browse</span>
+                            <span>Upload your Pitch Deck</span>
+                            <span className="ml-auto font-semibold">
+                                <CloudUploadIcon className="size-16"/>
+                            </span>
                             <Input className="sr-only" id="pdf" type="file" onChange={handleFileChange}
                                    disabled={loading}
                                    accept="application/pdf"/>

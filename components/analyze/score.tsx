@@ -3,16 +3,17 @@ import {useEffect, useRef, useState} from "react";
 
 interface CircularProgressBarProps {
     progress: number;
-    color: string;
     title: string;
+    overrideColor?: string;
 }
 
-export function CircularProgressBar({progress, color, title}: CircularProgressBarProps) {
+export function CircularProgressBar({progress, title, overrideColor}: CircularProgressBarProps) {
      const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const [currentProgress, setCurrentProgress] = useState(0);
     const requestRef = useRef<number>();
     const innerRadius = 40;
+    const color = overrideColor ?? progress > 70 ? '#5CE1E6' : progress > 40 ? '#FFCC2F' : '#FF9494';
     useEffect(() => {
         const duration = 1000; // Total duration of the animation in milliseconds
         const frameRate = 10; // Duration between frames in milliseconds

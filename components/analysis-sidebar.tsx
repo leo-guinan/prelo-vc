@@ -2,7 +2,7 @@
 import * as React from 'react'
 import {SidebarList} from '@/components/sidebar-list'
 import {PitchDeckRequest} from "@prisma/client/edge";
-import {IconPlus} from "@/components/ui/icons";
+import {IconPlus, MagnifyingGlassIcon} from "@/components/ui/icons";
 import {buttonVariants} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
@@ -34,10 +34,10 @@ export function AnalysisSidebar({userId, decks }: ChatHistoryProps) {
                 href="#"
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
-                  'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+                  'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
                 )}
               >
-                <IconPlus className="-translate-x-2 stroke-2" />
+                <MagnifyingGlassIcon className="-translate-x-2 stroke-2 size-8" />
                 Analyze New Deck
               </Link>
             </div>

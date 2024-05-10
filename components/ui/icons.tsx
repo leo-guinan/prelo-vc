@@ -614,6 +614,109 @@ function ArrowRightIcon({
     )
 }
 
+function PlusIcon({
+                      className,
+                      overrideColor: color,
+                      ...props
+                  }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg
+            {...props}
+            className={cn('size-4', className)}
+            xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="400"
+            zoomAndPan="magnify" viewBox="0 0 300 299.999988" height="400" preserveAspectRatio="xMidYMid meet"
+            version="1.0">
+            <defs>
+                <clipPath id="c48358f586">
+                    <path
+                        d="M 32.265625 32.265625 L 267.765625 32.265625 L 267.765625 267.765625 L 32.265625 267.765625 Z M 32.265625 32.265625 "
+                        clipRule="nonzero"/>
+                </clipPath>
+            </defs>
+            <g clipPath="url(#c48358f586)">
+                <path fill={color ?? "#ffcc2f"}
+                      d="M 149.996094 32.265625 C 85.246094 32.265625 32.265625 85.246094 32.265625 149.996094 C 32.265625 214.75 85.246094 267.730469 149.996094 267.730469 C 214.75 267.730469 267.730469 214.75 267.730469 149.996094 C 267.730469 85.246094 214.75 32.265625 149.996094 32.265625 Z M 197.089844 161.769531 L 161.769531 161.769531 L 161.769531 197.089844 C 161.769531 204.15625 157.0625 208.863281 149.996094 208.863281 C 142.933594 208.863281 138.226562 204.15625 138.226562 197.089844 L 138.226562 161.769531 L 102.90625 161.769531 C 95.839844 161.769531 91.132812 157.0625 91.132812 149.996094 C 91.132812 142.933594 95.839844 138.226562 102.90625 138.226562 L 138.226562 138.226562 L 138.226562 102.90625 C 138.226562 95.839844 142.933594 91.132812 149.996094 91.132812 C 157.0625 91.132812 161.769531 95.839844 161.769531 102.90625 L 161.769531 138.226562 L 197.089844 138.226562 C 204.15625 138.226562 208.863281 142.933594 208.863281 149.996094 C 208.863281 157.0625 204.15625 161.769531 197.089844 161.769531 Z M 197.089844 161.769531 "
+                      fillOpacity="1" fillRule="nonzero"/>
+            </g>
+        </svg>
+    )
+}
+
+function MinusIcon({
+                       className,
+                       overrideColor: color,
+                       ...props
+                   }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg
+            {...props}
+            className={cn('size-4', className)}
+            xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="400"
+            zoomAndPan="magnify" viewBox="0 0 300 299.999988" height="400" preserveAspectRatio="xMidYMid meet"
+            version="1.0">
+            <defs>
+                <clipPath id="c48358f586">
+                    <path
+                        d="M 32.265625 32.265625 L 267.765625 32.265625 L 267.765625 267.765625 L 32.265625 267.765625 Z M 32.265625 32.265625 "
+                        clipRule="nonzero"/>
+                </clipPath>
+            </defs>
+            <g clipPath="url(#c48358f586)">
+                <path fill={color || "#ffcc2f"}
+                      d="M 149.996094 32.265625 C 85.246094 32.265625 32.265625 85.246094 32.265625 149.996094 C 32.265625 214.75 85.246094 267.730469 149.996094 267.730469 C 214.75 267.730469 267.730469 214.75 267.730469 149.996094 C 267.730469 85.246094 214.75 32.265625 149.996094 32.265625 Z M 197.089844 161.769531 L 102.90625 161.769531 C 95.839844 161.769531 91.132812 157.0625 91.132812 149.996094 C 91.132812 142.933594 95.839844 138.226562 102.90625 138.226562 L 197.089844 138.226562 C 204.15625 138.226562 208.863281 142.933594 208.863281 149.996094 C 208.863281 157.0625 204.15625 161.769531 197.089844 161.769531 Z M 197.089844 161.769531 "
+                      fillOpacity="1" fillRule="nonzero"/>
+            </g>
+        </svg>
+    )
+}
+
+function MagnifyingGlassIcon({
+                                 className,
+                                 overrideColor: color,
+                                 ...props
+                             }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg
+            {...props}
+            className={cn('size-4', className)}
+            xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="400"
+            zoomAndPan="magnify" viewBox="0 0 300 299.999988" height="400" preserveAspectRatio="xMidYMid meet"
+            version="1.0">
+            <path fill={color || "#ffcc2f"}
+                  d="M 215.027344 215.027344 C 212.957031 217.097656 210.242188 218.132812 207.53125 218.132812 C 204.816406 218.132812 202.105469 217.097656 200.03125 215.027344 L 173.046875 188.039062 C 163.367188 194.648438 152.101562 197.964844 140.828125 197.964844 C 126.1875 197.964844 111.546875 192.394531 100.40625 181.25 C 78.113281 158.960938 78.113281 122.691406 100.40625 100.40625 C 122.691406 78.113281 158.957031 78.113281 181.25 100.40625 C 200.976562 120.132812 203.230469 150.800781 188.039062 173.046875 L 215.027344 200.035156 C 219.167969 204.175781 219.167969 210.886719 215.027344 215.027344 Z M 150 30 C 83.726562 30 30 83.726562 30 150 C 30 216.273438 83.726562 270 150 270 C 216.273438 270 270 216.273438 270 150 C 270 83.726562 216.273438 30 150 30 "
+                  fillOpacity="1" fillRule="nonzero"/>
+            <path fill="#ffcc2f"
+                  d="M 140.828125 101.296875 C 130.699219 101.296875 120.570312 105.152344 112.863281 112.863281 C 97.445312 128.28125 97.445312 153.371094 112.863281 168.792969 C 128.285156 184.210938 153.375 184.210938 168.792969 168.792969 C 184.210938 153.371094 184.210938 128.28125 168.792969 112.863281 C 161.082031 105.152344 150.953125 101.296875 140.828125 101.296875 "
+                  fillOpacity="1" fillRule="nonzero"/>
+        </svg>
+    )
+}
+
+function CloudUploadIcon({
+                                className,
+                                overrideColor: color,
+                                ...props
+                            }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg
+            {...props}
+            className={cn('size-4', className)}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+            <path d="M12 12v9"/>
+            <path d="m16 16-4-4-4 4"/>
+        </svg>
+    )
+}
 
 export {
     IconEdit,
@@ -647,5 +750,9 @@ export {
     SendIcon,
     ArrowLeftIcon,
     ArrowRightIcon,
-    ClipboardIcon
+    ClipboardIcon,
+    PlusIcon,
+    MagnifyingGlassIcon,
+    MinusIcon,
+    CloudUploadIcon
 }

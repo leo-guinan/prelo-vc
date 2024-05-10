@@ -2,6 +2,7 @@
 import {ChatList} from "@/components/chat-list";
 import {useEffect, useState} from "react";
 import {AnalysisChatMessage} from "@/lib/types";
+import {LoadingProgressCircle} from "@/components/analyze/loading-score";
 
 const INITIAL_MESSAGE = "Feedback may take a few minutes. . .  \n"
 const STEPS = [
@@ -38,6 +39,13 @@ export function EmptyScreen({currentStep}: { currentStep: number }) {
 
     return (
         <div className={'pb-[200px] pt-4 md:pt-10'}>
+            <div className="flex flex-col sm:flex-row w-full justify-center mx-auto">
+                <LoadingProgressCircle title={"Market"} color="#5CE1E6"/>
+                <LoadingProgressCircle color="#FF9494" title="Team"/>
+                <LoadingProgressCircle color="#242424" title="Deck Score"/>
+                <LoadingProgressCircle color="#FF9494" title="Product"/>
+                <LoadingProgressCircle color="#5CE1E6" title="Traction"/>
+            </div>
             <ChatList messages={[currentMessage]}/>
         </div>
     )

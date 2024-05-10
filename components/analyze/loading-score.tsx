@@ -1,5 +1,3 @@
-import {useEffect, useRef} from "react";
-
 interface CircularProgressBarProps {
     color: string;
     title: string;
@@ -8,23 +6,12 @@ interface CircularProgressBarProps {
 export function LoadingProgressCircle({color, title}: CircularProgressBarProps) {
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
-    const requestRef = useRef<number>();
+    const strokeFilled = circumference * 0.25;
+    const strokeUnfilled = circumference * 0.75;
 
-    useEffect(() => {
-        // Continuous rotation animation using CSS
-        requestRef.current = requestAnimationFrame(() => {
-            // Additional logic or state updates can be handled here if needed
-        });
-
-        return () => {
-            if (requestRef.current) {
-                cancelAnimationFrame(requestRef.current);
-            }
-        };
-    }, []);
-
-    // Function to determine text color based on background color
     const getTextColor = (bgColor: string) => {
+        // This is a very basic way to determine if the color is light or dark.
+        // More sophisticated methods might involve calculating luminance.
         const color = bgColor.replace('#', '');
         const r = parseInt(color.substr(0, 2), 16);
         const g = parseInt(color.substr(2, 2), 16);
@@ -32,10 +19,12 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
         return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF';
     };
 
+
     const textColor = getTextColor(color);
+
     return (
         <div className="flex flex-col items-center">
-            <div className="text-sm font-semibold uppercase tracking-wider" style={{ color: color }}>
+            <div className="text-sm font-semibold uppercase tracking-wider" style={{color: color}}>
                 {title}
             </div>
             <svg width="120" height="120">
@@ -46,7 +35,6 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
                     fill="none"
                     stroke={`${color}20`}
                     strokeWidth="10"
-                    strokeOpacity="0.2"
                 />
                 <circle
                     cx="60"
@@ -55,17 +43,16 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
                     fill="none"
                     stroke={color}
                     strokeWidth="10"
-                    strokeDasharray={circumference}
+                    strokeDasharray={`${strokeFilled} ${strokeUnfilled}`}
                     strokeDashoffset={0}
-                    transform="rotate(-90 60 60)"
                     style={{
-                        transition: "stroke-dashoffset 0.35s",
-                        transformOrigin: "center",
-                        animation: "spin 2s linear infinite"
+                        transformOrigin: "center center",
+                        transformBox: "fill-box",
+                        animation: "rotate 2s linear infinite"
                     }}
                 />
                 <style>{`
-                    @keyframes spin {
+                    @keyframes rotate {
                         from { transform: rotate(0deg); }
                         to { transform: rotate(360deg); }
                     }
@@ -81,7 +68,7 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
                     y="50%"
                     dy=".3em"
                     textAnchor="middle"
-                    fontSize="20"
+                    fontSize="12"
                     fill={textColor}
                 >
                     Loading...

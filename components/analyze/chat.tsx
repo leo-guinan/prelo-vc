@@ -32,6 +32,12 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
     const [currentStep, setCurrentStep] = useState<number>(0)
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollIntoView({behavior: 'smooth'});
+        }
+    }, [displayedMessages]); // Dependency array includes the data triggering the scroll
 
     useEffect(() => {
 
@@ -56,10 +62,10 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
                 client.current.onmessage = (message: IMessageEvent) => {
                     const data = JSON.parse(message.data.toString())
 
-                    if(data.scores) {
+                    if (data.scores) {
                         setLoadedScores(data.scores)
                     }
-                    if(data.name) {
+                    if (data.name) {
                         setDisplayedTitle(data.name)
                     }
 
@@ -152,6 +158,7 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
             console.error(e)
         } finally {
             setIsLoading(false)
+
         }
     }
     return (
@@ -159,7 +166,7 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
             <div className={'pb-[200px] pt-4 md:pt-10'}>
                 {displayedMessages.length ? (
                     <>
-                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">{displayedTitle}</h1>
+                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
                         <Scores scores={loadedScores}/>
                         <ChatList messages={displayedMessages}/>
                         <ChatScrollAnchor/>
@@ -169,13 +176,16 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
                 )}
             </div>
             {displayedMessages.length > 0 && (
-                <ChatPanel
-                    isLoading={isLoading}
-                    input={input}
-                    setInput={setInput}
-                    sendMessage={sendMessage}
+                <>
+                    <ChatPanel
+                        isLoading={isLoading}
+                        input={input}
+                        setInput={setInput}
+                        sendMessage={sendMessage}
 
-                />
+                    />
+                    <div ref={bottomRef}/>
+                </>
             )}
 
 
