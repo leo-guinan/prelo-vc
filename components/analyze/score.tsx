@@ -1,5 +1,7 @@
 // Define the types for the component props
 import {useEffect, useRef, useState} from "react";
+import {cn} from "@/lib/utils";
+import {useTheme} from "next-themes";
 
 interface CircularProgressBarProps {
     progress: number;
@@ -13,7 +15,8 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     const [currentProgress, setCurrentProgress] = useState(0);
     const requestRef = useRef<number>();
     const innerRadius = 40;
-    const color = overrideColor ?? progress > 70 ? '#5CE1E6' : progress > 40 ? '#FFCC2F' : '#FF9494';
+    const color = progress > 70 ? '#5CE1E6' : progress > 40 ? '#FFCC2F' : '#FF9494';
+    const theme = useTheme()
     useEffect(() => {
         const duration = 1000; // Total duration of the animation in milliseconds
         const frameRate = 10; // Duration between frames in milliseconds
@@ -58,9 +61,11 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     };
 
     const textColor = getTextColor(color);
+
+    const titleColor = overrideColor && theme.theme === "dark" ? textColor : overrideColor ?? color;
     return (
         <div className="flex flex-col items-center">
-            <div className="text-sm font-semibold uppercase tracking-wider" style={{ color: color }}>
+            <div className={cn("text-sm font-semibold uppercase tracking-wider", overrideColor ? "dark:text-zinc-50" : "")} style={{ color: titleColor }}>
                 {title}
             </div>
             <svg width="120" height="120">
@@ -69,7 +74,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
                     cy="60"
                     r={radius}
                     fill="none"
-                    stroke={`${color}20`} // Background circle
+                    stroke={`${overrideColor ?? color}20`} // Background circle
                     strokeWidth="10"
                     strokeOpacity="0.2"
                 />
@@ -78,7 +83,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
                     cy="60"
                     r={radius}
                     fill="none"
-                    stroke={color}
+                    stroke={overrideColor ?? color}
                     strokeWidth="10"
                     strokeDasharray={circumference}
                     strokeDashoffset={strokeDashoffset}
@@ -88,7 +93,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
                     cx="60"
                     cy="60"
                     r={innerRadius}
-                    fill={color} // Use the same color as the progress bar
+                    fill={overrideColor ?? color} // Use the same color as the progress bar
                 />
                 <text
                     x="50%"

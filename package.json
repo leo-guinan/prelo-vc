@@ -95,6 +95,7 @@
     "remark-math": "^5.1.1",
     "socket.io": "^4.7.5",
     "stripe": "^14.25.0",
+    "tailwindcss-text-border": "^1.0.4",
     "tiptap-markdown": "^0.8.10",
     "unified": "^11.0.4",
     "websocket": "^1.0.34"

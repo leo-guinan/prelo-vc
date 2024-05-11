@@ -46,5 +46,5 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         }
     })
 
-    return <AnalysisChat uuid={pitchDeck.uuid} scores={scores} messages={response.messages} title={pitchDeck.name ?? formatToday(pitchDeck.createdAt)}/>
+    return <AnalysisChat user={session.user} uuid={pitchDeck.uuid} scores={scores} messages={response.messages} title={pitchDeck.name ?? formatToday(pitchDeck.createdAt)}/>
 }

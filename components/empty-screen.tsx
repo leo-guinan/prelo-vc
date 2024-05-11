@@ -11,7 +11,15 @@ const STEPS = [
     "Writing Report  \n"
 ]
 
-export function EmptyScreen({currentStep}: { currentStep: number }) {
+interface EmptyScreenProps {
+    currentStep: number
+    user: {
+        name?: string | null
+        image?: string | null
+    }
+}
+
+export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
 
     const [currentMessage, setCurrentMessage] = useState<AnalysisChatMessage>()
 
@@ -46,7 +54,7 @@ export function EmptyScreen({currentStep}: { currentStep: number }) {
                 <LoadingProgressCircle color="#FF9494" title="Product"/>
                 <LoadingProgressCircle color="#5CE1E6" title="Traction"/>
             </div>
-            <ChatList messages={[currentMessage]}/>
+            <ChatList messages={[currentMessage]} user={user}/>
         </div>
     )
 }

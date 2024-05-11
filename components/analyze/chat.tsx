@@ -22,9 +22,13 @@ interface AnalysisChatProps {
     uuid: string
     scores: PitchDeckScores
     title: string
+    user: {
+        name?: string | null
+        image?: string | null
+    }
 }
 
-export default function AnalysisChat({messages, uuid, scores, title}: AnalysisChatProps) {
+export default function AnalysisChat({messages, uuid, scores, title, user}: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
@@ -168,11 +172,11 @@ export default function AnalysisChat({messages, uuid, scores, title}: AnalysisCh
                     <>
                         <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
                         <Scores scores={loadedScores}/>
-                        <ChatList messages={displayedMessages}/>
+                        <ChatList messages={displayedMessages} user={user}/>
                         <ChatScrollAnchor/>
                     </>
                 ) : (
-                    <EmptyScreen currentStep={currentStep}/>
+                    <EmptyScreen currentStep={currentStep} user={user}/>
                 )}
             </div>
             {displayedMessages.length > 0 && (

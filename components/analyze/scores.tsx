@@ -42,8 +42,7 @@ export default function Scores({scores}: ScoresProps) {
                 <div className="flex flex:col sm:flex-row w-full justify-center mx-auto">
                     <CircularProgressBar progress={scores.market.score} title="Market"/>
                     <CircularProgressBar progress={scores.team.score} title="Team"/>
-                    <CircularProgressBar progress={scores.final.score}
-                                         title="Deck Score" overrideColor=""/>
+                    <CircularProgressBar progress={scores.final.score} title="Deck Score" overrideColor="#242424"/>
                     <CircularProgressBar progress={scores.product.score}  title="Product"/>
                     <CircularProgressBar progress={scores.traction.score} title="Traction"/>
                 </div>

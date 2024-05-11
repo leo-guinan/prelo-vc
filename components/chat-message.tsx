@@ -1,6 +1,6 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-
+'use client'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 //@ts-ignore
@@ -9,21 +9,26 @@ import remarkCollapse from 'remark-collapse'
 import {cn} from '@/lib/utils'
 import {CodeBlock} from '@/components/ui/codeblock'
 import {MemoizedReactMarkdown} from '@/components/markdown'
-import {IconUser} from '@/components/ui/icons'
 import {ChatMessageActions} from '@/components/chat-message-actions'
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Image from 'next/image'
+import ChatUser from "@/components/analyze/chat-user";
 
 export interface ChatMessageProps {
     message: {
         content: string
         role: string
         id: string
+    },
+    user: {
+        name?: string | null
+        image?: string | null
+
     }
 }
 
-export function ChatMessage({message, ...props}: ChatMessageProps) {
+export function ChatMessage({message, user, ...props}: ChatMessageProps) {
     return (
         <div
             className={cn('group relative mb-4 flex items-start md:-ml-12')}
@@ -31,13 +36,14 @@ export function ChatMessage({message, ...props}: ChatMessageProps) {
         >
             <div
                 className={cn(
-                    'flex size-8 shrink-0 select-none items-center justify-center rounded-full border shadow',
+                    'flex size-8 shrink-0 select-none items-center justify-center rounded-full ',
                     message.role === 'user'
-                        ? 'bg-background'
+                        ? ''
                         : 'bg-primary text-primary-foreground'
                 )}
             >
-                {message.role === 'user' ? <IconUser/> : <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo"/>}
+                {message.role === 'user' ? <ChatUser user={user}/> :
+                    <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" />}
             </div>
             <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
                 <MemoizedReactMarkdown
