@@ -60,7 +60,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
         return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF';
     };
 
-    const textColor = getTextColor(color);
+    const textColor = getTextColor(overrideColor || color);
 
     const titleColor = overrideColor && theme.theme === "dark" ? textColor : overrideColor ?? color;
     return (

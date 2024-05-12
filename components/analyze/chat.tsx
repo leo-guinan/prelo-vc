@@ -37,6 +37,8 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [chatMessageLoading, setChatMessageLoading] = useState(false)
+
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -127,17 +129,7 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
         if (!message.content) return
         setIsLoading(true)
         try {
-            setDisplayedMessages([...displayedMessages, {
-                content: message.content,
-                role: message.role,
-                id: "temp"
-            },
-                {
-                    content: "...",
-                    role: 'assistant',
-                    id: "temp"
-                }
-            ])
+            setChatMessageLoading(true)
 
             const response = await sendChatMessage(uuid, message);
 
@@ -145,6 +137,7 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
                 console.error("No response")
                 return
             }
+            setChatMessageLoading(false)
 
             setDisplayedMessages([...displayedMessages,
                 {
@@ -172,7 +165,7 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
                     <>
                         <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
                         <Scores scores={loadedScores}/>
-                        <ChatList messages={displayedMessages} user={user}/>
+                        <ChatList messages={displayedMessages} user={user} chatMessageLoading={chatMessageLoading}/>
                         <ChatScrollAnchor/>
                     </>
                 ) : (

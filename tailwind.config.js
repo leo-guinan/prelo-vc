@@ -51,7 +51,19 @@ module.exports = {
                 },
                 standard: {
                     DEFAULT: '#242424',
-                }
+                },
+                loadStart: {
+                    DEFAULT: '#CCCCCC'
+                },
+                loadNext: {
+                    DEFAULT: '#CCCCCC'
+                },
+                loadMiddle: {
+                    DEFAULT: '#666666'
+                },
+                loadEnd: {
+                    DEFAULT: '#333333'
+                },
             },
             borderRadius: {
                 lg: `var(--radius)`,
@@ -82,7 +94,16 @@ module.exports = {
                     '100%': {
                         transform: 'translateX(-100%)'
                     }
-                }
+                },
+                pulse: {
+                    '0%, 100%': {opacity: 1},
+                    '50%': {opacity: 0.5},
+                },
+                shiftRight: {
+                    '0%': {transform: 'translateX(-100%)'},
+                    '20%, 80%': {transform: 'translateX(0%)'},
+                    '100%': {transform: 'translateX(100%)'},
+                },
             },
             animation: {
                 'slide-from-left':
@@ -90,7 +111,11 @@ module.exports = {
                 'slide-to-left':
                     'slide-to-left 0.25s cubic-bezier(0.82, 0.085, 0.395, 0.895)',
                 'accordion-down': 'accordion-down 0.2s ease-out',
-                'accordion-up': 'accordion-up 0.2s ease-out'
+                'accordion-up': 'accordion-up 0.2s ease-out',
+                'pulse': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'shift-right': 'shiftRight 5s linear infinite',
+
+
             }
         }
     },
