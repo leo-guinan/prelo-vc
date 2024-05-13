@@ -25,7 +25,7 @@ const ChatMessageLoading = ({circleColors}: {circleColors: string[]}) => {
             {currentColors.map((color, index) => (
                 <div
                     key={index}
-                    className={`${color} size-6 rounded-full`}
+                    className={`${color} size-2 rounded-full`}
                 />
             ))}
         </div>
