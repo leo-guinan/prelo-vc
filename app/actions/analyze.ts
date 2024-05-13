@@ -330,3 +330,37 @@ export async function triggerCheck() {
         body: JSON.stringify({})
     })
 }
+
+export async function getDeckReport(id: number) {
+    try {
+        const pitchDeckRequest = await prisma.pitchDeckRequest.findUnique({
+            where: {
+                id,
+            }
+        })
+
+        if (!pitchDeckRequest) {
+            return {
+                error: "Pitch deck not found"
+            }
+        }
+        const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/report/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_id: pitchDeckRequest.backendId
+            })
+        })
+        const parsed = await sendMessageResponse.json()
+        console.log("Report", parsed)
+        return parsed
+
+    } catch (e) {
+        console.error(e)
+        return null
+    }
+
+}

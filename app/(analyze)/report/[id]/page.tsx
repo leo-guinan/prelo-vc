@@ -2,7 +2,7 @@ import {redirect} from 'next/navigation'
 
 import {auth} from '@/auth'
 import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
-import {getAnalysisChat, getPitchDeck, getScores, triggerCheck} from "@/app/actions/analyze";
+import {getAnalysisChat, getDeckReport, getPitchDeck, getScores, triggerCheck} from "@/app/actions/analyze";
 import {formatToday, prisma} from "@/lib/utils";
 import AnalysisChat from "@/components/analyze/chat";
 
@@ -31,6 +31,8 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     await triggerCheck();
 
     const scores = await getScores(pitchDeck.id)
+    const pitchDeckReport = await getDeckReport(pitchDeck.id)
+
     const response = await getAnalysisChat(Number(params.id))
     if ('error' in response) {
         console.log(response.error)
@@ -46,5 +48,15 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         }
     })
 
-    return <AnalysisChat user={session.user} uuid={pitchDeck.uuid} scores={scores} messages={response.messages} title={pitchDeck.name ?? formatToday(pitchDeck.createdAt)}/>
+    return <AnalysisChat
+        user={session.user}
+        uuid={pitchDeck.uuid}
+        scores={scores}
+        messages={response.messages}
+        title={pitchDeck.name ??
+            formatToday(pitchDeck.createdAt)}
+        concern={pitchDeckReport.top_concern}
+        objections={pitchDeckReport.objections}
+        howToAddress={pitchDeckReport.how_to_overcome}
+    />
 }

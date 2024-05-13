@@ -54,7 +54,7 @@ export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
                 <LoadingProgressCircle color="#FF9494" title="Product"/>
                 <LoadingProgressCircle color="#5CE1E6" title="Traction"/>
             </div>
-            <ChatList messages={[currentMessage]} user={user} chatMessageLoading={true}/>
+            <ChatList messages={[currentMessage]} user={user} chatMessageLoading={false}/>
         </div>
     )
 }

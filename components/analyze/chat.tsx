@@ -10,6 +10,7 @@ import {PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
+import Report from "@/components/analyze/report";
 
 interface PreloChatMessage {
     id: string
@@ -22,13 +23,25 @@ interface AnalysisChatProps {
     uuid: string
     scores: PitchDeckScores
     title: string
+    concern: string
+    objections: string
+    howToAddress: string
     user: {
         name?: string | null
         image?: string | null
     }
 }
 
-export default function AnalysisChat({messages, uuid, scores, title, user}: AnalysisChatProps) {
+export default function AnalysisChat({
+                                         messages,
+                                         uuid,
+                                         scores,
+                                         title,
+                                         user,
+                                         concern,
+                                         objections,
+                                         howToAddress
+                                     }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
@@ -38,7 +51,9 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
-
+    const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
+    const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
+    const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -73,6 +88,15 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
                     }
                     if (data.name) {
                         setDisplayedTitle(data.name)
+                    }
+                    if (data.top_concern) {
+                        setDisplayedConcern(data.top_concern)
+                    }
+                    if (data.objections) {
+                        setDisplayedObjection(data.objections)
+                    }
+                    if (data.how_to_overcome) {
+                        setDisplayedHowToAddress(data.how_to_overcome)
                     }
 
                     if (data.status) {
@@ -161,30 +185,27 @@ export default function AnalysisChat({messages, uuid, scores, title, user}: Anal
     return (
         <>
             <div className={'pb-[200px] pt-4 md:pt-10'}>
-                {displayedMessages.length ? (
+                {displayedConcern && displayedObjection && displayedHowToAddress ? (
                     <>
                         <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
                         <Scores scores={loadedScores}/>
+                        <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
+                                howToAddress={displayedHowToAddress}/>
                         <ChatList messages={displayedMessages} user={user} chatMessageLoading={chatMessageLoading}/>
                         <ChatScrollAnchor/>
+                        <ChatPanel
+                            isLoading={isLoading}
+                            input={input}
+                            setInput={setInput}
+                            sendMessage={sendMessage}
+
+                        />
+                        <div ref={bottomRef}/>
                     </>
                 ) : (
                     <EmptyScreen currentStep={currentStep} user={user}/>
                 )}
             </div>
-            {displayedMessages.length > 0 && (
-                <>
-                    <ChatPanel
-                        isLoading={isLoading}
-                        input={input}
-                        setInput={setInput}
-                        sendMessage={sendMessage}
-
-                    />
-                    <div ref={bottomRef}/>
-                </>
-            )}
-
 
         </>
     )

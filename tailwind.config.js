@@ -64,6 +64,19 @@ module.exports = {
                 loadEnd: {
                     DEFAULT: '#333333'
                 },
+                concern: {
+                    DEFAULT: '#FF7878',
+                    background: "#FFEFEF"
+                },
+                objections: {
+                    DEFAULT: '#FFCC2F',
+                    background: "#FFF9E6"
+                },
+                howTo: {
+                    DEFAULT: '#8BDDE4',
+                    background: "#F2FEFF"
+                },
+
             },
             borderRadius: {
                 lg: `var(--radius)`,

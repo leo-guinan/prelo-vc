@@ -18,7 +18,29 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
     const circleColors = ['bg-loadStart', 'bg-loadNext', 'bg-loadMiddle', 'bg-loadEnd'];
 
     if (!messages.length) {
-        return null
+        return (
+            <>
+                {chatMessageLoading && (
+                    <>
+                        <Separator className="my-4 md:my-8"/>
+
+                        <div className={cn('group relative mb-4 flex items-start md:-ml-12')}>
+
+                            <div
+                                className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
+
+                            >
+                                <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo"/>
+
+
+                            </div>
+                            <ChatMessageLoading circleColors={circleColors}/>
+
+                        </div>
+                    </>
+                )}
+            </>
+        )
     }
 
     return (
@@ -31,7 +53,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                     )}
                 </div>
             ))}
-            {chatMessageLoading && messages.length > 0 && (
+            {chatMessageLoading && (
                 <>
                     <Separator className="my-4 md:my-8"/>
 

@@ -10,7 +10,6 @@ const ChatMessageLoading = ({circleColors}: {circleColors: string[]}) => {
         const intervalId = setInterval(() => {
             if (currentColors.length > 1) {
                 setCurrentColors(prevItems => {
-                    console.log(prevItems)
                     const tempItems = [...prevItems]
                     const lastItem = tempItems.pop() as string; // Remove the last item
                     return [lastItem, ...tempItems]; // Add it to the front
