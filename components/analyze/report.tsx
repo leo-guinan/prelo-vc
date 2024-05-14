@@ -18,9 +18,9 @@ interface ReportProps {
 
 export default function Report({topObjection, objectionsToOvercome, howToAddress}: ReportProps) {
     return (
-        <div className="relative mx-auto max-w-2xl px-4 mt-8">
+        <div className="relative mx-auto px-4 mt-8 max-w-xl" >
             <div
-                className={cn('group relative mb-4 flex flex-1 items-start md:-ml-12 w-full')}
+                className={cn('group relative mb-4 flex flex-1 items-start w-full')}
             >
                 <div
                     className={cn(

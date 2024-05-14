@@ -153,6 +153,13 @@ export default function AnalysisChat({
         if (!message.content) return
         setIsLoading(true)
         try {
+            setDisplayedMessages([...displayedMessages,
+                {
+                    content: message.content,
+                    role: message.role,
+                    id: "temp"
+                },
+            ])
             setChatMessageLoading(true)
 
             const response = await sendChatMessage(uuid, message);
@@ -184,7 +191,7 @@ export default function AnalysisChat({
     }
     return (
         <>
-            <div className={'pb-[200px] pt-4 md:pt-10'}>
+            <div className={'pb-[200px] pt-4 md:pt-10 max-w-2xl mx-auto'}>
                 {displayedConcern && displayedObjection && displayedHowToAddress ? (
                     <>
                         <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>

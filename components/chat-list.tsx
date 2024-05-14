@@ -24,7 +24,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                     <>
                         <Separator className="my-4 md:my-8"/>
 
-                        <div className={cn('group relative mb-4 flex items-start md:-ml-12')}>
+                        <div className={cn('group relative mb-4 flex items-start')}>
 
                             <div
                                 className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
@@ -44,7 +44,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
     }
 
     return (
-        <div className="relative mx-auto max-w-2xl px-4 mt-8">
+        <div className="relative mx-auto max-w-xl px-4 mt-8">
             {messages.map((message, index) => (
                 <div key={index}>
                     <ChatMessage message={message} user={user}/>
@@ -57,7 +57,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                 <>
                     <Separator className="my-4 md:my-8"/>
 
-                    <div className={cn('group relative mb-4 flex items-start md:-ml-12')}>
+                    <div className={cn('group relative mb-4 flex items-start')}>
 
                         <div
                             className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'

@@ -180,16 +180,7 @@ export async function getAnalysisChat(id: number) {
             error: document.error
         }
     }
-    if (document.status !== "complete") {
-        console.log("Document not complete")
-        return {
-            id: document.uuid,
-            title: "Chat",
-            userId: session.user.id,
-            messages: []
-        }
 
-    }
 
     const memory = new BufferMemory({
         chatHistory: new MongoDBChatMessageHistory({

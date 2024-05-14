@@ -18,7 +18,7 @@ export default function CollapsibleSection({
 ) {
     const [isOpen, setIsOpen] = useState(false)
     return (
-        <div className={cn("w-full px-4 mb-16")}>
+        <div className={cn("w-full px-4 mb-8")}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn("rounded-full bg-green-600 text-2xl items-center flex w-full px-4 py-4 text-left ", headerColor ? `bg-${headerColor}` : "")}
