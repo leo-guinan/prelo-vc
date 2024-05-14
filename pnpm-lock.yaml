@@ -143,6 +143,9 @@ dependencies:
   date-fns:
     specifier: ^3.6.0
     version: 3.6.0
+  fathom-client:
+    specifier: ^3.6.0
+    version: 3.6.0
   focus-trap-react:
     specifier: ^10.2.3
     version: 10.2.3(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
@@ -4195,6 +4198,10 @@ packages:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
     dependencies:
       reusify: 1.0.4
+
+  /fathom-client@3.6.0:
+    resolution: {integrity: sha512-/mrgmVvpw4HqDCcqUfPulERhONKgnJGL74RAxfqKDuRQ+7w9lKoTHMzqBWE7WNBvmsgZEthQWJFOWOEjv+T3gA==}
+    dev: false
 
   /fault@1.0.4:
     resolution: {integrity: sha512-CJ0HCB5tL5fYTEA7ToAq5+kTwd++Borf1/bifxd9iT70QcXr4MRrO3Llf8Ifs70q+SJcGHFtnIE/Nw6giCtECA==}
