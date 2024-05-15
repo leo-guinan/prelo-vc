@@ -18,19 +18,11 @@ interface ReportProps {
 
 export default function Report({topObjection, objectionsToOvercome, howToAddress}: ReportProps) {
     return (
-        <div className="relative mx-auto px-4 mt-8 max-w-xl" >
+        <div className="relative mx-auto px-3 mt-8 max-w-xl" >
             <div
-                className={cn('group relative mb-4 flex flex-1 items-start w-full')}
+                className={cn('group relative mb-4 flex flex-1 items-start w-full max-w-xl')}
             >
-                <div
-                    className={cn(
-                        'flex size-12 shrink-0 select-none items-center justify-center rounded-full mt-2',
-                        'bg-primary text-primary-foreground'
-                    )}
-                >
-                    <Image src="/logo.png" width={32} height={32} className="size-12 flex items-center" alt="Score My Deck Logo"/>
-                </div>
-                <div className="w-full">
+                <div className="w-full max-w-xl">
                     <CollapsibleSection title="Top Investor Concerns" headerColor="concern-background"
                                         iconColor="#FF7878">
                         <>

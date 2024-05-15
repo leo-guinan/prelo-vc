@@ -18,26 +18,26 @@ export default function CollapsibleSection({
 ) {
     const [isOpen, setIsOpen] = useState(false)
     return (
-        <div className={cn("w-full px-4 mb-8")}>
+        <div className={cn("w-full mb-8")}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={cn("rounded-full bg-green-600 text-2xl items-center flex w-full px-4 py-4 text-left ", headerColor ? `bg-${headerColor}` : "")}
+                className={cn("rounded-full bg-green-600 text-2xl items-center flex w-full py-4 text-left ", headerColor ? `bg-${headerColor}` : "")}
             >
 
                 {isOpen && (
                     <>
-                        <MinusIcon className="size-8" overrideColor={iconColor} />
+                        <MinusIcon className="size-10" overrideColor={iconColor} />
                     </>
                 )}
                 {!isOpen && (
                     <>
-                        <PlusIcon className="size-8" overrideColor={iconColor} />
+                        <PlusIcon className="size-10" overrideColor={iconColor} />
                     </>
                 )}
-                <span className="ml-2">{title}</span>
+                <span className="ml-4">{title}</span>
             </button>
             {isOpen && (
-                <div className="p-4 border-t border-gray-200 ml-8">{children}</div>
+                <div className="p-6 border-t border-gray-200 ml-8">{children}</div>
             )}
         </div>
     )

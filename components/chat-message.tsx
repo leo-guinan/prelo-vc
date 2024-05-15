@@ -43,7 +43,7 @@ export function ChatMessage({message, user, ...props}: ChatMessageProps) {
                 )}
             >
                 {message.role === 'user' ? <ChatUser user={user}/> :
-                    <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" />}
+                    <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" className="size-10" />}
             </div>
             <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
                 <MemoizedReactMarkdown
