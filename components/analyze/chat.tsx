@@ -191,23 +191,34 @@ export default function AnalysisChat({
     }
     return (
         <>
-            <div className={'pb-[200px] pt-4 md:pt-10 max-w-2xl mx-auto'}>
+            <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
                 {displayedConcern && displayedObjection && displayedHowToAddress ? (
                     <>
-                        <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
-                        <Scores scores={loadedScores}/>
-                        <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
-                                howToAddress={displayedHowToAddress}/>
-                        <ChatList messages={displayedMessages} user={user} chatMessageLoading={chatMessageLoading}/>
-                        <ChatScrollAnchor/>
-                        <ChatPanel
-                            isLoading={isLoading}
-                            input={input}
-                            setInput={setInput}
-                            sendMessage={sendMessage}
+                        <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
+                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
+                                <div className="p-y-12">
+                                    <ChatList messages={displayedMessages} user={user}
+                                              chatMessageLoading={chatMessageLoading}/>
+                                    <ChatScrollAnchor/>
+                                    <ChatPanel
+                                        isLoading={isLoading}
+                                        input={input}
+                                        setInput={setInput}
+                                        sendMessage={sendMessage}
 
-                        />
-                        <div ref={bottomRef}/>
+                                    />
+                                    <div ref={bottomRef}/>
+                                </div>
+                            </div>
+                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
+                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+
+                                <Scores scores={loadedScores}/>
+                                <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
+                                        howToAddress={displayedHowToAddress}/>
+                            </div>
+                        </div>
+
                     </>
                 ) : (
                     <EmptyScreen currentStep={currentStep} user={user}/>

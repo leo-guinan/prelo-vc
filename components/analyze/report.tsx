@@ -18,9 +18,9 @@ interface ReportProps {
 
 export default function Report({topObjection, objectionsToOvercome, howToAddress}: ReportProps) {
     return (
-        <div className="relative mx-auto px-3 mt-8 max-w-xl" >
+        <div className="relative px-8 mt-8" >
             <div
-                className={cn('group relative mb-4 flex flex-1 items-start w-full max-w-xl')}
+                className={cn('group relative mb-4 flex flex-1 items-start w-full')}
             >
                 <div className="w-full max-w-xl">
                     <CollapsibleSection title="Top Investor Concerns" headerColor="concern-background"

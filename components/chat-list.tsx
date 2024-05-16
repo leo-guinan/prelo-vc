@@ -44,7 +44,16 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
     }
 
     return (
-        <div className="relative mx-auto max-w-xl px-4 mt-8">
+        <div className="relative px-4">
+            <div>
+                <ChatMessage message={{
+                    id: "-1",
+                    content: "What questions do you have about your deck?",
+                    role: "ai"
+
+                }} user={user}/>
+                <Separator className="my-4 md:my-8"/>
+            </div>
             {messages.map((message, index) => (
                 <div key={index}>
                     <ChatMessage message={message} user={user}/>
