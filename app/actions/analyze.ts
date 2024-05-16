@@ -19,7 +19,7 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
     const document = await createDocument(session.user.id, "Pitch deck analysis still running...", "prelo")
     // make filename url safe
     const safeFilename = encodeURIComponent(filename)
-    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}`
+    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=prelovc`
     console.log(url)
     const uploadUrlResponse = await fetch(url, {
         method: 'GET',
@@ -122,7 +122,7 @@ export async function getScores(pitchDeckId: number) {
         }
     }
 
-    const url = `${process.env.PRELO_API_URL as string}get_scores/?pitch_deck_id=${pitchDeck.backendId}`
+    const url = `${process.env.PRELO_API_URL as string}get_scores/?pitch_deck_id=${pitchDeck.backendId}&client=prelovc`
 
     const rawScoreResponse = await fetch(url, {
         method: 'GET',
@@ -228,7 +228,7 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
     }
 
 
-    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}founder/send/`, {
+    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}investor/send/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -335,7 +335,7 @@ export async function getDeckReport(id: number) {
                 error: "Pitch deck not found"
             }
         }
-        const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/report/`, {
+        const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
