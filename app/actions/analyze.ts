@@ -19,7 +19,8 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
     const document = await createDocument(session.user.id, "Pitch deck analysis still running...", "prelo")
     // make filename url safe
     const safeFilename = encodeURIComponent(filename)
-    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=prelovc`
+
+    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=prelovc&firm_id=1&investor_id=1`
     console.log(url)
     const uploadUrlResponse = await fetch(url, {
         method: 'GET',

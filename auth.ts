@@ -20,7 +20,7 @@ export const authOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [Resend({
         // If your environment variable is named differently than default
-        from: "no-reply@auth.myaicofounder.com"
+        from: "no-reply@auth.prelovc.com"
     }), GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET

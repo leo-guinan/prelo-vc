@@ -4,7 +4,7 @@ import {useState} from 'react'
 import {PitchDeckRequest} from '@prisma/client/edge';
 import {SidebarItems} from "@/components/sidebar-items";
 import {MinusIcon, PlusIcon} from "@/components/ui/icons";
-import {cn} from "@/lib/utils";
+import {SidebarSubmenu} from "@/components/sidebar-submenu";
 
 interface SidebarListProps {
     userId?: string
@@ -32,7 +32,7 @@ export function SidebarList({userId: _, decks}: SidebarListProps) {
                     </>
                 )}
                 {decks.length === 0 && (
-                <>
+                    <>
                         {!open && (
                             <PlusIcon
                                 overrideColor="#E8E8E8"
@@ -44,15 +44,27 @@ export function SidebarList({userId: _, decks}: SidebarListProps) {
                                 className="size-8 text-zinc-50 "/>
                         )}
                     </>
-                    )}
+                )}
                 <span className="ml-2">View Pitch Decks</span>
             </div>
             <div className="flex-1 overflow-auto">
-                {open && decks?.length && (
-                    <div className="space-y-2 px-2">
-                        <SidebarItems decks={decks}/>
-                    </div>
-                )}
+                {open && (
+                    <>
+                        <div className="space-y-2 px-2">
+                            <SidebarSubmenu decks={decks} category="Pending" color="#FFCC2F"/>
+                        </div>
+                        <div className="space-y-2 px-2">
+                            <SidebarSubmenu decks={decks} category="Book Call" color="#8BDDE4"/>
+                        </div>
+                        <div className="space-y-2 px-2">
+                            <SidebarSubmenu decks={decks} category="Maybe" color="#FFCC2F"/>
+                        </div>
+                        <div className="space-y-2 px-2">
+                            <SidebarSubmenu decks={decks} category="Pass" color="#FF7878"/>
+                        </div>
+                    </>
+                )
+                }
             </div>
             <div className="flex items-center justify-between p-4">
                 <ThemeToggle/>

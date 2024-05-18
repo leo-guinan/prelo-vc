@@ -47,6 +47,12 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
             currentDeckId: Number(params.id)
         }
     })
+    // "concerns": analysis.concerns,
+    //             "believe": analysis.believe,
+    //             "traction": analysis.traction,
+    //             "summary": analysis.summary,
+    //             "recommendation": recommendation,
+    //             "recommendation_reasons": analysis.investor_report.recommendation_reasons,
 
     return <AnalysisChat
         user={session.user}
@@ -55,8 +61,16 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         messages={response.messages}
         title={pitchDeck.name ??
             formatToday(pitchDeck.createdAt)}
-        concern={pitchDeckReport.top_concern}
-        objections={pitchDeckReport.objections}
-        howToAddress={pitchDeckReport.how_to_overcome}
+        concerns={pitchDeckReport.concerns}
+        believe={pitchDeckReport.believe}
+        traction={pitchDeckReport.traction}
+        summary={pitchDeckReport.summary}
+        recommendation={pitchDeckReport.recommendation_reasons}
+        recommendationOption={{
+            value: pitchDeckReport.recommendation
+        }}
+
+
+
     />
 }

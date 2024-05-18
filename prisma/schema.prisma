@@ -24,10 +24,12 @@ model User {
   image            String?
   role             String    @default("user")
   currentDeckId    Int?
+  investorId       Int?
 
   pitchDeckRequests PitchDeckRequest[]
   sessions          Session[]
   accounts          Account[]
+  memberships       Membership[]
 }
 
 model PitchDeckRequest {
@@ -68,4 +70,40 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model Organization {
+  id         Int          @id @default(autoincrement())
+  name       String
+  firmId     Int?
+  membership Membership[]
+}
+
+model Membership {
+  id   Int            @id @default(autoincrement())
+  role MembershipRole
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  // When the user joins, we will clear out the name and email and set the user.
+  invitedName  String?
+  invitedEmail String?
+
+  @@unique([organizationId, invitedEmail])
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  USER
+}
+
+// The owners of the SaaS (you) can have a SUPERADMIN role to access all data
+enum GlobalRole {
+  SUPERADMIN
+  CUSTOMER
 }

@@ -11,6 +11,7 @@ import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
 import Report from "@/components/analyze/report";
+import FAQ from "@/components/analyze/faq";
 
 interface PreloChatMessage {
     id: string
@@ -23,13 +24,20 @@ interface AnalysisChatProps {
     uuid: string
     scores: PitchDeckScores
     title: string
-    concern: string
-    objections: string
-    howToAddress: string
+    concerns: string
+    believe: string
+    traction: string
+    recommendation: string
+    summary: string
     user: {
         name?: string | null
         image?: string | null
     }
+    recommendationOption: RecommendationOption
+}
+
+export interface RecommendationOption {
+    value: "contact" | "maybe" | "pass"
 }
 
 export default function AnalysisChat({
@@ -38,9 +46,12 @@ export default function AnalysisChat({
                                          scores,
                                          title,
                                          user,
-                                         concern,
-                                         objections,
-                                         howToAddress
+                                         concerns,
+                                         believe,
+                                         traction,
+                                         recommendation,
+                                         summary,
+                                         recommendationOption
                                      }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
@@ -51,9 +62,23 @@ export default function AnalysisChat({
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
-    const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
-    const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
-    const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
+    const [displayedRecommendation, setDisplayedRecommendation] = useState<string>(recommendation)
+    const [displayedPitchDeckSummary, setDisplayPitchDeckSummary] = useState<string>(summary)
+    const [displayedTraction, setDisplayTraction] = useState<string>(traction)
+    const [displayedConcerns, setDisplayedConcerns] = useState<string>(concerns)
+    const [displayedBelieve, setDisplayedBelieve] = useState<string>(believe)
+    const [displayedRecommendationOption, setDisplayedRecommendationOption] = useState<RecommendationOption | null>(recommendationOption)
+
+    useEffect(() => {
+        console.log(`displayedRecommendationOption: ${displayedRecommendationOption}`)
+        console.log(`displayedRecommendation: ${displayedRecommendation}`)
+        console.log(`displayedTraction: ${displayedTraction}`)
+        console.log(`displayedConcerns: ${displayedConcerns}`)
+        console.log(`displayedBelieve: ${displayedBelieve}`)
+        console.log(`displayedPitchDeckSummary: ${displayedPitchDeckSummary}`)
+    }, [displayedRecommendationOption, displayedRecommendation, displayedTraction, displayedConcerns, displayedBelieve, displayedPitchDeckSummary]) // Dependency array includes the data triggering the scroll
+
+
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -89,15 +114,31 @@ export default function AnalysisChat({
                     if (data.name) {
                         setDisplayedTitle(data.name)
                     }
-                    if (data.top_concern) {
-                        setDisplayedConcern(data.top_concern)
+                    if (data.pitch_deck_summary) {
+                        setDisplayPitchDeckSummary(data.pitch_deck_summary)
                     }
-                    if (data.objections) {
-                        setDisplayedObjection(data.objections)
+                    if (data.traction) {
+                        setDisplayTraction(data.traction)
                     }
-                    if (data.how_to_overcome) {
-                        setDisplayedHowToAddress(data.how_to_overcome)
+                    if (data.concerns) {
+                        setDisplayedConcerns(data.concerns)
                     }
+                    if (data.believe) {
+                        setDisplayedBelieve(data.believe)
+                    }
+                    if (data.recommendation) {
+                        setDisplayedRecommendation(data.recommendation)
+                    }
+                    if (data.summary) {
+                        setDisplayPitchDeckSummary(data.summary)
+                    }
+                    if (data.recommendation) {
+                        setDisplayedRecommendationOption({value: data.recommendation})
+                    }
+                    if (data.recommendation_reasons) {
+                        setDisplayedRecommendation(data.recommendation_reasons)
+                    }
+
 
                     if (data.status) {
                         switch (data.status) {
@@ -192,7 +233,7 @@ export default function AnalysisChat({
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
-                {displayedConcern && displayedObjection && displayedHowToAddress ? (
+                {displayedRecommendationOption && displayedRecommendation && displayedTraction && displayedConcerns && displayedBelieve && displayedPitchDeckSummary ? (
                     <>
                         <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
@@ -213,15 +254,30 @@ export default function AnalysisChat({
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
                                 <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
 
-                                <Scores scores={loadedScores}/>
-                                <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
-                                        howToAddress={displayedHowToAddress}/>
+                                {/*<Scores scores={loadedScores}/>*/}
+                                <Report recommendationOption={displayedRecommendationOption} believe={displayedBelieve}
+                                        pitchDeckSummary={displayedPitchDeckSummary} concerns={displayedConcerns}
+                                        recommendation={displayedRecommendation} traction={displayedTraction}/>
                             </div>
                         </div>
 
                     </>
                 ) : (
-                    <EmptyScreen currentStep={currentStep} user={user}/>
+                    <>
+                        <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
+                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
+                                <div className="mx-auto border-box">
+                                    <FAQ user={user}/>
+                                </div>
+                            </div>
+                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
+                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                <EmptyScreen currentStep={currentStep} user={user}/>
+                            </div>
+                        </div>
+
+                    </>
+
                 )}
             </div>
 

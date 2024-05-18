@@ -9,164 +9,47 @@ import {CodeBlock} from "@/components/ui/codeblock";
 import {MemoizedReactMarkdown} from "@/components/markdown";
 import {cn} from "@/lib/utils";
 import Image from "next/image";
+import PitchDeckSummary from "@/components/analyze/pitch-deck-summary";
+import Traction from "@/components/analyze/traction";
+import Concerns from "@/components/analyze/concerns";
+import Believe from "@/components/analyze/believe";
+import Recommendation from "@/components/analyze/recommendation";
+import {RecommendationOption} from "@/components/analyze/chat";
 
 interface ReportProps {
-    topObjection: string
-    objectionsToOvercome: string
-    howToAddress: string
+    pitchDeckSummary: string;
+    traction: string;
+    concerns: string;
+    believe: string;
+    recommendation: string
+    recommendationOption: RecommendationOption
 }
 
-export default function Report({topObjection, objectionsToOvercome, howToAddress}: ReportProps) {
+export default function Report({pitchDeckSummary, traction, believe, concerns, recommendation, recommendationOption}: ReportProps) {
     return (
         <div className="relative px-8 mt-8" >
             <div
-                className={cn('group relative mb-4 flex flex-1 items-start w-full')}
+                className={cn('group relative mb-4 flex flex-col flex-1 items-start w-full')}
             >
-                <div className="w-full max-w-xl">
-                    <CollapsibleSection title="Top Investor Concerns" headerColor="concern-background"
-                                        iconColor="#FF7878">
-                        <>
-                            <MemoizedReactMarkdown
-                                className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-                                remarkPlugins={[remarkGfm, remarkMath, [remarkCollapse, {test: 'Problem'}]]}
-                                //@ts-ignore
-                                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                                components={{
-                                    p({children}) {
-                                        return <p className="mb-2 last:mb-0">{children}</p>
-                                    },
-                                    code({node, inline, className, children, ...props}) {
-                                        if (children.length) {
-                                            if (children[0] == '▍') {
-                                                return (
-                                                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                                                )
-                                            }
+                <div className="flex flex-row w-full max-w-xl">
+                    <span>Decision: </span>
+                    <button className="bg-howTo p-2 rounded-md">
+                        Book Call
+                    </button>
+                    <button className="bg-objections p-2 rounded-md">
+                        Maybe
+                    </button>
+                    <button className="bg-concern p-2 rounded-md">
+                        Pass
+                    </button>
+                </div>
 
-                                            children[0] = (children[0] as string).replace('`▍`', '▍')
-                                        }
-
-                                        const match = /language-(\w+)/.exec(className || '')
-
-                                        if (inline) {
-                                            return (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            )
-                                        }
-
-                                        return (
-                                            <CodeBlock
-                                                key={Math.random()}
-                                                language={(match && match[1]) || ''}
-                                                value={String(children).replace(/\n$/, '')}
-                                                {...props}
-                                            />
-                                        )
-                                    }
-                                }}
-                            >
-                                {topObjection}
-                            </MemoizedReactMarkdown>
-                        </>
-                    </CollapsibleSection>
-                    <CollapsibleSection title="Objections To Overcome" headerColor="objections-background"
-                                        iconColor="#FFCC2F">
-                        <>
-                            <MemoizedReactMarkdown
-                                className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-                                remarkPlugins={[remarkGfm, remarkMath, [remarkCollapse, {test: 'Problem'}]]}
-                                //@ts-ignore
-                                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                                components={{
-                                    p({children}) {
-                                        return <p className="mb-2 last:mb-0">{children}</p>
-                                    },
-                                    code({node, inline, className, children, ...props}) {
-                                        if (children.length) {
-                                            if (children[0] == '▍') {
-                                                return (
-                                                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                                                )
-                                            }
-
-                                            children[0] = (children[0] as string).replace('`▍`', '▍')
-                                        }
-
-                                        const match = /language-(\w+)/.exec(className || '')
-
-                                        if (inline) {
-                                            return (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            )
-                                        }
-
-                                        return (
-                                            <CodeBlock
-                                                key={Math.random()}
-                                                language={(match && match[1]) || ''}
-                                                value={String(children).replace(/\n$/, '')}
-                                                {...props}
-                                            />
-                                        )
-                                    }
-                                }}
-                            >
-                                {objectionsToOvercome}
-                            </MemoizedReactMarkdown>
-                        </>
-                    </CollapsibleSection>
-                    <CollapsibleSection title="How to address the concerns" headerColor="howTo-background"
-                                        iconColor="#8BDDE4">
-                        <>
-                            <MemoizedReactMarkdown
-                                className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-                                remarkPlugins={[remarkGfm, remarkMath, [remarkCollapse, {test: 'Problem'}]]}
-                                //@ts-ignore
-                                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                                components={{
-                                    p({children}) {
-                                        return <p className="mb-2 last:mb-0">{children}</p>
-                                    },
-                                    code({node, inline, className, children, ...props}) {
-                                        if (children.length) {
-                                            if (children[0] == '▍') {
-                                                return (
-                                                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                                                )
-                                            }
-
-                                            children[0] = (children[0] as string).replace('`▍`', '▍')
-                                        }
-
-                                        const match = /language-(\w+)/.exec(className || '')
-
-                                        if (inline) {
-                                            return (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            )
-                                        }
-
-                                        return (
-                                            <CodeBlock
-                                                key={Math.random()}
-                                                language={(match && match[1]) || ''}
-                                                value={String(children).replace(/\n$/, '')}
-                                                {...props}
-                                            />
-                                        )
-                                    }
-                                }}
-                            >
-                                {howToAddress}
-                            </MemoizedReactMarkdown></>
-                    </CollapsibleSection>
-
+                <div className="flex flex-col w-full max-w-xl">
+                    <Recommendation recommendation={recommendation} />
+                    <PitchDeckSummary pitchDeckSummary={pitchDeckSummary} />
+                    <Traction traction={traction} />
+                    <Concerns concerns={concerns}/>
+                    <Believe believe={believe} />
 
                 </div>
             </div>
