@@ -17,32 +17,56 @@ export function SidebarSubmenu({userId: _, decks, category, color}: SidebarSubme
     const [open, setOpen] = useState(false)
 
     return (
-        <div className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex flex-row p-4 text-center items-center" onClick={() => setOpen(!open)}>
+        <>
+            {decks?.length > 0 && (
+                <div className="flex flex-1 flex-col overflow-hidden">
+                    <div className="flex flex-row p-4 text-center items-center cursor-pointer" onClick={() => setOpen(!open)}>
 
-                <>
-                    {!open && (
-                        <PlusIcon
-                            overrideColor={color}
-                            className="size-8 text-gray-500 dark:text-gray-400"/>
-                    )}
-                    {open && (
-                        <MinusIcon
-                            overrideColor={color}
-                            className="size-8 text-gray-500 dark:text-gray-400"/>
-                    )}
-                </>
+                        <>
+                            {!open && (
+                                <PlusIcon
+                                    overrideColor={color}
+                                    className="size-8 text-gray-500 dark:text-gray-400"/>
+                            )}
+                            {open && (
+                                <MinusIcon
+                                    overrideColor={color}
+                                    className="size-8 text-gray-500 dark:text-gray-400"/>
+                            )}
+                        </>
 
 
-                <span className="ml-2">{category}</span>
-            </div>
-            <div className="flex-1 overflow-auto">
-                {open && decks?.length && (
-                    <div className="space-y-2 px-2">
-                        <SidebarItems decks={decks}/>
+                        <span className="ml-2">{category}</span>
                     </div>
-                )}
-            </div>
-        </div>
+                    <div className="flex-1 overflow-auto">
+                        {open && (
+                            <div className="space-y-2 px-2">
+                                <SidebarItems decks={decks}/>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )
+            }
+            {!decks || decks.length === 0 && (
+                <>
+                    <div className="flex flex-1 flex-col overflow-hidden">
+                        <div className="flex flex-row p-4 text-center items-center">
+
+                            <>
+                                {!open && (
+                                    <PlusIcon
+                                        overrideColor={'#E8E8E8'}
+                                        className="size-8 text-gray-500 dark:text-gray-400"/>
+                                )}
+                            </>
+
+
+                            <span className="ml-2">{category}</span>
+                        </div>
+                    </div>
+                </>
+            )}
+        </>
     )
 }

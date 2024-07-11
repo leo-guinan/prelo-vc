@@ -1,34 +1,31 @@
 import {ChatMessage} from "@/components/chat-message";
 import {nanoid} from "@/lib/utils";
-import CollapsibleSection from "@/components/collapsible-section";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import MarkdownBlock from "@/components/ui/markdown-block";
 
 export default function FAQ({user}: { user: { name?: string | null, image?: string | null } }) {
 
     const questions = [
         {
-            question: "How does it work?",
-            answer: "Score My Deck uses a combination of machine learning and human expertise to analyze your pitch deck and provide you with a detailed report on how to improve it."
+            question: "How do I get started?",
+            answer: "Click \"Analyze New Deck\" on the left panel and upload a deck. Then head over to \"View Pitch Deck\" check out your investment recommendation. "
         },
         {
-            question: "What is a fundraising copilot?",
-            answer: "A fundraising copilot is a tool that helps you improve your pitch deck and increase your chances of raising funds. It provides you with actionable insights and recommendations based on your pitch deck and the latest fundraising trends."
+            question: "How do I bulk load pitch decks?",
+            answer: "You are currently on the \"Angel Plan\", you'll have to upgrade to the \"Venture Plan\" and you'll be able to load and analyze 100s of decks on autopilot. Send an email to sales@prelovc.com to inquire about the \"Venture Plan\""
         },
         {
-            question: "Can I ask it to find me some investors?",
-            answer: "Yes, you can ask Score My Deck to help you find investors. It will provide you with a list of potential investors based on your pitch deck and the latest fundraising trends."
+            question: "How do I move pitch decks into my funnel?",
+            answer: "On the right panel, Click \"Book Call\" , \"Maybe\" or \"Pass\" on each pitch deck report and see the decks appear in the relevant folder. "
         },
         {
-            question: "Can I interact with it like GPT or Gemini?",
-            answer: "Yes, you can interact with Score My Deck like GPT or Gemini. It uses natural language processing to understand your questions and provide you with relevant answers."
+            question: "Can I connect with the founder?",
+            answer: "Each pitch deck has the name and contact details of every founder - simply ask the AI to \"write a follow up email to the [founder]\""
         },
         {
-            question: "Will you be onboarding VCs and Angels?",
-            answer: "Yes, we are currently onboarding VCs and Angels to provide you with feedback on your pitch deck. You can also ask Score My Deck to help you find investors based on your pitch deck and the latest fundraising trends."
+            question: "How do I search for decks I'm interested in?",
+            answer: "Just use the search bar on the left panel and write in simple language like \"find all the decks that scored 80% this week\""
 
-        },
-        {
-            question: "Can it write a personalized cold email to a VC?",
-            answer: "Yes, Score My Deck can help you write a personalized cold email to a VC. It uses natural language processing to understand your pitch deck and the VC's preferences to craft a compelling email."
         },
     ]
 
@@ -39,17 +36,18 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
                 role: "bot",
                 id: nanoid()
             }}/>
-            {questions.map((q, index) => (
-                <div key={`question-${index}`}><CollapsibleSection title={q.question} headerColor="howTo-background"
-                                                                   iconColor="#8BDDE4">
-                    <>
-                        <p>{q.answer}</p>
-                    </>
+            <Accordion type="multiple" className="w-full">
+                {questions.map((q, index) => (
+                    <AccordionItem value={`question-${index}`} key={`question-${index}`}>
+                        <AccordionTrigger iconColor="#8BDDE4">{q.question}</AccordionTrigger>
+                        <AccordionContent>
+                            <MarkdownBlock content={q.answer}/>
+                        </AccordionContent>
+                    </AccordionItem>
+                ))}
 
-                </CollapsibleSection>
 
-                </div>
-            ))}
+            </Accordion>
         </div>
     )
 }

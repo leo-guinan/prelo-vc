@@ -30,7 +30,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     }
     await triggerCheck();
 
-    const scores = await getScores(pitchDeck.id)
+    // const scores = await getScores(pitchDeck.id)
     const pitchDeckReport = await getDeckReport(pitchDeck.id)
 
     const response = await getAnalysisChat(Number(params.id))
@@ -57,7 +57,33 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     return <AnalysisChat
         user={session.user}
         uuid={pitchDeck.uuid}
-        scores={scores}
+        scores={{
+            market: {
+                score: 0,
+                reason: ""
+            },
+            product: {
+                score: 0,
+                reason: ""
+            },
+            team: {
+                score: 0,
+                reason: ""
+            },
+            traction: {
+                score: 0,
+                reason: ""
+            },
+            founder: {
+                score: 0,
+                reason: ""
+            },
+            final: {
+                score: 0,
+                reason: ""
+            }
+
+        }}
         messages={response.messages}
         title={pitchDeck.name ??
             formatToday(pitchDeck.createdAt)}

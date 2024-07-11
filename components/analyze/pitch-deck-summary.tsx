@@ -54,7 +54,7 @@ export default function PitchDeckSummary({pitchDeckSummary}: { pitchDeckSummary:
                                     }
                                 }}
                             >
-                                {pitchDeckSummary}
+
                             </MemoizedReactMarkdown>
                         </>
                     </CollapsibleSection>

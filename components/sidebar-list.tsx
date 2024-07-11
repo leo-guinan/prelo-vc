@@ -1,10 +1,10 @@
 import {ThemeToggle} from '@/components/theme-toggle'
 import * as React from 'react'
 import {useState} from 'react'
-import {PitchDeckRequest} from '@prisma/client/edge';
-import {SidebarItems} from "@/components/sidebar-items";
+import {PitchDeckRequest, PitchDeckStatus} from '@prisma/client/edge';
 import {MinusIcon, PlusIcon} from "@/components/ui/icons";
 import {SidebarSubmenu} from "@/components/sidebar-submenu";
+import {cn} from "@/lib/utils";
 
 interface SidebarListProps {
     userId?: string
@@ -15,10 +15,13 @@ interface SidebarListProps {
 
 export function SidebarList({userId: _, decks}: SidebarListProps) {
     const [open, setOpen] = useState(decks.length > 0)
-
+    const pendingDecks = decks.filter(deck => deck.status === PitchDeckStatus.PENDING)
+    const bookCallDecks = decks.filter(deck => deck.status === PitchDeckStatus.BOOK_CALL)
+    const maybeDecks = decks.filter(deck => deck.status === PitchDeckStatus.GET_INFO)
+    const passDecks = decks.filter(deck => deck.status === PitchDeckStatus.PASS)
     return (
         <div className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex flex-row p-4 text-center items-center" onClick={() => setOpen(!open)}>
+            <div className={cn("flex flex-row p-4 text-center items-center", decks.length > 0 ? 'cursor-pointer' : '')} onClick={() => setOpen(!open)}>
                 {decks.length > 0 && (
                     <>
                         {!open && (
@@ -51,17 +54,20 @@ export function SidebarList({userId: _, decks}: SidebarListProps) {
                 {open && (
                     <>
                         <div className="space-y-2 px-2">
-                            <SidebarSubmenu decks={decks} category="Pending" color="#FFCC2F"/>
+                            <SidebarSubmenu decks={pendingDecks} category="Pending" color="#FFCC2F"/>
+                        </div>
+
+                        <div className="space-y-2 px-2">
+                            <SidebarSubmenu decks={bookCallDecks} category="Book Call" color="#8BDDE4"/>
                         </div>
                         <div className="space-y-2 px-2">
-                            <SidebarSubmenu decks={decks} category="Book Call" color="#8BDDE4"/>
+                            <SidebarSubmenu decks={maybeDecks} category="Maybe" color="#FFCC2F"/>
                         </div>
+
                         <div className="space-y-2 px-2">
-                            <SidebarSubmenu decks={decks} category="Maybe" color="#FFCC2F"/>
+                            <SidebarSubmenu decks={passDecks} category="Pass" color="#FF7878"/>
                         </div>
-                        <div className="space-y-2 px-2">
-                            <SidebarSubmenu decks={decks} category="Pass" color="#FF7878"/>
-                        </div>
+
                     </>
                 )
                 }

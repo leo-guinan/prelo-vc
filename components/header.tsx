@@ -4,6 +4,7 @@ import {auth} from '@/auth'
 import {Button} from '@/components/ui/button'
 import {IconSeparator} from '@/components/ui/icons'
 import {UserMenu} from '@/components/user-menu'
+import {ThemeToggle} from "@/components/theme-toggle";
 
 async function UserOrLogin() {
     const session = await auth()
@@ -39,6 +40,7 @@ export function Header() {
                 <React.Suspense fallback={<div className="flex-1 overflow-auto"/>}>
                     <UserOrLogin/>
                 </React.Suspense>
+                <ThemeToggle />
             </div>
         </header>
     )

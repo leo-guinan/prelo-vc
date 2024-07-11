@@ -1,12 +1,12 @@
 import {Separator} from '@/components/ui/separator'
 import {ChatMessage} from '@/components/chat-message'
-import {AnalysisChatMessage} from "@/lib/types";
+import {PreloChatMessage} from "@/lib/types";
 import {cn} from "@/lib/utils";
 import Image from "next/image";
 import ChatMessageLoading from "@/components/analyze/chat-message-loading";
 
 export interface ChatList {
-    messages: AnalysisChatMessage[]
+    messages: PreloChatMessage[]
     user: {
         name?: string | null
         image?: string | null

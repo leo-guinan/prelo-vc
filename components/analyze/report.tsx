@@ -15,6 +15,9 @@ import Concerns from "@/components/analyze/concerns";
 import Believe from "@/components/analyze/believe";
 import Recommendation from "@/components/analyze/recommendation";
 import {RecommendationOption} from "@/components/analyze/chat";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
+import MarkdownBlock from "@/components/ui/markdown-block";
 
 interface ReportProps {
     pitchDeckSummary: string;
@@ -45,12 +48,38 @@ export default function Report({pitchDeckSummary, traction, believe, concerns, r
                 </div>
 
                 <div className="flex flex-col w-full max-w-xl">
-                    <Recommendation recommendation={recommendation} />
-                    <PitchDeckSummary pitchDeckSummary={pitchDeckSummary} />
-                    <Traction traction={traction} />
-                    <Concerns concerns={concerns}/>
-                    <Believe believe={believe} />
-
+                    <Accordion type="multiple" className="w-full">
+                        <AccordionItem value={`pitch-deck-analysis`} key={`pitch-deck-analysis`}>
+                            <AccordionTrigger iconColor="#FFCC2F">Recommendation</AccordionTrigger>
+                            <AccordionContent>
+                                <MarkdownBlock content={recommendation} />
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value={`top-concerns`} key={`top-concerns`}>
+                            <AccordionTrigger iconColor="#FF7878">Pitch Deck Summary</AccordionTrigger>
+                            <AccordionContent>
+                                <MarkdownBlock content={pitchDeckSummary}/>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value={`objections`} key={`objections`}>
+                            <AccordionTrigger iconColor="#FFCC2F">Team | TAM | Traction</AccordionTrigger>
+                            <AccordionContent>
+                                <MarkdownBlock content={traction}/>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value={`how-to-address`} key={`how-to-address`}>
+                            <AccordionTrigger iconColor="#8BDDE4">5 Major Concerns</AccordionTrigger>
+                            <AccordionContent>
+                                <MarkdownBlock content={concerns}/>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value={`how-to-address`} key={`how-to-address`}>
+                            <AccordionTrigger iconColor="#8BDDE4">5 Reasons to Believe</AccordionTrigger>
+                            <AccordionContent>
+                                <MarkdownBlock content={believe}/>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
             </div>
         </div>

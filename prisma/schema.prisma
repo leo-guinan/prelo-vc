@@ -15,32 +15,42 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @default(now())
-  email            String    @unique
-  emailVerified    DateTime?
-  name             String?
-  stripeCustomerId String?
-  image            String?
-  role             String    @default("user")
-  currentDeckId    Int?
-  investorId       Int?
-
+  id                String             @id @default(cuid())
+  createdAt         DateTime           @default(now())
+  email             String             @unique
+  emailVerified     DateTime?
+  name              String?
+  stripeCustomerId  String?
+  image             String?
+  role              String             @default("user")
+  globalRole        GlobalRole         @default(CUSTOMER)
+  currentDeckId     Int?
+  investorId        Int?
+  submindId         Int?
+  interviewUUID     String?
   pitchDeckRequests PitchDeckRequest[]
   sessions          Session[]
   accounts          Account[]
   memberships       Membership[]
 }
 
+enum PitchDeckStatus {
+  PENDING
+  BOOK_CALL
+  GET_INFO
+  PASS
+}
+
 model PitchDeckRequest {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  uuid      String    @unique
-  backendId Int
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime?       @updatedAt
+  uuid      String          @unique
+  backendId Int?
   ownerId   String
-  owner     User      @relation(fields: [ownerId], references: [id])
+  owner     User            @relation(fields: [ownerId], references: [id])
   name      String?
+  status    PitchDeckStatus @default(PENDING)
 }
 
 model Session {
@@ -77,6 +87,7 @@ model Organization {
   name       String
   firmId     Int?
   membership Membership[]
+  pitchDecks PitchDeck[]
 }
 
 model Membership {
@@ -106,4 +117,14 @@ enum MembershipRole {
 enum GlobalRole {
   SUPERADMIN
   CUSTOMER
+}
+
+model PitchDeck {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  name      String
+  ownerId   Int
+  owner     Organization @relation(fields: [ownerId], references: [id])
+  uuid      String       @unique
 }

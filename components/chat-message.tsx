@@ -14,13 +14,14 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Image from 'next/image'
 import ChatUser from "@/components/analyze/chat-user";
+import {Message, PreloChatMessage} from "@/lib/types";
+import {TextMessage} from "@/components/messages/text-message";
+import {DeckReportMessage} from "@/components/messages/deck-report-message";
+
+import {type FileMessage as FileMessageType, DeckReportMessage as DeckReportMessageType} from "@/lib/types";
 
 export interface ChatMessageProps {
-    message: {
-        content: string
-        role: string
-        id: string
-    },
+    message: Message,
     user: {
         name?: string | null
         image?: string | null
@@ -46,49 +47,12 @@ export function ChatMessage({message, user, ...props}: ChatMessageProps) {
                     <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" className="rounded-full" />}
             </div>
             <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
-                <MemoizedReactMarkdown
-                    className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-                    remarkPlugins={[remarkGfm, remarkMath, [remarkCollapse, {test: 'Problem'}]]}
-                    //@ts-ignore
-                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                    components={{
-                        p({children}) {
-                            return <p className="mb-2 last:mb-0">{children}</p>
-                        },
-                        code({node, inline, className, children, ...props}) {
-                            if (children.length) {
-                                if (children[0] == '▍') {
-                                    return (
-                                        <span className="mt-1 cursor-default animate-pulse">▍</span>
-                                    )
-                                }
-
-                                children[0] = (children[0] as string).replace('`▍`', '▍')
-                            }
-
-                            const match = /language-(\w+)/.exec(className || '')
-
-                            if (inline) {
-                                return (
-                                    <code className={className} {...props}>
-                                        {children}
-                                    </code>
-                                )
-                            }
-
-                            return (
-                                <CodeBlock
-                                    key={Math.random()}
-                                    language={(match && match[1]) || ''}
-                                    value={String(children).replace(/\n$/, '')}
-                                    {...props}
-                                />
-                            )
-                        }
-                    }}
-                >
-                    {message.content}
-                </MemoizedReactMarkdown>
+                {message.type === "text" && (
+                    <TextMessage content={message.content}/>
+                )}
+                {message.type === "deck_report" && (
+                    <DeckReportMessage message={message as DeckReportMessageType} />
+                )}
                 <ChatMessageActions message={message}/>
             </div>
         </div>

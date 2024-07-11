@@ -693,10 +693,10 @@ function MagnifyingGlassIcon({
 }
 
 function CloudUploadIcon({
-                                className,
-                                overrideColor: color,
-                                ...props
-                            }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+                             className,
+                             overrideColor: color,
+                             ...props
+                         }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
     return (
         <svg
             {...props}
@@ -715,6 +715,74 @@ function CloudUploadIcon({
             <path d="M12 12v9"/>
             <path d="m16 16-4-4-4 4"/>
         </svg>
+    )
+}
+
+function CheckmarkIcon
+({
+     className,
+     overrideColor: color,
+     ...props
+ }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill={color ?? "currentColor"}
+            className={cn('size-4', className)}>
+            <path fillRule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                  clipRule="evenodd"/>
+        </svg>
+
+    );
+}
+
+function IconDollarSign({
+                            className,
+                            overrideColor: color,
+                            ...props
+                        }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg
+            {...props}
+            className={cn('size-4', className)}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill={color || "#ffcc2f"}
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <line x1="12" x2="12" y1="2" y2="22"/>
+            <path fill={color || "#ffcc2f"} d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+    )
+
+}
+
+function IconEmail({
+                       className,
+                       overrideColor: color,
+                       ...props
+                   }: React.ComponentProps<'svg'> & { overrideColor?: string }) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 24 24"
+             fill="currentColor"
+             className={cn("size-4", className)}
+        >
+            <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z"/>
+            <path
+                d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z"/>
+        </svg>
+
+
     )
 }
 
@@ -754,5 +822,8 @@ export {
     PlusIcon,
     MagnifyingGlassIcon,
     MinusIcon,
-    CloudUploadIcon
+    CloudUploadIcon,
+    CheckmarkIcon,
+    IconDollarSign,
+    IconEmail
 }

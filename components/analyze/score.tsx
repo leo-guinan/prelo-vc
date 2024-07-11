@@ -10,7 +10,8 @@ interface CircularProgressBarProps {
 }
 
 export function CircularProgressBar({progress, title, overrideColor}: CircularProgressBarProps) {
-     const radius = 50;
+    console.log("progress", progress)
+    const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const [currentProgress, setCurrentProgress] = useState(0);
     const requestRef = useRef<number>();
@@ -49,7 +50,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
 
     // Calculate the stroke dash offset
     const strokeDashoffset = circumference - (circumference * (currentProgress / 100));
- // Function to determine text color based on background color
+    // Function to determine text color based on background color
     const getTextColor = (bgColor: string) => {
         // This is a very basic way to determine if the color is light or dark.
         // More sophisticated methods might involve calculating luminance.
@@ -62,10 +63,13 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
 
     const textColor = getTextColor(overrideColor || color);
 
-    const titleColor = overrideColor && theme.theme === "dark" ? textColor : overrideColor ?? color;
+    const titleColor = overrideColor ?? color;
+
     return (
         <div className="flex flex-col items-center">
-            <div className={cn("text-sm font-semibold uppercase tracking-wider", overrideColor ? "dark:text-zinc-50" : "")} style={{ color: titleColor }}>
+            <div
+                className={cn("text-sm font-semibold uppercase tracking-wider", overrideColor ? "dark:text-zinc-50" : "")}
+                style={{color: titleColor}}>
                 {title}
             </div>
             <svg width="120" height="120">

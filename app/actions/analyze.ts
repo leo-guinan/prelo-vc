@@ -6,6 +6,7 @@ import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
 import {redirect} from "next/navigation";
+import {User} from "@prisma/client/edge";
 
 export async function getUploadUrl(filename: string): Promise<{ url: string, pitchDeckId: number } | {
     error: string
@@ -19,8 +20,37 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
     const document = await createDocument(session.user.id, "Pitch deck analysis still running...", "prelo")
     // make filename url safe
     const safeFilename = encodeURIComponent(filename)
+    const client = process.env.API_CLIENT as string
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        },
+        include: {
+            memberships: true
+        }
+    })
+    if (!user) {
+        return {
+            error: "User not found"
+        }
+    }
 
-    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=prelovc&firm_id=1&investor_id=1`
+    if (!document) {
+        return {
+            error: "Document not found"
+        }
+    }
+    let pitchDeckRequest = await prisma.pitchDeckRequest.create({
+        data: {
+            uuid: document.documentId,
+            ownerId: session.user.id,
+        }
+    })
+
+    const investorId = user.id
+    const firmId = user.memberships[0].organizationId
+
+    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=${client}&user_id=${user.id}&deck_version=${pitchDeckRequest.id}&investor_id=${investorId}&firm_id=${firmId}`
     console.log(url)
     const uploadUrlResponse = await fetch(url, {
         method: 'GET',
@@ -32,12 +62,13 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
 
 
     const parsed = await uploadUrlResponse.json()
-
-    const pitchDeckRequest = await prisma.pitchDeckRequest.create({
+    console.log(parsed)
+    pitchDeckRequest = await prisma.pitchDeckRequest.update({
+        where: {
+            id: pitchDeckRequest.id
+        },
         data: {
-            uuid: document.documentId,
-            backendId: parsed.pitch_deck_id,
-            ownerId: session.user.id,
+            backendId: parsed.pitch_deck_id
         }
     })
     console.log("Pitch deck request", pitchDeckRequest)
@@ -73,18 +104,17 @@ export async function getPitchDeck(id: number) {
     return document
 }
 
-export async function createDocument(userId: string, content: string, dbName = "myaicofounder", collectionName = "documents") {
+export async function createDocument(userId: string, content: string, documentUUID: string, dbName = "myaicofounder", collectionName = "documents") {
     const client = await MongoClient.connect(process.env.MONGO_URL as string);
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
-    const uuid = nanoid();
-    await collection.insertOne({content, createdAt: new Date(), userId, uuid});
+
+    await collection.insertOne({content, createdAt: new Date(), userId, documentUUID});
+
+    const newDocument = await collection.findOne({uuid: documentUUID, userId})
 
     await client.close();
-    return {
-        documentId: uuid,
-        content
-    }
+    return newDocument
 }
 
 export async function getDocument(documentId: string, dbName = "myaicofounder", collectionName = "documents") {
@@ -102,9 +132,9 @@ export async function getDocument(documentId: string, dbName = "myaicofounder", 
     const collection = db.collection(collectionName);
     const document = await collection.findOne({uuid: documentId, userId: session.user.id});
     if (!document) {
-        return {
-            error: "Document not found"
-        }
+        const newDocument = await createDocument(session.user.id, "", dbName, collectionName)
+        await client.close();
+        return newDocument;
     }
     await client.close();
     return document;
@@ -176,9 +206,9 @@ export async function getAnalysisChat(id: number) {
 
     const document = await getDocument(pitchDeckRequest.uuid, "prelo")
 
-    if ('error' in document) {
+    if (!document || 'error' in document) {
         return {
-            error: document.error
+            error: document?.error ?? "Document not found"
         }
     }
 

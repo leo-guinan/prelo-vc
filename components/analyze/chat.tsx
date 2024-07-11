@@ -4,14 +4,17 @@ import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
-// import {sendPreloChatMessage} from "@/app/actions/prelo";
-import {ICloseEvent, IMessageEvent, w3cwebsocket as W3CWebSocket} from "websocket";
 import {PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
 import Report from "@/components/analyze/report";
 import FAQ from "@/components/analyze/faq";
+import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import type {SWRSubscriptionOptions} from 'swr/subscription'
+import useSWRSubscription from 'swr/subscription'
+import AnalysisCompletedModal from "@/components/analyze/analysis-completed-modal";
 
 interface PreloChatMessage {
     id: string
@@ -56,11 +59,10 @@ export default function AnalysisChat({
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
-    const client = useRef<W3CWebSocket | null>(null)
-    const [currentStep, setCurrentStep] = useState<number>(0)
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [completedDialogOpen, setCompletedDialogOpen] = useState<boolean>(false)
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
     const [displayedRecommendation, setDisplayedRecommendation] = useState<string>(recommendation)
     const [displayedPitchDeckSummary, setDisplayPitchDeckSummary] = useState<string>(summary)
@@ -77,7 +79,17 @@ export default function AnalysisChat({
         console.log(`displayedBelieve: ${displayedBelieve}`)
         console.log(`displayedPitchDeckSummary: ${displayedPitchDeckSummary}`)
     }, [displayedRecommendationOption, displayedRecommendation, displayedTraction, displayedConcerns, displayedBelieve, displayedPitchDeckSummary]) // Dependency array includes the data triggering the scroll
-
+    const {
+        data,
+        error
+    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key, {next}: SWRSubscriptionOptions<number, Error>) => {
+        console.log("key", key)
+        const socket = new WebSocket(key)
+        socket.addEventListener('message', (event) => next(null, event.data))
+        // @ts-ignore
+        socket.addEventListener('error', (event) => next(event.error))
+        return () => socket.close()
+    })
 
     useEffect(() => {
         if (bottomRef.current) {
@@ -86,109 +98,42 @@ export default function AnalysisChat({
     }, [displayedMessages]); // Dependency array includes the data triggering the scroll
 
     useEffect(() => {
+        if (!data) return
+        const parsedData = JSON.parse(data.toString())
 
-        const connectSocket = () => {
-
-            // client.current = new W3CWebSocket(`ws://localhost:3000/api/socket/`)
-            if (uuid) {
-                if (!client.current) {
-                    client.current = new W3CWebSocket(
-                        `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`
-                    )
-                }
-
-                // client.current = new W3CWebSocket(
-                //     `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}cofounder/${sessionId}/`
-                // )
-
-                client.current.onopen = () => {
-                    console.log("WebSocket Client Connected")
-                }
-
-                client.current.onmessage = (message: IMessageEvent) => {
-                    const data = JSON.parse(message.data.toString())
-
-                    if (data.scores) {
-                        setLoadedScores(data.scores)
-                    }
-                    if (data.name) {
-                        setDisplayedTitle(data.name)
-                    }
-                    if (data.pitch_deck_summary) {
-                        setDisplayPitchDeckSummary(data.pitch_deck_summary)
-                    }
-                    if (data.traction) {
-                        setDisplayTraction(data.traction)
-                    }
-                    if (data.concerns) {
-                        setDisplayedConcerns(data.concerns)
-                    }
-                    if (data.believe) {
-                        setDisplayedBelieve(data.believe)
-                    }
-                    if (data.recommendation) {
-                        setDisplayedRecommendation(data.recommendation)
-                    }
-                    if (data.summary) {
-                        setDisplayPitchDeckSummary(data.summary)
-                    }
-                    if (data.recommendation) {
-                        setDisplayedRecommendationOption({value: data.recommendation})
-                    }
-                    if (data.recommendation_reasons) {
-                        setDisplayedRecommendation(data.recommendation_reasons)
-                    }
-
-
-                    if (data.status) {
-                        switch (data.status) {
-                            case "RA":
-                                setCurrentStep(1)
-                                break
-                            case "RR":
-                                setCurrentStep(2)
-                                break
-                            case "CP":
-                                setCurrentStep(3)
-                                setDisplayedMessages(d => [{
-                                    content: data.message,
-                                    role: 'assistant',
-                                    id: data.id
-                                }])
-                                break
-                            default:
-                                setCurrentStep(0)
-
-                        }
-                    }
-                    // make sure message id isn't already in the list
-                    if (displayedMessages.find(m => m.id === data.id)) {
-                        //replace the message
-                        setDisplayedMessages(d => d.map(m => m.id === data.id ? data : m))
-                    }
-                    if (data.message) {
-                        setDisplayedMessages(d => [...d, {
-                            content: data.message,
-                            role: 'assistant',
-                            id: data.id
-                        }])
-                    }
-                }
-
-                client.current.onclose = (event: ICloseEvent) => {
-                    setTimeout(() => {
-                        connectSocket()
-                    }, 5000) // retries after 5 seconds.
-                }
-
-                client.current.onerror = (error: Error) => {
-                    console.log(`WebSocket Error: ${JSON.stringify(error)}`)
-                }
-            }
+        if (parsedData.scores) {
+            setLoadedScores(parsedData.scores)
         }
+        if (parsedData.name) {
+            setDisplayedTitle(parsedData.name)
+        }
+        if (parsedData.pitch_deck_summary) {
+            setDisplayPitchDeckSummary(parsedData.pitch_deck_summary)
+        }
+        if (parsedData.traction) {
+            setDisplayTraction(parsedData.traction)
+        }
+        if (parsedData.concerns) {
+            setDisplayedConcerns(parsedData.concerns)
+        }
+        if (parsedData.believe) {
+            setDisplayedBelieve(parsedData.believe)
+        }
+        if (parsedData.recommendation) {
+            setDisplayedRecommendation(parsedData.recommendation)
+        }
+        if (parsedData.summary) {
+            setDisplayPitchDeckSummary(parsedData.summary)
+        }
+        if (parsedData.recommendation) {
+            setDisplayedRecommendationOption({value: parsedData.recommendation})
+        }
+        if (parsedData.recommendation_reasons) {
+            setDisplayedRecommendation(parsedData.recommendation_reasons)
+        }
+        setCompletedDialogOpen(true)
+    }, [data])
 
-        connectSocket()
-    }, [displayedMessages, uuid])
 
     const sendMessage = async (message: { content: string, role: "user" }) => {
         if (!message.content) return
@@ -232,33 +177,55 @@ export default function AnalysisChat({
     }
     return (
         <>
-            <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
+            <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}>
                 {displayedRecommendationOption && displayedRecommendation && displayedTraction && displayedConcerns && displayedBelieve && displayedPitchDeckSummary ? (
                     <>
-                        <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
-                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
-                                <div className="p-y-12">
-                                    <ChatList messages={displayedMessages} user={user}
-                                              chatMessageLoading={chatMessageLoading}/>
-                                    <ChatScrollAnchor/>
-                                    <ChatPanel
-                                        isLoading={isLoading}
-                                        input={input}
-                                        setInput={setInput}
-                                        sendMessage={sendMessage}
+                        <div className="flex flex-col-reverse sm:flex-row h-full">
+                            <ResizablePanelGroup direction="horizontal">
+                                <ResizablePanel>
+                                    <div
+                                        className="flex flex-col w-full h-full">
+                                        <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
+                                            <ScrollArea className="flex flex-col size-full pb-8">
+                                                <ChatList messages={displayedMessages} user={user}
+                                                          chatMessageLoading={chatMessageLoading}/>
+                                                <ChatScrollAnchor/>
+                                            </ScrollArea>
+                                            <div className="relative">
+                                                <ChatPanel
+                                                    isLoading={isLoading}
+                                                    input={input}
+                                                    setInput={setInput}
+                                                    sendMessage={sendMessage}
 
-                                    />
-                                    <div ref={bottomRef}/>
-                                </div>
-                            </div>
-                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
-                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                                />
+                                            </div>
+                                            <div ref={bottomRef}/>
+                                        </div>
+                                    </div>
 
-                                {/*<Scores scores={loadedScores}/>*/}
-                                <Report recommendationOption={displayedRecommendationOption} believe={displayedBelieve}
-                                        pitchDeckSummary={displayedPitchDeckSummary} concerns={displayedConcerns}
-                                        recommendation={displayedRecommendation} traction={displayedTraction}/>
-                            </div>
+                                </ResizablePanel>
+                                <ResizableHandle/>
+                                <ResizablePanel>
+                                    <div className="flex flex-col size-full overflow-y-scroll">
+                                        <div className="mx-auto border-box w-4/5">
+                                            <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                            <ScrollArea className="flex flex-col size-full">
+                                                {/*<Scores scores={loadedScores}/>*/}
+                                                <Report recommendationOption={displayedRecommendationOption}
+                                                        believe={displayedBelieve}
+                                                        pitchDeckSummary={displayedPitchDeckSummary}
+                                                        concerns={displayedConcerns}
+                                                        recommendation={displayedRecommendation}
+                                                        traction={displayedTraction}/>
+                                            </ScrollArea>
+                                        </div>
+                                    </div>
+
+                                </ResizablePanel>
+                            </ResizablePanelGroup>
+
+
                         </div>
 
                     </>
@@ -266,13 +233,15 @@ export default function AnalysisChat({
                     <>
                         <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
-                                <div className="mx-auto border-box">
+                                <div className="mx-auto border-box w-4/5">
                                     <FAQ user={user}/>
                                 </div>
                             </div>
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
-                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
-                                <EmptyScreen currentStep={currentStep} user={user}/>
+                                <div className="flex flex-col w-4/5 mx-auto">
+                                    <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                    <EmptyScreen/>
+                                </div>
                             </div>
                         </div>
 
@@ -280,7 +249,7 @@ export default function AnalysisChat({
 
                 )}
             </div>
-
+            <AnalysisCompletedModal open={completedDialogOpen} setOpen={setCompletedDialogOpen}/>
         </>
     )
 
