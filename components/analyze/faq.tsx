@@ -34,7 +34,8 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
             <ChatMessage user={user} message={{
                 content: "Some **frequently asked questions** while you wait ☕️",
                 role: "bot",
-                id: nanoid()
+                id: nanoid(),
+                type:"text"
             }}/>
             <Accordion type="multiple" className="w-full">
                 {questions.map((q, index) => (

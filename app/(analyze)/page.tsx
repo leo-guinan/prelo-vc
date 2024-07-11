@@ -12,9 +12,7 @@ export default async function UploadPitchDeckPage() {
         redirect(`/sign-in?next=/`)
     }
 
-    if ((session.user as User).currentDeckId) {
-        redirect(`/report/${(session.user as User).currentDeckId}`)
-    }
+    redirect(`/interview`)
 
 
     return <FileUpload/>

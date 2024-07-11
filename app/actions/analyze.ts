@@ -229,7 +229,8 @@ export async function getAnalysisChat(id: number) {
             return {
                 id: nanoid(),
                 content: message.content.toString(),
-                role: message._getType() === "human" ? "user" : "assistant"
+                role: message._getType() === "human" ? "user" : "assistant",
+                type: "text"
             }
         })
     }

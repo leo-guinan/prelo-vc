@@ -4,7 +4,7 @@ import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
-import {PitchDeckScores} from "@/lib/types";
+import {Message, PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
@@ -23,7 +23,7 @@ interface PreloChatMessage {
 }
 
 interface AnalysisChatProps {
-    messages: PreloChatMessage[]
+    messages: Message[]
     uuid: string
     scores: PitchDeckScores
     title: string
@@ -56,7 +56,7 @@ export default function AnalysisChat({
                                          summary,
                                          recommendationOption
                                      }: AnalysisChatProps) {
-    const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
+    const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
@@ -143,7 +143,8 @@ export default function AnalysisChat({
                 {
                     content: message.content,
                     role: message.role,
-                    id: "temp"
+                    id: "temp",
+                    type: "text"
                 },
             ])
             setChatMessageLoading(true)
@@ -160,12 +161,14 @@ export default function AnalysisChat({
                 {
                     content: message.content,
                     role: message.role,
-                    id: "temp"
+                    id: "temp",
+                    type: "text"
                 },
                 {
                     content: response,
                     role: 'assistant',
-                    id: nanoid()
+                    id: nanoid(),
+                    type: "text"
                 }
             ])
         } catch (e) {
