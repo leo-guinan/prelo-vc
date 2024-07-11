@@ -3,6 +3,7 @@ import {useSearchParams} from "next/navigation";
 import ReportPanel from "@/components/panel/report";
 import useSWR from "swr";
 import {getPanelDetails} from "@/app/actions/interview";
+import EmailComposer from "@/components/panel/email-composer";
 
 export default function Panel() {
 
@@ -29,6 +30,9 @@ export default function Panel() {
                     scores={data.data.scores}
                     founderContactInfo={data.data.founderContactInfo}
                 />}
+                {data && searchParams.get('view') === 'email' && (
+                    <EmailComposer email={data.data.founderContactInfo.email} content={"Testing email composer"}/>
+                )}
             </div>
 
         </>

@@ -195,7 +195,7 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
     const view = queryParams.view
     console.log("view", view)
-    if (view === "report") {
+    if (view === "report" || view === 'email') {
         const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/`, {
         method: "POST",
         headers: {
