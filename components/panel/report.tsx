@@ -6,6 +6,8 @@ import Scores from "@/components/analyze/scores";
 import {IconDollarSign, IconEmail} from "@/components/ui/icons";
 import {SyntheticEvent} from "react";
 import {Button} from "@/components/ui/button";
+import Link from "next/link";
+import {useSearchParams} from "next/navigation";
 
 
 interface ReportPanelProps {
@@ -69,6 +71,10 @@ export default function ReportPanel({
                                         founderContactInfo
 
                                     }: ReportPanelProps) {
+
+        const searchParams = useSearchParams()
+
+
     const handleNextStep = (e: SyntheticEvent) => {
         e.preventDefault();
         console.log("Next Step Clicked")
@@ -78,7 +84,7 @@ export default function ReportPanel({
         } else if (nextStep.next_step_id === '2') {
             console.log("Learn more about the company")
         } else if (nextStep.next_step_id === '3') {
-            console.log("write rejection email")
+
         }
     }
     return (
@@ -110,7 +116,18 @@ export default function ReportPanel({
                             >
                                 <IconEmail className="bg-objections rounded-full"/>
                             </Button>
-                            <a href="" onClick={handleNextStep} className="ml-4 w-4/5 text-base underline text-objections items-center flex">{nextStep.next_step_description}</a>
+                            {nextStep.next_step_id === "3" && (
+                                <Link
+                                    className="ml-4 w-4/5 text-base underline text-objections items-center flex"
+                                    href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
+                                    {nextStep.next_step_description}
+                                </Link>
+                            )}
+                            {nextStep.next_step_id !== "3" && (
+                                <a href="" onClick={handleNextStep}
+                                   className="ml-4 w-4/5 text-base underline text-objections items-center flex">{nextStep.next_step_description}</a>
+                            )}
+
                         </p>
                     </div>
                     <div

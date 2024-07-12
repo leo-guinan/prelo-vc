@@ -7,19 +7,36 @@ import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
 import {User} from "@prisma/client/edge";
 
-export async function getInterviewChat() {
+export async function getInterviewChat(userId?:string) {
 
     const client = new MongoClient(process.env.MONGO_URL || "");
     await client.connect();
     const collection = client.db("prelovc").collection("prelovc_memory");
     const session = await auth()
     if (!session?.user) {
+            return {
+                error: "User not found"
+            }
+        }
+    let user:User | null = null;
+    if (userId && (session.user as User).role === 'admin') {
+        user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+    } else {
+        user = session.user as User
+    }
+
+    if (!user) {
         return {
             error: "User not found"
         }
     }
 
-    let lookupUUID = (session.user as User).interviewUUID
+
+    let lookupUUID = user.interviewUUID
 
     if (!lookupUUID) {
         const newUUID = nanoid()
@@ -189,6 +206,15 @@ interface PanelDetails {
 }
 
 export async function getPanelDetails(urlWithParams: string): Promise<PanelDetails> {
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            type: "error",
+            data: {
+                error: "User not found"
+            }
+        }
+    }
     const url = new URL(urlWithParams)
     const queryParams = Object.fromEntries(url.searchParams.entries())
     console.log("parsed query params", queryParams)
@@ -197,14 +223,14 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
     console.log("view", view)
     if (view === "report" || view === 'email') {
         const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/`, {
-        method: "POST",
-        headers: {
-            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
-        },
-        body: JSON.stringify({
-            deck_uuid: queryParams.deck_uuid,
-            report_uuid: queryParams.report_uuid
-        })
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: queryParams.deck_uuid,
+                report_uuid: queryParams.report_uuid
+            })
 
         })
         // companyName={''}
@@ -235,14 +261,34 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
                 founderContactInfo: JSON.parse(parsed.founders_contact_info).results
             }
         }
-    }
+    } else if (view === "rejection_email") {
+        const getRejectionEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/reject/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: queryParams.deck_uuid,
+                investor_id: session.user.id
+            })
 
+        })
+         const parsed = await getRejectionEmailResponse.json()
+        console.log("Parsed", parsed)
+        return {
+            type: "rejection_email",
+            data: {
+                email: parsed.email,
+                content: parsed.content,
+                subject: parsed.subject
+
+            }
+        }
+    }
 
 
     return {
         type: "data is here...",
-        data: {
-
-        }
+        data: {}
     }
 }

@@ -30,8 +30,9 @@ export default function Panel() {
                     scores={data.data.scores}
                     founderContactInfo={data.data.founderContactInfo}
                 />}
-                {data && searchParams.get('view') === 'email' && (
-                    <EmailComposer email={data.data.founderContactInfo.email} content={"Testing email composer"}/>
+                {data && searchParams.get('view') === 'rejection_email' && (
+                    <EmailComposer email={data.data.email} content={data.data.content} subject={data.data.subject}/>
+
                 )}
             </div>
 
