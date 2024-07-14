@@ -26,7 +26,7 @@ export default function EmailCompose({ to, subject, body }: EmailComposeProps) {
           <input
             type="email"
             id="to"
-            value={to}
+            value={displayedTo}
             onChange={(e) => setDisplayedTo(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             required
@@ -37,7 +37,7 @@ export default function EmailCompose({ to, subject, body }: EmailComposeProps) {
           <input
             type="text"
             id="subject"
-            value={subject}
+            value={displayedSubject}
             onChange={(e) => setDisplayedSubject(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             required
@@ -47,7 +47,7 @@ export default function EmailCompose({ to, subject, body }: EmailComposeProps) {
           <label htmlFor="body" className="block text-sm font-medium text-gray-900 dark:text-zinc-50">Message:</label>
           <textarea
             id="body"
-            value={body}
+            value={displayedBody}
             onChange={(e) => setDisplayedBody(e.target.value)}
             rows={10}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
