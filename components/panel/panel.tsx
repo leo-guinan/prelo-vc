@@ -31,7 +31,7 @@ export default function Panel() {
                     founderContactInfo={data.data.founderContactInfo}
                 />}
                 {data && searchParams.get('view') === 'rejection_email' && (
-                    <EmailComposer email={data.data.email} content={data.data.content} subject={data.data.subject}/>
+                    <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
 
                 )}
             </div>
