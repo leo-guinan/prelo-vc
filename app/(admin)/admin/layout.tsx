@@ -1,6 +1,6 @@
 import {auth} from "@/auth";
 import AdminSidebar from "@/components/admin/sidebar";
-import {User} from "@prisma/client/edge";
+import {GlobalRole, User} from "@prisma/client/edge";
 import {redirect} from "next/navigation";
 import {prisma} from "@/lib/utils";
 
@@ -15,7 +15,7 @@ export default async function AnalysisLayout({children}: ContextLayoutProps) {
     if (!session?.user) {
         redirect(`/sign-in?next=/admin`)
     }
-    if ((session.user as User).role !== 'admin') {
+    if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         redirect(`/`)
     }
 

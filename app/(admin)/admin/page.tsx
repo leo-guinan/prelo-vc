@@ -12,7 +12,6 @@ export default async function AdminDashboardPage() {
     if (!session?.user) {
         redirect(`/sign-in?next=/`)
     }
-    console.log(session.user)
 
     if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         redirect(`/`)

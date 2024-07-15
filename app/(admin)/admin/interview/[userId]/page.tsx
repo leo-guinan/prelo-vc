@@ -1,7 +1,7 @@
 import {redirect} from 'next/navigation'
 
 import {auth} from '@/auth'
-import {User} from "@prisma/client/edge";
+import {GlobalRole, User} from "@prisma/client/edge";
 import InterviewChat from "@/components/interview/chat";
 import {getInterviewChat} from "@/app/actions/interview";
 import {prisma} from "@/lib/utils";
@@ -20,7 +20,7 @@ export default async function AdminInterviewPage({params}: AdminInterviewPagePro
         redirect(`/sign-in?next=/`)
     }
 
-    if ((session.user as User).role !== 'admin') {
+    if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         redirect(`/`)
     }
 

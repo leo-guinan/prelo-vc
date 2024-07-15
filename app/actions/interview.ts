@@ -5,7 +5,7 @@ import {auth} from "@/auth";
 import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
-import {User} from "@prisma/client/edge";
+import {GlobalRole, User} from "@prisma/client/edge";
 
 export async function getInterviewChat(userId?:string) {
 
@@ -19,7 +19,7 @@ export async function getInterviewChat(userId?:string) {
             }
         }
     let user:User | null = null;
-    if (userId && (session.user as User).role === 'admin') {
+    if (userId && (session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         user = await prisma.user.findUnique({
             where: {
                 id: userId
