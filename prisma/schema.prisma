@@ -128,3 +128,11 @@ model PitchDeck {
   owner     Organization @relation(fields: [ownerId], references: [id])
   uuid      String       @unique
 }
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
