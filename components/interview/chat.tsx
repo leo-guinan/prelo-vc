@@ -177,6 +177,8 @@ export default function InterviewChat({
     };
 
     const sendMessage = async (message: { content: string, role: "user", file?: File }) => {
+        console.log("Sending Message...")
+        console.log("Content:", message.content)
         if (!message.content) return
         setIsLoading(true)
         try {

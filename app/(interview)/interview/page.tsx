@@ -6,6 +6,7 @@ import {User} from "@prisma/client/edge";
 import InterviewChat from "@/components/interview/chat";
 import {getAnalysisChat} from "@/app/actions/analyze";
 import {getInterviewChat} from "@/app/actions/interview";
+import {nanoid, prisma} from "@/lib/utils";
 
 
 export default async function InterviewPage() {
@@ -13,6 +14,21 @@ export default async function InterviewPage() {
 
     if (!session?.user) {
         redirect(`/sign-in?next=/`)
+    }
+
+    const user = session.user as User
+    let interviewUUID = user.interviewUUID
+    if (!interviewUUID) {
+        interviewUUID = nanoid()
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                interviewUUID
+            }
+        })
+
     }
 
     const response = await getInterviewChat()
