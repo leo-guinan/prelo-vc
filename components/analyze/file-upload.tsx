@@ -43,7 +43,6 @@ const FileUpload: React.FC = () => {
 
     useEffect(() => {
         if (uploadSuccess && pitchDeckId) {
-            console.log(pitchDeckId)
             router.push(`/report/${pitchDeckId.toString()}`)
         }
     }, [uploadSuccess, pitchDeckId])
@@ -61,7 +60,6 @@ const FileUpload: React.FC = () => {
             if (selectedFile.type === 'application/pdf') {
                 setLoading(true);
                 const newUploadUrl = await getUploadUrl(selectedFile.name);
-                console.log(newUploadUrl)
                 if ('error' in newUploadUrl) {
                     setErrorMessage('Error getting upload URL. Please try again.');
                     setFile(null);

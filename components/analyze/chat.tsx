@@ -71,14 +71,6 @@ export default function AnalysisChat({
     const [displayedBelieve, setDisplayedBelieve] = useState<string>(believe)
     const [displayedRecommendationOption, setDisplayedRecommendationOption] = useState<RecommendationOption | null>(recommendationOption)
 
-    useEffect(() => {
-        console.log(`displayedRecommendationOption: ${displayedRecommendationOption}`)
-        console.log(`displayedRecommendation: ${displayedRecommendation}`)
-        console.log(`displayedTraction: ${displayedTraction}`)
-        console.log(`displayedConcerns: ${displayedConcerns}`)
-        console.log(`displayedBelieve: ${displayedBelieve}`)
-        console.log(`displayedPitchDeckSummary: ${displayedPitchDeckSummary}`)
-    }, [displayedRecommendationOption, displayedRecommendation, displayedTraction, displayedConcerns, displayedBelieve, displayedPitchDeckSummary]) // Dependency array includes the data triggering the scroll
     const {
         data,
         error

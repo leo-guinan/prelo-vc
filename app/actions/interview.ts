@@ -35,6 +35,7 @@ export async function getInterviewChat(userId?:string) {
         }
     }
 
+    console.log("Using user", user)
 
     let lookupUUID = user.interviewUUID
 
@@ -50,6 +51,8 @@ export async function getInterviewChat(userId?:string) {
         })
         lookupUUID = newUUID
     }
+
+    console.log(`SessionId: custom_claude_${lookupUUID}_chat`,)
 
 
     const memory = new BufferMemory({
@@ -142,7 +145,6 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     formData.append('investor_id', user.id);
     formData.append('firm_id', '1');
 
-    console.log("FormData: ", formData)
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}interview/send/`, {
         method: "POST",
@@ -154,7 +156,6 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
 
     const parsed = await sendMessageResponse.json()
 
-    console.log("Parsed", parsed)
     return {
         message: parsed.message,
     }

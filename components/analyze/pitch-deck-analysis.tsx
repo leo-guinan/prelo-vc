@@ -44,7 +44,6 @@ export default function PitchDeckAnalysis({pitchDeckAnalysis, uuid, scores, comp
 
                 client.current.onmessage = (message: IMessageEvent) => {
                     const data = JSON.parse(message.data.toString())
-                    console.log(data)
                     if (data.status) {
                         switch(data.status) {
                             case "RA":

@@ -51,7 +51,6 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
     const firmId = user.memberships[0].organizationId
 
     const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=${client}&user_id=${user.id}&deck_version=${pitchDeckRequest.id}&investor_id=${investorId}&firm_id=${firmId}`
-    console.log(url)
     const uploadUrlResponse = await fetch(url, {
         method: 'GET',
         headers: {
@@ -62,7 +61,6 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
 
 
     const parsed = await uploadUrlResponse.json()
-    console.log(parsed)
     pitchDeckRequest = await prisma.pitchDeckRequest.update({
         where: {
             id: pitchDeckRequest.id
@@ -71,7 +69,6 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
             backendId: parsed.pitch_deck_id
         }
     })
-    console.log("Pitch deck request", pitchDeckRequest)
     return {
         url: parsed.upload_url,
         pitchDeckId: pitchDeckRequest.id
@@ -100,7 +97,6 @@ export async function getPitchDeck(id: number) {
     }
 
     const document = await getDocument(pitchDeckRequest.uuid, "prelo")
-    console.log("Pitch deck document", document)
     return document
 }
 
@@ -162,7 +158,6 @@ export async function getScores(pitchDeckId: number) {
         }
     })
     const rawScore = await rawScoreResponse.json()
-    console.log(rawScore)
     if (!rawScore.scores) {
         return null
     }
@@ -274,7 +269,6 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
 
     const parsed = await sendMessageResponse.json()
 
-    console.log("Parsed", parsed)
     return parsed.message
 
 }
@@ -294,7 +288,6 @@ export async function clearCurrentDeck() {
             currentDeckId: null
         }
     })
-    console.log("Clear.")
     return redirect("/")
 }
 
@@ -378,7 +371,6 @@ export async function getDeckReport(id: number) {
             })
         })
         const parsed = await sendMessageResponse.json()
-        console.log("Report", parsed)
         return parsed
 
     } catch (e) {
