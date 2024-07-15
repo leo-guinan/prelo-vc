@@ -40,5 +40,5 @@ export default async function InterviewPage() {
 
 
 
-    return <InterviewChat messages={response.messages} uuid={(session.user as User).interviewUUID ?? ""} user={session.user as User} />
+    return <InterviewChat messages={response.messages} uuid={(session.user as User).interviewUUID ?? ""} user={user} />
 }

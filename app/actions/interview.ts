@@ -109,7 +109,7 @@ export async function getInterviewChat(userId?:string) {
 }
 
 
-export async function sendInterviewChatMessage(uuid: string, formData: FormData) {
+export async function sendInterviewChatMessage(uuid: string, formData: FormData, userId?: string) {
     const session = await auth()
 
     if (!session?.user) {
@@ -118,17 +118,15 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData)
         }
     }
 
-    const userId = session.user.id;
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userId
-        },
-    })
-
-    if (!user) {
-        return {
-            error: "User not found"
-        }
+    let user:User | null = null;
+    if (userId && (session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
+        user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+    } else {
+        user = session.user as User
     }
 
     if (!user?.submindId) {
@@ -141,7 +139,7 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData)
     formData.append('submind_id', `${user.submindId}`);
     formData.append('uuid', uuid);
     formData.append('client', 'prelovc');
-    formData.append('investor_id', userId);
+    formData.append('investor_id', user.id);
     formData.append('firm_id', '1');
 
     console.log("FormData: ", formData)

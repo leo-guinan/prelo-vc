@@ -205,7 +205,7 @@ export default function InterviewChat({
             ])
 
 
-            const response = await sendInterviewChatMessage(uuid, formData);
+            const response = await sendInterviewChatMessage(uuid, formData, user.id);
 
             if (!response) {
                 console.error("No response")
