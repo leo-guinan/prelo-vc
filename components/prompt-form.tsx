@@ -35,7 +35,7 @@ export function PromptForm({
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (file && file.type === 'application/pdf') {
-            setSelectedFile(file)
+            onSubmit("Upload file", file)
         } else {
             alert('Please select a PDF file')
             setSelectedFile(null)

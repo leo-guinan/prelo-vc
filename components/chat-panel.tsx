@@ -25,6 +25,8 @@ export function ChatPanel({
                 <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
                     <PromptForm
                         onSubmit={async (value: string, file?: File | null) => {
+                            console.log("Value", value)
+                            console.log("File", file)
                             await sendMessage({
                                 content: value,
                                 role: 'user',
