@@ -9,10 +9,11 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import {User} from "@prisma/client/edge";
-import {createPitchDeck, sendInterviewChatMessage} from "@/app/actions/interview";
+import {createPitchDeck, getDecks, sendInterviewChatMessage} from "@/app/actions/interview";
 import {Message, PreloChatMessageType} from "@/lib/types";
 import Panel from "@/components/panel/panel";
 import {useScrollAnchor} from "@/lib/hooks/use-scroll-anchor";
+import useSwr from "swr";
 
 
 interface AnalysisChatProps {
@@ -37,7 +38,9 @@ export default function InterviewChat({
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
     const socketRef = useRef<WebSocket | null>(null)
     const [shouldReconnect, setShouldReconnect] = useState(true);
+    const [lastUploadedFileName, setLastUploadedFileName] = useState<string | null>(null)
 
+    const {data: decks} = useSwr(user.id, getDecks)
 
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
@@ -98,7 +101,8 @@ export default function InterviewChat({
         console.log("parsedData", parsedData)
         if (parsedData.deck_uuid) {
             if (parsedData.status === "received") {
-                void createPitchDeck(parsedData.deck_uuid)
+                void createPitchDeck(parsedData.deck_uuid, user.id, lastUploadedFileName)
+                setLastUploadedFileName(null)
             } else if (parsedData.status === "analyzed") {
                 const newMessage = {
                     content: parsedData.report_summary,
@@ -204,6 +208,7 @@ export default function InterviewChat({
             if (message.file) {
 
                 formData.append('file', message.file);
+                setLastUploadedFileName(message.file.name)
             }
             setDisplayedMessages([...displayedMessages,
                 newUserMessage
@@ -212,8 +217,18 @@ export default function InterviewChat({
 
             const response = await sendInterviewChatMessage(uuid, formData, user.id);
 
-            if (!response) {
-                console.error("No response")
+            if (!response || 'error' in response) {
+                setLastUploadedFileName(null)
+                console.error("Error sending message: ", response.error, response.message)
+                setDisplayedMessages([...displayedMessages,
+                newUserMessage,
+                    {
+                        content: "There was an error processing your request. Please try again.",
+                        role: 'assistant',
+                        id: nanoid(),
+                        type: "text" as PreloChatMessageType
+                    }
+                ])
                 return
             }
 
@@ -299,7 +314,7 @@ export default function InterviewChat({
                             <ResizableHandle/>
                             <ResizablePanel>
                                 <ScrollArea className="flex flex-col size-full pb-8">
-                                    <Panel/>
+                                    <Panel userId={user.id} decks={decks}/>
                                 </ScrollArea>
                             </ResizablePanel>
                         </ResizablePanelGroup>

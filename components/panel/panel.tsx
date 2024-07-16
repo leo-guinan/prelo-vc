@@ -4,8 +4,14 @@ import ReportPanel from "@/components/panel/report";
 import useSWR from "swr";
 import {getPanelDetails} from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
+import {PitchDeck} from "@prisma/client/edge";
 
-export default function Panel() {
+interface PanelProps {
+    decks?: PitchDeck[]
+    userId: string
+}
+
+export default function Panel({decks}: PanelProps) {
 
     const searchParams = useSearchParams()
 
@@ -33,6 +39,21 @@ export default function Panel() {
                 {data && searchParams.get('view') === 'rejection_email' && (
                     <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
 
+                )}
+                {data && !searchParams.get('view') && (
+                    <>
+                        <h1>Uploaded Decks</h1>
+                        <div className="flex flex-col">
+                            {decks && decks.map((deck: PitchDeck) => (
+                                <>
+                                    <div>
+                                        {deck.name}
+                                    </div>
+                                </>
+
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 

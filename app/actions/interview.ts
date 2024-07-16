@@ -7,18 +7,18 @@ import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
 import {GlobalRole, User} from "@prisma/client/edge";
 
-export async function getInterviewChat(userId?:string) {
+export async function getInterviewChat(userId?: string) {
 
     const client = new MongoClient(process.env.MONGO_URL || "");
     await client.connect();
     const collection = client.db("prelovc").collection("prelovc_memory");
     const session = await auth()
     if (!session?.user) {
-            return {
-                error: "User not found"
-            }
+        return {
+            error: "User not found"
         }
-    let user:User | null = null;
+    }
+    let user: User | null = null;
     if (userId && (session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         user = await prisma.user.findUnique({
             where: {
@@ -112,7 +112,7 @@ export async function getInterviewChat(userId?:string) {
 }
 
 
-export async function sendInterviewChatMessage(uuid: string, formData: FormData, userId?: string) {
+export async function sendInterviewChatMessage(uuid: string, formData: FormData, userId: string) {
     const session = await auth()
 
     if (!session?.user) {
@@ -121,8 +121,8 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
         }
     }
 
-    let user:User | null = null;
-    if (userId && (session.user as User).globalRole === GlobalRole.SUPERADMIN) {
+    let user: User | null = null;
+    if (userId !== session.user.id && (session.user as User).globalRole === GlobalRole.SUPERADMIN) {
         console.log("Have user id and user is superadmin")
         user = await prisma.user.findUnique({
             where: {
@@ -163,16 +163,7 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     }
 }
 
-export async function createPitchDeck(deckUUID: string) {
-    const session = await auth()
-
-    if (!session?.user) {
-        return {
-            error: "User not found"
-        }
-    }
-
-    const userId = session.user.id;
+export async function createPitchDeck(deckUUID: string, userId: string, fileName: string | null) {
     const user = await prisma.user.findUnique({
         where: {
             id: userId
@@ -196,7 +187,7 @@ export async function createPitchDeck(deckUUID: string) {
                     id: user.memberships[0].organizationId
                 }
             },
-            name: "Pitch Deck"
+            name: fileName || "Pitch Deck"
         }
     })
 }
@@ -216,6 +207,7 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             }
         }
     }
+    console.log("URL with params", urlWithParams)
     const url = new URL(urlWithParams)
     const queryParams = Object.fromEntries(url.searchParams.entries())
     console.log("parsed query params", queryParams)
@@ -274,7 +266,7 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             })
 
         })
-         const parsed = await getRejectionEmailResponse.json()
+        const parsed = await getRejectionEmailResponse.json()
         console.log("Parsed", parsed)
         return {
             type: "rejection_email",
@@ -287,9 +279,68 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
         }
     }
 
-
     return {
         type: "data is here...",
         data: {}
     }
+}
+
+export async function getDecks(userId: string) {
+
+    let userWithOrg = await prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        include: {
+            memberships: {
+                include: {
+                    organization: true
+                }
+            }
+        }
+    })
+    if (!userWithOrg) {
+        return []
+    }
+
+    if (!userWithOrg.memberships[0]) {
+        const org = await prisma.organization.create({
+            data: {
+                name: "Default Organization",
+            }
+        })
+        const membership = await prisma.membership.create({
+            data: {
+                organizationId: org.id,
+                userId: userWithOrg.id,
+                role: "OWNER"
+            }
+        })
+        userWithOrg = await prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+            include: {
+                memberships: {
+                    include: {
+                        organization: true
+                    }
+                }
+            }
+        })
+
+
+    }
+
+    const decks = await prisma.pitchDeck.findMany({
+        where: {
+            owner: {
+                id: userWithOrg!.memberships[0].organizationId
+            }
+        }
+    })
+
+    console.log("Decks", decks)
+
+    return decks ?? []
 }
