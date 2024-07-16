@@ -40,7 +40,7 @@ export default function InterviewChat({
     const [shouldReconnect, setShouldReconnect] = useState(true);
     const [lastUploadedFileName, setLastUploadedFileName] = useState<string | null>(null)
 
-    const {data: decks} = useSwr(user.id, getDecks)
+    const {data: decks, mutate} = useSwr(user.id, getDecks)
 
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
@@ -102,7 +102,16 @@ export default function InterviewChat({
         if (parsedData.deck_uuid) {
             if (parsedData.status === "received") {
                 void createPitchDeck(parsedData.deck_uuid, user.id, lastUploadedFileName)
+                void mutate([...decks ?? [], {
+                    uuid: parsedData.deck_uuid,
+                    name: lastUploadedFileName ?? "Pitch Deck",
+                    id: -1,
+                    ownerId: -1,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }])
                 setLastUploadedFileName(null)
+
             } else if (parsedData.status === "analyzed") {
                 const newMessage = {
                     content: parsedData.report_summary,
