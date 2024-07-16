@@ -12,9 +12,10 @@ export interface ChatList {
         image?: string | null
     }
     chatMessageLoading: boolean
+    ref?: React.RefObject<HTMLDivElement>
 }
 
-export function ChatList({messages, user, chatMessageLoading}: ChatList) {
+export function ChatList({messages, user, chatMessageLoading, ref}: ChatList) {
     const circleColors = ['bg-loadStart', 'bg-loadNext', 'bg-loadMiddle', 'bg-loadEnd'];
 
     if (!messages.length) {
@@ -44,7 +45,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
     }
 
     return (
-        <div className="relative px-4">
+        <div className="relative px-4" ref={ref}>
             {messages.map((message, index) => (
                 <div key={index}>
                     <ChatMessage message={message} user={user}/>

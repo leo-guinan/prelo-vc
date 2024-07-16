@@ -12,6 +12,7 @@ import {User} from "@prisma/client/edge";
 import {createPitchDeck, sendInterviewChatMessage} from "@/app/actions/interview";
 import {Message, PreloChatMessageType} from "@/lib/types";
 import Panel from "@/components/panel/panel";
+import {useScrollAnchor} from "@/lib/hooks/use-scroll-anchor";
 
 
 interface AnalysisChatProps {
@@ -144,6 +145,10 @@ export default function InterviewChat({
     //     }
     // }
 
+    useEffect(() => {
+        console.log("User id: ", user.id)
+    }, [user])
+
     const handleDrag = (event: React.DragEvent<HTMLDivElement>): void => {
         event.preventDefault();
         event.stopPropagation();
@@ -245,6 +250,9 @@ export default function InterviewChat({
 
         }
     }
+
+    const {messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom} =
+        useScrollAnchor()
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
@@ -269,10 +277,10 @@ export default function InterviewChat({
                                 <div
                                     className="flex flex-col w-full h-full">
                                     <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
-                                        <ScrollArea className="flex flex-col size-full pb-8">
+                                        <ScrollArea className="flex flex-col size-full pb-8" ref={scrollRef}>
                                             <ChatList messages={displayedMessages} user={user}
-                                                      chatMessageLoading={chatMessageLoading}/>
-                                            <ChatScrollAnchor/>
+                                                      chatMessageLoading={chatMessageLoading} ref={messagesRef}/>
+                                            <ChatScrollAnchor trackVisibility={true}/>
                                         </ScrollArea>
                                         <div className="relative">
                                             <ChatPanel
@@ -283,7 +291,7 @@ export default function InterviewChat({
 
                                             />
                                         </div>
-                                        <div ref={bottomRef}/>
+                                        <div ref={visibilityRef}/>
                                     </div>
                                 </div>
 

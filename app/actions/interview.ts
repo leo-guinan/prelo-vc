@@ -122,7 +122,8 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     }
 
     let user:User | null = null;
-    if (userId && (session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
+    if (userId && (session.user as User).globalRole === GlobalRole.SUPERADMIN) {
+        console.log("Have user id and user is superadmin")
         user = await prisma.user.findUnique({
             where: {
                 id: userId
@@ -145,6 +146,7 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     formData.append('investor_id', user.id);
     formData.append('firm_id', '1');
 
+    console.log("Sending deck with user id: ", user.id)
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}interview/send/`, {
         method: "POST",
