@@ -95,7 +95,7 @@ export default function ReportPanel({
                     <div className="flex flex-row items-center justify-center mt-12 mb-8">
                         <Scores scores={scores}/>
                     </div>
-                    <div className="flex flex-col items-start justify-center w-1/3 mx-auto">
+                    <div className="flex flex-row items-start justify-evenly w-full mx-auto">
                         <p className="text-xl tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row ">
                             <Button
                                 variant="ghost"
