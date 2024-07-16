@@ -96,7 +96,7 @@ export default function ReportPanel({
                         <Scores scores={scores}/>
                     </div>
                     <div className="flex flex-col items-start justify-center w-1/3 mx-auto">
-                        <p className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row ">
+                        <p className="text-xl tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row ">
                             <Button
                                 variant="ghost"
                                 size="icon"
@@ -108,7 +108,7 @@ export default function ReportPanel({
                             </Button>
                             <span className="ml-4 w-4/5 text-base items-center flex">Ask: {amountRaising}</span>
                         </p>
-                        <p className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row">
+                        <p className="text-xl tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row">
                             <Button
                                 variant="ghost"
                                 size="icon"
