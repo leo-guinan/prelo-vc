@@ -23,7 +23,7 @@ export default async function AdminInterviewPage({params}: AdminInterviewPagePro
     if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
         redirect(`/`)
     }
-
+    console.log(params.userId)
 
     const response = await getInterviewChat(params.userId)
     const user = await prisma.user.findUnique({

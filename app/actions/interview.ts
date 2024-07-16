@@ -19,7 +19,7 @@ export async function getInterviewChat(userId?: string) {
         }
     }
     let user: User | null = null;
-    if (userId && (session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
+    if (userId && (session.user as User).globalRole === GlobalRole.SUPERADMIN) {
         user = await prisma.user.findUnique({
             where: {
                 id: userId
@@ -54,15 +54,19 @@ export async function getInterviewChat(userId?: string) {
 
     console.log(`SessionId: custom_claude_${lookupUUID}_chat`,)
 
-
-    const memory = new BufferMemory({
-        chatHistory: new MongoDBChatMessageHistory({
+    const history = new MongoDBChatMessageHistory({
             collection,
             sessionId: `custom_claude_${lookupUUID}_chat`,
-        }),
+        })
+
+
+    const memory = new BufferMemory({
+        chatHistory: history
     });
 
-    const messages = await memory.chatHistory.getMessages();
+    const messages = await history.getMessages();
+
+    console.log("Messages", messages)
 
     const interpretedMessages = messages.map((message) => {
             try {
@@ -339,8 +343,6 @@ export async function getDecks(userId: string) {
             }
         }
     })
-
-    console.log("Decks", decks)
 
     return decks ?? []
 }
