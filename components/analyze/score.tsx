@@ -66,50 +66,53 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     const titleColor = overrideColor ?? color;
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center flex-0 p-2 w-[200px] sm:w-[100px]">
             <div
-                className={cn("text-sm font-semibold uppercase tracking-wider", overrideColor ? "dark:text-zinc-50" : "")}
-                style={{color: titleColor}}>
+                className={cn("flex text-sm font-semibold uppercase tracking-wider text-center whitespace-nowrap items-center mb-4", overrideColor ? "dark:text-zinc-50" : "")}
+                style={{color: titleColor, height: "40px"}}>
                 {title}
             </div>
-            <svg width="120" height="120">
-                <circle
-                    cx="60"
-                    cy="60"
-                    r={radius}
-                    fill="none"
-                    stroke={`${overrideColor ?? color}20`} // Background circle
-                    strokeWidth="10"
-                    strokeOpacity="0.2"
-                />
-                <circle
-                    cx="60"
-                    cy="60"
-                    r={radius}
-                    fill="none"
-                    stroke={overrideColor ?? color}
-                    strokeWidth="10"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    transform="rotate(-90 60 60)"
-                />
-                <circle
-                    cx="60"
-                    cy="60"
-                    r={innerRadius}
-                    fill={overrideColor ?? color} // Use the same color as the progress bar
-                />
-                <text
-                    x="50%"
-                    y="50%"
-                    dy=".3em"
-                    textAnchor="middle"
-                    fontSize="20"
-                    fill={textColor}
-                >
-                    {Math.round(currentProgress)}%
-                </text>
-            </svg>
+            <div className="relative" style={{width: '100%', paddingTop: '100%'}}>
+                <svg width="120" height="120" className="absolute top-0 left-0 size-full" viewBox="0 0 120 120">
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r={radius}
+                        fill="none"
+                        stroke={`${overrideColor ?? color}20`} // Background circle
+                        strokeWidth="10"
+                        strokeOpacity="0.2"
+                    />
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r={radius}
+                        fill="none"
+                        stroke={overrideColor ?? color}
+                        strokeWidth="10"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        transform="rotate(-90 60 60)"
+                    />
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r={innerRadius}
+                        fill={overrideColor ?? color} // Use the same color as the progress bar
+                    />
+                    <text
+                        x="50%"
+                        y="50%"
+                        dy=".3em"
+                        textAnchor="middle"
+                        fontSize="20"
+                        fill={textColor}
+                    >
+                        {Math.round(currentProgress)}%
+
+                    </text>
+                </svg>
+            </div>
         </div>
     );
 };
