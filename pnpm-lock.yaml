@@ -200,6 +200,9 @@ dependencies:
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@14.1.1)(react-dom@18.2.0)(react@18.2.0)
+  nexus-components:
+    specifier: link:../nexus-components
+    version: link:../nexus-components
   openai:
     specifier: ^4.38.3
     version: 4.38.3

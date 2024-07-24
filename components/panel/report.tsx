@@ -1,13 +1,10 @@
-import {cn} from "@/lib/utils";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
-import MarkdownBlock from "@/components/ui/markdown-block";
-import FounderList, {Founder} from "@/components/panel/founder-list";
+import {Accordion} from "@/components/ui/accordion";
+import {Founder} from "@/components/panel/founder-list";
 import Scores from "@/components/analyze/scores";
-import {IconDollarSign, IconEmail} from "@/components/ui/icons";
-import {SyntheticEvent} from "react";
-import {Button} from "@/components/ui/button";
-import Link from "next/link";
-import {useSearchParams} from "next/navigation";
+import NextStepsSection from "@/components/interview/next-steps-section";
+import ScoreAnalysisSection from "@/components/interview/score-analysis-section";
+import InvestorConcernsSection from "@/components/interview/investor-concerns-section";
+import PitchDeckSummarySection from "@/components/interview/pitch-deck-summary-section";
 
 
 interface ReportPanelProps {
@@ -72,107 +69,32 @@ export default function ReportPanel({
 
                                     }: ReportPanelProps) {
 
-        const searchParams = useSearchParams()
 
-
-    const handleNextStep = (e: SyntheticEvent) => {
-        e.preventDefault();
-        console.log("Next Step Clicked")
-        if (nextStep.next_step_id === '1') {
-            // open mailto link in new window
-            window.open(`mailto:${founderContactInfo.email}`)
-        } else if (nextStep.next_step_id === '2') {
-            console.log("Learn more about the company")
-        } else if (nextStep.next_step_id === '3') {
-
-        }
-    }
     return (
-        <>
-            <div className="h-full">
-                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{companyName}</h1>
-                <div className="relative px-8 mt-8">
-                    <div className="flex flex-row items-center justify-center mt-12 mb-8">
+        <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold text-center mb-8">{companyName}</h1>
+
+            <div className="flex flex-col items-center">
+                <div className="w-full max-w-2xl mx-auto">
+                    <div className="container max-w-xl w-full justify-center">
                         <Scores scores={scores}/>
-                    </div>
-                    <div className="flex flex-row items-start justify-evenly w-full mx-auto">
-                        <p className="text-xl tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row ">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="rounded-full bg-objections text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring size-8 "
-                            >
-                                <IconDollarSign className="bg-objections rounded-full"/>
 
-                                <span className="sr-only">Dollar</span>
-                            </Button>
-                            <span className="ml-4 w-4/5 text-base items-center flex">Ask: {amountRaising}</span>
-                        </p>
-                        <p className="text-xl tracking-tight text-gray-900 dark:text-zinc-50 sm:text-2xl mb-8 flex flex-row">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="rounded-full bg-objections text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring size-8 "
-                            >
-                                <IconEmail className="bg-objections rounded-full"/>
-                            </Button>
-                            {nextStep.next_step_id === "3" && (
-                                <Link
-                                    className="ml-4 w-4/5 text-base underline text-objections items-center flex"
-                                    href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
-                                    {nextStep.next_step_description}
-                                </Link>
-                            )}
-                            {nextStep.next_step_id !== "3" && (
-                                <a href="" onClick={handleNextStep}
-                                   className="ml-4 w-4/5 text-base underline text-objections items-center flex">{nextStep.next_step_description}</a>
-                            )}
+                        <Accordion type="multiple" className="mt-8 max-w-xl">
 
-                        </p>
-                    </div>
-                    <div
-                        className={cn('group relative mb-4 flex flex-col flex-1 items-start w-full')}
-                    >
+                            <PitchDeckSummarySection pitchDeckSummary={pitchDeckSummary} traction={traction}
+                                                     founders={founders} amountRaising={amountRaising}/>
+
+                            <InvestorConcernsSection concerns={concerns}/>
+
+                            <ScoreAnalysisSection/>
 
 
-                        <div className="flex flex-col w-full max-w-xl">
-                            <Accordion type="multiple" className="w-full">
-                                <AccordionItem value={`top-concerns`} key={`top-concerns`}>
-                                    <AccordionTrigger iconColor="#FF7878">Pitch Deck Summary</AccordionTrigger>
-                                    <AccordionContent>
-                                        <MarkdownBlock content={pitchDeckSummary}/>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value={`concerns`} key={`concerns`}>
-                                    <AccordionTrigger iconColor="#8BDDE4">Top Concerns</AccordionTrigger>
-                                    <AccordionContent>
-                                        <Accordion type="multiple" className="w-full">
-                                            {concerns?.map((concern, index) => (
-                                                <AccordionItem value={concern.title} key={concern.title}>
-                                                    <AccordionTrigger
-                                                        iconColor="#FF7878">{concern.title}</AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <MarkdownBlock content={concern.concern}/>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            ))}
-                                        </Accordion>
-                                    </AccordionContent>
-                                </AccordionItem>
+                            <NextStepsSection/>
 
-                                <AccordionItem value={`founder`} key={`founder`}>
-                                    <AccordionTrigger iconColor="#8BDDE4">Founders</AccordionTrigger>
-                                    <AccordionContent>
-                                        <FounderList founders={founders}/>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
-
-                        </div>
-
+                        </Accordion>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

@@ -40,10 +40,14 @@ export interface PreloChatMessage {
 
 export interface DeckReportMessage extends PreloChatMessage {
     type: "deck_report"
+    company_name: string
     deck_uuid: string
     report_uuid: string
     report_summary: string
-    recommended_next_steps: string
+    recommended_next_steps: {
+        next_step_id: string
+        next_step_description: string
+    }
     deck_score: number
 }
 

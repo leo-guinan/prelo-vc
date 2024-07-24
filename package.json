@@ -78,6 +78,7 @@
     "next-auth": "5.0.0-beta.16",
     "next-connect": "^1.0.0",
     "next-themes": "^0.2.1",
+    "nexus-components": "link:../nexus-components",
     "openai": "^4.38.3",
     "openai-edge": "^1.2.2",
     "prompts": "link:@langchain/core/prompts",

@@ -10,7 +10,6 @@ interface CircularProgressBarProps {
 }
 
 export function CircularProgressBar({progress, title, overrideColor}: CircularProgressBarProps) {
-    console.log("progress", progress)
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const [currentProgress, setCurrentProgress] = useState(0);

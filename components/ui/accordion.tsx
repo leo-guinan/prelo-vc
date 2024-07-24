@@ -23,7 +23,7 @@ AccordionItem.displayName = "AccordionItem"
 const AccordionTrigger = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Trigger>,
     React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & { iconColor?: string }
->(({className, children, iconColor="currentColor", ...props}, ref) => {
+>(({className, children, iconColor = "currentColor", ...props}, ref) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     const handleToggle = () => setIsOpen(!isOpen);
@@ -39,15 +39,18 @@ const AccordionTrigger = React.forwardRef<
                 onClick={handleToggle}
                 {...props}
             >
-                {isOpen ? (
-                    <MinusIcon className="size-10 -ml-1 mr-4" overrideColor={iconColor} />
-                    // <Minus className="h-4 w-4 shrink-0 transition-transform duration-200"/>
-                ) : (
-                    <PlusIcon className="size-10 -ml-1 mr-4" overrideColor={iconColor} />
-                    // <Plus className="h-4 w-4 shrink-0 transition-transform duration-200"/>
-                )}
-                {children}
-
+                <div className="w-1/5">
+                    {isOpen ? (
+                        <MinusIcon className="size-10 -ml-1 mr-4" overrideColor={iconColor}/>
+                        // <Minus className="h-4 w-4 shrink-0 transition-transform duration-200"/>
+                    ) : (
+                        <PlusIcon className="size-10 -ml-1 mr-4" overrideColor={iconColor}/>
+                        // <Plus className="h-4 w-4 shrink-0 transition-transform duration-200"/>
+                    )}
+                </div>
+                <div>
+                    {children}
+                </div>
             </AccordionPrimitive.Trigger>
         </AccordionPrimitive.Header>
     );

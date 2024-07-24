@@ -120,6 +120,7 @@ export default function InterviewChat({
                     report_summary: parsedData.report_summary,
                     recommended_next_steps: parsedData.recommended_next_steps,
                     deck_score: parsedData.deck_score,
+                    company_name: parsedData.company_name,
                     role: 'assistant',
                     id: nanoid(),
                     type: "deck_report"

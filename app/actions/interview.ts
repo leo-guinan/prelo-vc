@@ -81,8 +81,9 @@ export async function getInterviewChat(userId?: string) {
                             deck_score: parsed.deck_score,
                             report_summary: parsed.report_summary,
                             role: "assistant",
-                            recommended_next_steps: parsed.recommended_next_steps,
-                            content: parsed.report_summary
+                            recommended_next_steps: JSON.parse(parsed.recommended_next_steps),
+                            content: parsed.report_summary,
+                            company_name: parsed.company_name
 
                         }
                     default:
