@@ -5,6 +5,16 @@ import NextStepsSection from "@/components/interview/next-steps-section";
 import ScoreAnalysisSection from "@/components/interview/score-analysis-section";
 import InvestorConcernsSection from "@/components/interview/investor-concerns-section";
 import PitchDeckSummarySection from "@/components/interview/pitch-deck-summary-section";
+import {useState} from "react";
+import {Dialog, DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "../ui/dialog";
+import {DialogContent, DialogTrigger} from "@/components/ui/dialog";
+import MarkdownBlock from "../ui/markdown-block";
+import {Button, buttonVariants} from "../ui/button";
+import {cn} from "@/lib/utils";
+import Link from "next/link";
+import {useCopyToClipboard} from "@/lib/hooks/use-copy-to-clipboard";
+import {IconCheck, IconCopy, IconShare} from "@/components/ui/icons";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 
 interface ReportPanelProps {
@@ -49,7 +59,10 @@ interface ReportPanelProps {
     }
     founderContactInfo: {
         email: string
-    }
+    },
+    scoreExplanation: Record<string, string>
+    deck_uuid: string
+    report_uuid: string
 
 }
 
@@ -65,15 +78,85 @@ export default function ReportPanel({
                                         nextStep,
                                         founders,
                                         scores,
-                                        founderContactInfo
+                                        founderContactInfo,
+                                        scoreExplanation,
+                                        deck_uuid,
+                                        report_uuid
 
                                     }: ReportPanelProps) {
+    const [openSections, setOpenSections] = useState<string[]>([]);
+    const {isCopied, copyToClipboard} = useCopyToClipboard({timeout: 2000})
 
+    const toggleSection = (value: string) => {
+        setOpenSections(prev =>
+            prev.includes(value)
+                ? prev.filter(item => item !== value)
+                : [...prev, value]
+        );
+    };
+
+    const copyShareLink = async () => {
+        if (isCopied) return
+        copyToClipboard(`${window.location.origin}/share/${deck_uuid}/${report_uuid}`)
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-8">{companyName}</h1>
+            <div className="flex flex-row justify-center items-center">
+                <h1 className="flex align-middle justify-center items-center text-3xl font-bold text-center mr-2">{companyName}</h1>
+                <Dialog>
+                    <DialogTrigger>
+                        <>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button type="button" variant="default">
+                                            <IconShare className="mr-2"/>
+                                            <span>Share</span>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-xs">
+                                        <p className="break-words">Share with another investor</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
 
+                        </>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Share This Deal</DialogTitle>
+                            <DialogDescription>
+
+                            </DialogDescription>
+                        </DialogHeader>
+                        <>
+                            <MarkdownBlock content={pitchDeckSummary}/>
+
+                        </>
+                        <DialogFooter className="sm:justify-start">
+
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary" className="p-4 h-10">
+                                    Close
+                                </Button>
+                            </DialogClose>
+                            <Link
+                                onClick={copyShareLink}
+                                href="#"
+                                className={cn(
+                                    buttonVariants({variant: 'outline'}),
+                                    'h-10 text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 p-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
+                                )}
+                            >
+                                {isCopied ? <IconCheck/> : <IconCopy/>}
+                                Copy Share Link
+                            </Link>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+            </div>
             <div className="flex flex-col items-center">
                 <div className="w-full max-w-2xl mx-auto">
                     <div className="container max-w-xl w-full justify-center">
@@ -81,15 +164,23 @@ export default function ReportPanel({
 
                         <Accordion type="multiple" className="mt-8 max-w-xl">
 
-                            <PitchDeckSummarySection pitchDeckSummary={pitchDeckSummary} traction={traction}
-                                                     founders={founders} amountRaising={amountRaising}/>
+                            <PitchDeckSummarySection pitchDeckSummary={scores.final.reason} traction={traction}
+                                                     founders={founders} amountRaising={amountRaising}
+                            />
 
-                            <InvestorConcernsSection concerns={concerns}/>
+                            <InvestorConcernsSection concerns={concerns}
 
-                            <ScoreAnalysisSection/>
+                            />
+
+                            <ScoreAnalysisSection scoreExplanation={scoreExplanation}
+
+                            />
 
 
-                            <NextStepsSection/>
+                            <NextStepsSection
+
+
+                            />
 
                         </Accordion>
                     </div>

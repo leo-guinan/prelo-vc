@@ -35,6 +35,9 @@ export default function Panel({decks}: PanelProps) {
                     founders={data.data.founders}
                     scores={data.data.scores}
                     founderContactInfo={data.data.founderContactInfo}
+                    scoreExplanation={data.data.scoreExplanation}
+                    deck_uuid={searchParams.get('deck_uuid') as string}
+                    report_uuid={searchParams.get('report_uuid') as string}
                 />}
                 {data && searchParams.get('view') === 'rejection_email' && (
                     <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>

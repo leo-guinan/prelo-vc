@@ -35,8 +35,6 @@ export async function getInterviewChat(userId?: string) {
         }
     }
 
-    console.log("Using user", user)
-
     let lookupUUID = user.interviewUUID
 
     if (!lookupUUID) {
@@ -52,8 +50,6 @@ export async function getInterviewChat(userId?: string) {
         lookupUUID = newUUID
     }
 
-    console.log(`SessionId: custom_claude_${lookupUUID}_chat`,)
-
     const history = new MongoDBChatMessageHistory({
             collection,
             sessionId: `custom_claude_${lookupUUID}_chat`,
@@ -65,8 +61,6 @@ export async function getInterviewChat(userId?: string) {
     });
 
     const messages = await history.getMessages();
-
-    console.log("Messages", messages)
 
     const interpretedMessages = messages.map((message) => {
             try {
@@ -151,7 +145,6 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     formData.append('investor_id', user.id);
     formData.append('firm_id', '1');
 
-    console.log("Sending deck with user id: ", user.id)
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}interview/send/`, {
         method: "POST",
@@ -212,13 +205,10 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             }
         }
     }
-    console.log("URL with params", urlWithParams)
     const url = new URL(urlWithParams)
     const queryParams = Object.fromEntries(url.searchParams.entries())
-    console.log("parsed query params", queryParams)
 
     const view = queryParams.view
-    console.log("view", view)
     if (view === "report" || view === 'email') {
         const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/`, {
             method: "POST",
@@ -240,7 +230,6 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
         //                 investmentScore={0}
         //              traction={''}
         const parsed = await getInvestorReportResponse.json()
-        console.log("Parsed", parsed)
         return {
             type: "deck_report",
             data: {
@@ -256,7 +245,8 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
                 executiveSummary: parsed.executive_summary,
                 founders: JSON.parse(parsed.founders),
                 scores: parsed.scores,
-                founderContactInfo: JSON.parse(parsed.founders_contact_info).results
+                founderContactInfo: JSON.parse(parsed.founders_contact_info).results,
+                scoreExplanation: parsed.score_explanation
             }
         }
     } else if (view === "rejection_email") {

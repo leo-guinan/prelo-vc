@@ -26,7 +26,10 @@ const AccordionTrigger = React.forwardRef<
 >(({className, children, iconColor = "currentColor", ...props}, ref) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
-    const handleToggle = () => setIsOpen(!isOpen);
+    const handleToggle = () => {
+        console.log("Toggling...")
+        setIsOpen(!isOpen);
+    }
 
     return (
         <AccordionPrimitive.Header className="flex">

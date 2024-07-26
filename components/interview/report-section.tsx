@@ -9,21 +9,23 @@ interface ReportSectionProps {
 }
 
 export default function ReportSection({value, title, description, content}: ReportSectionProps) {
-    return (<AccordionItem value={value}>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <AccordionTrigger iconColor="#8BDDE4">
+    return (<AccordionItem value={value} key={title}>
+
+            <AccordionTrigger iconColor="#8BDDE4">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
                             <div>
                                 <h3 className="text-lg font-semibold">{title}</h3>
                             </div>
-                        </AccordionTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                        <p className="break-words">{description}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                            <p className="break-words">{description}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </AccordionTrigger>
+
             <AccordionContent>
                 {content}
             </AccordionContent>

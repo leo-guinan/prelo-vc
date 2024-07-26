@@ -1,6 +1,12 @@
 import ReportSection from "@/components/interview/report-section";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import MarkdownBlock from "@/components/ui/markdown-block";
 
-export default function ScoreAnalysisSection() {
+interface ScoreAnalysisSectionProps {
+    scoreExplanation: Record<string, string>
+}
+
+export default function ScoreAnalysisSection({scoreExplanation}: ScoreAnalysisSectionProps) {
 
     const description = (<span>
         We share how we arrived at each score. We break the scores down based on the numbers shared in the dials. <br/>--<br/>
@@ -11,6 +17,18 @@ export default function ScoreAnalysisSection() {
     return (
         <ReportSection value="score_analysis" title="Score Analysis"
                        description={description}
-                       content={<></>}/>
+                       content={<>
+                           <Accordion type="multiple" className="w-full">
+                               {scoreExplanation && Object.entries(scoreExplanation).map(([title, explanation], index) => (
+                                   <AccordionItem value={title} key={title}>
+                                       <AccordionTrigger iconColor="#FF7878"
+                                                         className="capitalize">{title}</AccordionTrigger>
+                                       <AccordionContent>
+                                           <MarkdownBlock content={explanation}/>
+                                       </AccordionContent>
+                                   </AccordionItem>
+                               ))}
+                           </Accordion>
+                       </>}/>
     )
 }
