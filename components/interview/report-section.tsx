@@ -19,7 +19,7 @@ export default function ReportSection({value, title, description, content}: Repo
                                 <h3 className="text-lg font-semibold">{title}</h3>
                             </div>
                         </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
+                        <TooltipContent className="max-w-xs text-left">
                             <p className="break-words">{description}</p>
                         </TooltipContent>
                     </Tooltip>

@@ -6,6 +6,7 @@ import {cn} from '@/lib/utils'
 import {Button, type ButtonProps} from '@/components/ui/button'
 import {IconGitHub, IconSpinner, IconGoogle} from '@/components/ui/icons'
 import {signIn} from "next-auth/react";
+import {useSearchParams} from "next/navigation";
 interface LoginButtonProps extends ButtonProps {
     provider: "google"
     showProviderIcon?: boolean
@@ -20,6 +21,8 @@ export function LoginButton({
                                 className,
                                 ...props
                             }: LoginButtonProps) {
+    const searchParams = useSearchParams()
+
     const icons = {
         google: <IconGoogle className="mr-2" />,
     }
@@ -29,7 +32,8 @@ export function LoginButton({
             variant="outline"
             onClick={() => {
                 setIsLoading(true)
-                signIn(provider, {callbackUrl: `/`})
+
+                signIn(provider, {callbackUrl: searchParams.get('redirect') || '/'})
             }}
             disabled={isLoading}
             className={cn(className)}
