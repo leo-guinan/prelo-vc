@@ -42,7 +42,7 @@ const AccordionTrigger = React.forwardRef<
                 onClick={handleToggle}
                 {...props}
             >
-                <div className="w-1/5">
+                <div className="w-1/8">
                     {isOpen ? (
                         <MinusIcon className="size-10 -ml-1 mr-4" overrideColor={iconColor}/>
                         // <Minus className="h-4 w-4 shrink-0 transition-transform duration-200"/>

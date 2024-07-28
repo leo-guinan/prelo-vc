@@ -5,7 +5,7 @@ import {auth} from "@/auth";
 import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
-import {GlobalRole, User} from "@prisma/client/edge";
+import {GlobalRole, PitchDeckProcessingStatus, User} from "@prisma/client/edge";
 
 export async function getInterviewChat(userId?: string) {
 
@@ -336,4 +336,42 @@ export async function getDecks(userId: string) {
     })
 
     return decks ?? []
+}
+
+export async function getDeck(deckUUID: string) {
+    let deck = await prisma.pitchDeck.findUnique({
+        where: {
+            uuid: deckUUID
+        }
+    })
+    if (!deck) {
+        return null
+    }
+
+    if (!deck.reportUUID) {
+        const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/status/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: deckUUID
+            })
+
+        })
+        const parsed = await getInvestorReportResponse.json()
+        if (parsed.report_uuid) {
+            deck = await prisma.pitchDeck.update({
+                where: {
+                    uuid: deckUUID
+                },
+                data: {
+                    reportUUID: parsed.report_uuid,
+                    status: PitchDeckProcessingStatus.COMPLETE
+                }
+            })
+        }
+    }
+
+    return deck
 }

@@ -97,6 +97,7 @@ export function PromptForm({
                                 type="button"
                                 size="icon"
                                 variant="ghost"
+                                className="bg-objections text-primary"
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <CloudUploadIcon/>

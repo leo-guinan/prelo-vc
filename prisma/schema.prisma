@@ -35,6 +35,7 @@ model User {
   initalDeckUUID    String?
   initalReportUUID  String?
   connections       Connection[]
+  activated         Boolean            @default(false)
 }
 
 enum PitchDeckStatus {
@@ -123,13 +124,20 @@ enum GlobalRole {
 }
 
 model PitchDeck {
-  id        Int          @id @default(autoincrement())
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  name      String
-  ownerId   Int
-  owner     Organization @relation(fields: [ownerId], references: [id])
-  uuid      String       @unique
+  id         Int                       @id @default(autoincrement())
+  createdAt  DateTime                  @default(now())
+  updatedAt  DateTime                  @updatedAt
+  name       String
+  ownerId    Int
+  owner      Organization              @relation(fields: [ownerId], references: [id])
+  uuid       String                    @unique
+  status     PitchDeckProcessingStatus @default(PROCESSING)
+  reportUUID String?
+}
+
+enum PitchDeckProcessingStatus {
+  PROCESSING
+  COMPLETE
 }
 
 model VerificationToken {

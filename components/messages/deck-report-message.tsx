@@ -25,9 +25,9 @@ export function DeckReportMessage({message}: {message: DeckReportMessage}) {
     return (
         <>
             <Link href={`?report_uuid=${message.report_uuid}&deck_uuid=${message.deck_uuid}&view=report`}>
-                <div className="flex flex-row">
-                    <div className="flex w-4/5">{displayMessage} </div>
-                    <div><CircularProgressBar title="Read Report" progress={message.deck_score}/></div>
+                <div className="flex flex-row justify-between items-start">
+                    <div className="flex w-3/5">{displayMessage} </div>
+                    <div className="align-top"><CircularProgressBar title="Read Report" progress={message.deck_score}/></div>
                 </div>
 
             </Link>

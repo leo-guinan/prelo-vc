@@ -15,6 +15,7 @@ import Link from "next/link";
 import {useCopyToClipboard} from "@/lib/hooks/use-copy-to-clipboard";
 import {IconCheck, IconCopy, IconShare} from "@/components/ui/icons";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {User} from "@prisma/client/edge";
 
 
 interface ReportPanelProps {
@@ -63,6 +64,7 @@ interface ReportPanelProps {
     scoreExplanation: Record<string, string>
     deck_uuid: string
     report_uuid: string
+    user: User
 
 }
 
@@ -81,7 +83,8 @@ export default function ReportPanel({
                                         founderContactInfo,
                                         scoreExplanation,
                                         deck_uuid,
-                                        report_uuid
+                                        report_uuid,
+                                        user
 
                                     }: ReportPanelProps) {
     const [openSections, setOpenSections] = useState<string[]>([]);
@@ -102,60 +105,110 @@ export default function ReportPanel({
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-row justify-center items-center">
+            <div className="flex flex-col justify-center items-center">
                 <h1 className="flex align-middle justify-center items-center text-3xl font-bold text-center mr-2">{companyName}</h1>
-                <Dialog>
-                    <DialogTrigger>
-                        <>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button type="button" variant="default">
-                                            <IconShare className="mr-2"/>
-                                            <span>Share</span>
+                <div className="flex flex-row justify-center gap-x-2 my-2">
+                    <Dialog>
+                        <DialogTrigger>
+                            <>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button type="button" variant="default"
+                                                    className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                <IconShare className="mr-2"/>
+                                                <span>Share</span>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-xs">
+                                            <p className="break-words">Share with another investor</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                            </>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Share This Deal</DialogTitle>
+                                <DialogDescription>
+
+                                </DialogDescription>
+                            </DialogHeader>
+                            <>
+                                <MarkdownBlock content={pitchDeckSummary}/>
+
+                            </>
+                            <DialogFooter className="sm:justify-start">
+
+                                <DialogClose asChild>
+                                    <Button type="button" variant="secondary" className="p-4 h-10">
+                                        Close
+                                    </Button>
+                                </DialogClose>
+                                <Link
+                                    onClick={copyShareLink}
+                                    href="#"
+                                    className={cn(
+                                        buttonVariants({variant: 'outline'}),
+                                        'h-10 text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 p-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
+                                    )}
+                                >
+                                    {isCopied ? <IconCheck/> : <IconCopy/>}
+                                    Copy Share Link
+                                </Link>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    {!user?.activated && (
+                        <Dialog>
+                            <DialogTrigger>
+                                <>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button type="button" variant="default"
+                                                        className="rounded bg-objections px-2 py-1 text-sm font-semibold text-standard shadow-sm hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                    <span>Activate Account</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-xs">
+                                                <p className="break-words">Activate your account</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                </>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Activate your account</DialogTitle>
+                                    <DialogDescription>
+
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <>
+                                    <p>During our closed beta, we want to talk to you in order to understand your needs
+                                        better.
+                                        </p>
+                                    <div>
+                                        <a href="https://meetings.hubspot.com/olu-adedeji" target="_blank"
+                                           rel='noopener noreferrer' className="text-objections underline cursor-pointer"> Book a call with us here.</a>
+                                    </div>
+
+                                </>
+                                <DialogFooter className="sm:justify-start">
+
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="secondary" className="p-4 h-10">
+                                            Close
                                         </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-xs">
-                                        <p className="break-words">Share with another investor</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-
-                        </>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Share This Deal</DialogTitle>
-                            <DialogDescription>
-
-                            </DialogDescription>
-                        </DialogHeader>
-                        <>
-                            <MarkdownBlock content={pitchDeckSummary}/>
-
-                        </>
-                        <DialogFooter className="sm:justify-start">
-
-                            <DialogClose asChild>
-                                <Button type="button" variant="secondary" className="p-4 h-10">
-                                    Close
-                                </Button>
-                            </DialogClose>
-                            <Link
-                                onClick={copyShareLink}
-                                href="#"
-                                className={cn(
-                                    buttonVariants({variant: 'outline'}),
-                                    'h-10 text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 p-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
-                                )}
-                            >
-                                {isCopied ? <IconCheck/> : <IconCopy/>}
-                                Copy Share Link
-                            </Link>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    )}
+                </div>
             </div>
             <div className="flex flex-col items-center">
                 <div className="w-full max-w-2xl mx-auto">

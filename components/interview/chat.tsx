@@ -324,7 +324,7 @@ export default function InterviewChat({
                             <ResizableHandle/>
                             <ResizablePanel>
                                 <ScrollArea className="flex flex-col size-full pb-8">
-                                    <Panel userId={user.id} decks={decks}/>
+                                    <Panel user={user} decks={decks}/>
                                 </ScrollArea>
                             </ResizablePanel>
                         </ResizablePanelGroup>

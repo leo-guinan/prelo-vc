@@ -22,8 +22,7 @@ const ProgressBar = ({ color = 'bg-blue-500', borderColor = 'border-blue-500' })
   }, []);
 
   return (
-    <div className="flex flex-col items-start w-full max-w-md mt-10">
-      <div className="text-2xl mb-2">Loading Pitch Deck {progress}%</div>
+    <div className="flex flex-col items-start w-full max-w-md ">
       <div className={`w-full h-8 border-4 ${borderColor} rounded-full p-1`}>
         <div
           className={`${color} h-full rounded-full transition-all duration-100`}

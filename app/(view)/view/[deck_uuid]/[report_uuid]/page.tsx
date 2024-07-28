@@ -6,6 +6,7 @@ import {formatToday} from "@/lib/utils";
 import {redirect} from "next/navigation";
 import {viewReport} from "@/app/actions/view";
 import {Founder} from "@/components/panel/founder-list";
+import {User} from "@prisma/client/edge";
 
 interface PitchDeckPageProps {
     params: {
@@ -53,7 +54,7 @@ export default async function ViewDeckReportPage({params}: PitchDeckPageProps) {
     scores={scores}
     founderContactInfo={founderContactInfo}
     scoreExplanation={scoreExplanation}
-
+    user={session.user as User}
 
     />
 }

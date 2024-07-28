@@ -4,14 +4,15 @@ import ReportPanel from "@/components/panel/report";
 import useSWR from "swr";
 import {getPanelDetails} from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
-import {PitchDeck} from "@prisma/client/edge";
+import {PitchDeck, User} from "@prisma/client/edge";
+import PitchDeckList from "@/components/interview/pitch-deck-list";
 
 interface PanelProps {
     decks?: PitchDeck[]
-    userId: string
+    user: User
 }
 
-export default function Panel({decks}: PanelProps) {
+export default function Panel({decks,user}: PanelProps) {
 
     const searchParams = useSearchParams()
 
@@ -38,6 +39,7 @@ export default function Panel({decks}: PanelProps) {
                     scoreExplanation={data.data.scoreExplanation}
                     deck_uuid={searchParams.get('deck_uuid') as string}
                     report_uuid={searchParams.get('report_uuid') as string}
+                    user={user}
                 />}
                 {data && searchParams.get('view') === 'rejection_email' && (
                     <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
@@ -45,17 +47,7 @@ export default function Panel({decks}: PanelProps) {
                 )}
                 {data && !searchParams.get('view') && (
                     <>
-                        <h1>Uploaded Decks</h1>
-                        <div className="flex flex-col">
-                            {decks && decks.map((deck: PitchDeck) => (
-                                <>
-                                    <div>
-                                        {deck.name}
-                                    </div>
-                                </>
-
-                            ))}
-                        </div>
+                        <PitchDeckList decks={decks ?? []} />
                     </>
                 )}
             </div>
