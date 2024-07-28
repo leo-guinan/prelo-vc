@@ -8,7 +8,7 @@ import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components
 import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
-import {User} from "@prisma/client/edge";
+import {PitchDeckProcessingStatus, User} from "@prisma/client/edge";
 import {createPitchDeck, getDecks, sendInterviewChatMessage} from "@/app/actions/interview";
 import {Message, PreloChatMessageType} from "@/lib/types";
 import Panel from "@/components/panel/panel";
@@ -108,7 +108,9 @@ export default function InterviewChat({
                     id: -1,
                     ownerId: -1,
                     createdAt: new Date(),
-                    updatedAt: new Date()
+                    updatedAt: new Date(),
+                    status: PitchDeckProcessingStatus.PROCESSING,
+                    reportUUID: null
                 }])
                 setLastUploadedFileName(null)
 

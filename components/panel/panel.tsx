@@ -6,6 +6,7 @@ import {getPanelDetails} from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
 import {PitchDeck, User} from "@prisma/client/edge";
 import PitchDeckList from "@/components/interview/pitch-deck-list";
+import Spinner from "@/components/spinner";
 
 interface PanelProps {
     decks?: PitchDeck[]
@@ -23,6 +24,10 @@ export default function Panel({decks,user}: PanelProps) {
     return (
         <>
             <div className="h-full">
+                {!data && (
+                    <Spinner size="xxxl" />
+                )}
+                
                 {data && searchParams.get('view') === 'report' && <ReportPanel
                     companyName={data.data.companyName}
                     pitchDeckSummary={data.data.executiveSummary}
@@ -41,10 +46,12 @@ export default function Panel({decks,user}: PanelProps) {
                     report_uuid={searchParams.get('report_uuid') as string}
                     user={user}
                 />}
-                {data && searchParams.get('view') === 'rejection_email' && (
+                {data && (searchParams.get('view') === 'rejection_email' || searchParams.get('view') === 'meeting_email') && (
                     <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
 
                 )}
+
+
                 {data && !searchParams.get('view') && (
                     <>
                         <PitchDeckList decks={decks ?? []} />

@@ -231,8 +231,7 @@ export default function ReportPanel({
 
 
                             <NextStepsSection
-
-
+                                nextStep={nextStep}
                             />
 
                         </Accordion>

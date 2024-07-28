@@ -272,6 +272,29 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
             }
         }
+    } else if (view === 'meeting_email') {
+       const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/meeting/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: queryParams.deck_uuid,
+                investor_id: session.user.id
+            })
+
+        })
+        const parsed = await getMeetingEmailResponse.json()
+        console.log("Parsed", parsed)
+        return {
+            type: "rejection_email",
+            data: {
+                email: parsed.email,
+                content: parsed.content,
+                subject: parsed.subject
+
+            }
+        }
     }
 
     return {
