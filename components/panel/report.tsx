@@ -16,6 +16,7 @@ import {useCopyToClipboard} from "@/lib/hooks/use-copy-to-clipboard";
 import {IconCheck, IconCopy, IconShare} from "@/components/ui/icons";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {User} from "@prisma/client/edge";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 
 interface ReportPanelProps {
@@ -135,10 +136,11 @@ export default function ReportPanel({
 
                                 </DialogDescription>
                             </DialogHeader>
-                            <>
-                                <MarkdownBlock content={pitchDeckSummary}/>
-
-                            </>
+                            <div className="h-96 overflow-y-scroll">
+                                <ScrollArea>
+                                    <MarkdownBlock content={pitchDeckSummary}/>
+                                </ScrollArea>
+                            </div>
                             <DialogFooter className="sm:justify-start">
 
                                 <DialogClose asChild>
@@ -190,10 +192,12 @@ export default function ReportPanel({
                                 <>
                                     <p>During our closed beta, we want to talk to you in order to understand your needs
                                         better.
-                                        </p>
+                                    </p>
                                     <div>
                                         <a href="https://meetings.hubspot.com/olu-adedeji" target="_blank"
-                                           rel='noopener noreferrer' className="text-objections underline cursor-pointer"> Book a call with us here.</a>
+                                           rel='noopener noreferrer'
+                                           className="text-objections underline cursor-pointer"> Book a call with us
+                                            here.</a>
                                     </div>
 
                                 </>
