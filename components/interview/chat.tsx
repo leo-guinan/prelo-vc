@@ -1,6 +1,5 @@
 'use client'
 import {ChatList} from "@/components/chat-list";
-import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {ChatPanel} from "@/components/chat-panel";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {nanoid} from "@/lib/utils";
@@ -14,6 +13,7 @@ import {Message, PreloChatMessageType} from "@/lib/types";
 import Panel from "@/components/panel/panel";
 import {useScrollAnchor} from "@/lib/hooks/use-scroll-anchor";
 import useSwr from "swr";
+import {useScrollToBottom} from 'react-scroll-to-bottom';
 
 
 interface AnalysisChatProps {
@@ -39,6 +39,8 @@ export default function InterviewChat({
     const socketRef = useRef<WebSocket | null>(null)
     const [shouldReconnect, setShouldReconnect] = useState(true);
     const [lastUploadedFileName, setLastUploadedFileName] = useState<string | null>(null)
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const scrollToEnd = useScrollToBottom();
 
     const {data: decks, mutate} = useSwr(user.id, getDecks)
 
@@ -90,12 +92,6 @@ export default function InterviewChat({
 
 
     useEffect(() => {
-        if (bottomRef.current) {
-            bottomRef.current.scrollIntoView({behavior: 'smooth'});
-        }
-    }, [displayedMessages]); // Dependency array includes the data triggering the scroll
-
-    useEffect(() => {
         if (!data) return
         const parsedData = JSON.parse(data.toString())
         console.log("parsedData", parsedData)
@@ -115,12 +111,13 @@ export default function InterviewChat({
                 setLastUploadedFileName(null)
 
             } else if (parsedData.status === "analyzed") {
+                console.log(parsedData.company_name)
                 const newMessage = {
                     content: parsedData.report_summary,
                     deck_uuid: parsedData.deck_uuid,
                     report_uuid: parsedData.report_uuid,
                     report_summary: parsedData.report_summary,
-                    recommended_next_steps: parsedData.recommended_next_steps,
+                    recommended_next_steps: JSON.parse(parsedData.recommended_next_steps),
                     deck_score: parsedData.deck_score,
                     company_name: parsedData.company_name,
                     role: 'assistant',
@@ -128,6 +125,7 @@ export default function InterviewChat({
                     type: "deck_report"
                 }
                 setDisplayedMessages([...displayedMessages, newMessage])
+                scrollToEnd()
             }
         }
 
@@ -225,6 +223,7 @@ export default function InterviewChat({
             setDisplayedMessages([...displayedMessages,
                 newUserMessage
             ])
+            scrollToEnd()
 
 
             const response = await sendInterviewChatMessage(uuid, formData, user.id);
@@ -233,7 +232,7 @@ export default function InterviewChat({
                 setLastUploadedFileName(null)
                 console.error("Error sending message: ", response.error, response.message)
                 setDisplayedMessages([...displayedMessages,
-                newUserMessage,
+                    newUserMessage,
                     {
                         content: "There was an error processing your request. Please try again.",
                         role: 'assistant',
@@ -264,11 +263,11 @@ export default function InterviewChat({
             // setDisplayedClaudeMessage(newClaudeMessage)
             // setDisplayedGPT4oMessage(newGPT4oMessage)
 
-            setDisplayedMessages([...displayedMessages,
-                newUserMessage,
-                newMessage
-            ])
+            setDisplayedMessages([...displayedMessages, newUserMessage, newMessage]);
+
             setChatMessageLoading(false)
+
+            scrollToEnd()
 
         } catch (e) {
             console.error(e)
@@ -304,21 +303,17 @@ export default function InterviewChat({
                                 <div
                                     className="flex flex-col w-full h-full">
                                     <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
-                                        <ScrollArea className="flex flex-col size-full pb-8" ref={scrollRef}>
-                                            <ChatList messages={displayedMessages} user={user}
-                                                      chatMessageLoading={chatMessageLoading} ref={messagesRef}/>
-                                            <ChatScrollAnchor trackVisibility={true}/>
-                                        </ScrollArea>
-                                        <div className="relative">
-                                            <ChatPanel
-                                                isLoading={isLoading}
-                                                input={input}
-                                                setInput={setInput}
-                                                sendMessage={sendMessage}
 
-                                            />
-                                        </div>
-                                        <div ref={visibilityRef}/>
+                                        <ChatList messages={displayedMessages} user={user}
+                                                  chatMessageLoading={chatMessageLoading} />
+
+                                        <ChatPanel
+                                            isLoading={isLoading}
+                                            input={input}
+                                            setInput={setInput}
+                                            sendMessage={sendMessage}
+
+                                        />
                                     </div>
                                 </div>
 

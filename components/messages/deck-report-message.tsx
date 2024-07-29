@@ -6,7 +6,6 @@ import {type DeckReportMessage} from "@/lib/types";
 export function DeckReportMessage({message}: {message: DeckReportMessage}) {
 
     const determineMessage = (message: DeckReportMessage) => {
-        console.log(message.recommended_next_steps.next_step_id)
         switch (message.recommended_next_steps.next_step_id) {
             case "1":
                 return `${message.company_name} is a great investment opportunity for you. Read this report to find out why. 👉`
