@@ -16,7 +16,7 @@ export async function viewReport(deckUUID: string, reportUUID: string) {
 
     return {
         companyName: parsed.company_name,
-        summary: parsed.scores.final.reason,
+        summary:  parsed.summary,
         believe: parsed.believe,
         traction: parsed.traction,
         concerns: JSON.parse(parsed.concerns).concerns,
