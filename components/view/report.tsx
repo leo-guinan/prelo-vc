@@ -60,44 +60,44 @@ interface ViewReportProps {
 const questions = [
     {
         question: "How do I get started?",
-        answer: "Simply click the yellow upload deck button to upload a pitch deck once you activate your account. (see image) "
+        answer: "⬆️Simply click the yellow upload deck button to upload a pitch deck once you activate your account. (see image) "
     },
     {
         question: "How does PreloVC create my investor twin?",
-        answer: "PreloVC finds information about you, your industry and/or your investment firm to build your investor twin"
+        answer: "♊️PreloVC finds information about you, your industry and/or your investment firm to build your investor twin"
     },
     {
         question: "How does PreloVC calculate your VC Match ?",
-        answer: "It matches your thesis, values and other investment requirements to the problem, solution, stage and the founder's domain expertise."
+        answer: "💡It matches your thesis, values and investment requirements to the solution, stage, industry and the founder's experience."
     },
     {
         question: "Can the matching in PreloVC be improved for me?",
-        answer: "Yes of course, the more you interact with PreloVC the better it gets at learning exactly the type of deals you like\n"
+        answer: "🧠Yes of course, the more you interact with PreloVC the better it gets at learning exactly the type of deals you like"
     },
     {
         question: "What is a good score for a VC Match?",
-        answer: "We've done a ton of tests here and we believe that a VC match of above 85% is a great score for deals you should be excited about."
+        answer: "📈We've done a ton of tests here and we believe that a VC match of above 85% is a great score for deals you should be excited about."
 
     },
     {
         question: "Can PreloVC generate an investment memo based on the Pitch Deck?",
-        answer: "Yes PreloVC dynamically generates an investment memo with each pitch deck you upload. Go straight to the executive summary section to see the investment memo."
+        answer: "📝Yes PreloVC dynamically generates an investment memo with each pitch deck you upload. Just click the Share button to see the investment memo."
     },
     {
         question: "Can I share a deal with an investor in my network?",
-        answer: "Yes you can share an investment memo with investors you want to collaborate with. Simply head to the executive summary on the right and hit share."
+        answer: "🔄Yes you can share an investment memo with investors you want to collaborate with. Simply hit the share button on the right. ️"
     },
     {
-        question: "What if I want to reject a deal, can it write an email to the founder?",
-        answer: "Absolutely, PreloVC is designed to write empathetic but encouraging rejection emails on autopilot. The goal is to keep the founder in your funnel. Just ask it to \"Write a rejection email to [Startup]\""
+        question: "Can I reject a deal, and write an email to the founder?",
+        answer: "✍️Absolutely, PreloVC is designed to write empathetic but encouraging rejection emails on autopilot. The goal is to keep the founder in your funnel. Just ask it to \"Write a rejection email to [Startup]\""
     },
     {
         question: "Does PreloVC share any information about the founder?",
-        answer: "Yes at a minimum, PreloVC will share twitter, LinkedIn and email addresses of the founders so that you can carry out early due diligence before a meeting."
+        answer: "🔦Yes at a minimum, PreloVC will share twitter, LinkedIn and email addresses of the founders so that you can carry out early due diligence before a meeting."
     },
     {
         question: "How can I scale PreloVC to review hundreds of pitch decks?",
-        answer: "Our white-label solution offers integrations into email inboxes CRMs. . . we also offer Venture Agents for research, founder screening, content creation and more."
+        answer: "🚀Our white-label solution offers integrations into email inboxes CRMs. . . we also offer Venture Agents for research, founder screening, content creation and more."
     }
 ]
 
