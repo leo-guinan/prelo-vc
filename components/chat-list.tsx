@@ -26,25 +26,28 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
     if (!messages.length) {
         return (
             <>
-                {chatMessageLoading && (
-                    <>
-                        <Separator className="my-4 md:my-8"/>
+                <div className="relative px-4 h-full pb-[125px]" ref={scrollRef}>
 
-                        <div className={cn('group relative mb-4 flex items-start')}>
+                    {chatMessageLoading && (
+                        <>
+                            <Separator className="my-4 md:my-8"/>
 
-                            <div
-                                className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
+                            <div className={cn('group relative mb-4 flex items-start')}>
 
-                            >
-                                <Image src="/logo.png" width={32} height={32} alt="PreloVC"/>
+                                <div
+                                    className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
+                                >
+                                    <Image src="/logo.png" width={32} height={32} alt="PreloVC"/>
+
+
+                                </div>
+                                <ChatMessageLoading circleColors={circleColors}/>
 
                             </div>
-                            <ChatMessageLoading circleColors={circleColors}/>
-
-                        </div>
-                    </>
-                )}
+                        </>
+                    )}
+                </div>
             </>
         )
     }
@@ -54,7 +57,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
             <ScrollArea className="flex flex-col size-full pb-8" ref={messagesRef}>
                 {messages.map((message, index) => (
                     <div key={index}>
-                         {index === messages.length - 1 && (
+                        {index === messages.length - 1 && (
                             <ChatScrollAnchor trackVisibility={true}/>
                         )}
                         <ChatMessage message={message} user={user}/>
