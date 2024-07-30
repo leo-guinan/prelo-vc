@@ -28,12 +28,21 @@ export default function ViewPitchDeck({deck}: PitchDeckProps) {
         <>
             <div className="flex flex-col">
                 <div className="flex flex-row items-center space-x-4">
-                    <Link href={`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`}
-                    className="cursor-pointer hover:bg-objections flex flex-row justify-center items-center space-x-2 p-2 rounded-lg"
-                    >
-                        <BarChart className="text-blue-500 items-center"/>
-                        <span className="text-base break-words">{deck.name}</span>
-                    </Link>
+                    {deck.status === PitchDeckProcessingStatus.COMPLETE && (
+                        <Link href={`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`}
+                              className="cursor-pointer hover:bg-objections flex flex-row justify-center items-center space-x-2 p-2 rounded-lg"
+                        >
+                            <BarChart className="text-blue-500 items-center"/>
+                            <span className="text-base break-words">{deck.name}</span>
+                        </Link>
+                    )}
+                    {deck.status === PitchDeckProcessingStatus.PROCESSING && (
+                        <>
+                            <BarChart className="text-blue-500 items-center"/>
+                            <span className="text-base break-words">{deck.name}</span>
+                        </>
+                    )}
+
                 </div>
                 <div className="flex items-center space-x-4 justify-center">
                     {deck.status === PitchDeckProcessingStatus.PROCESSING && (

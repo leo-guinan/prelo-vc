@@ -51,12 +51,6 @@ export default function Panel({decks,user}: PanelProps) {
 
                 )}
 
-
-                {data && !searchParams.get('view') && (
-                    <>
-                        <PitchDeckList decks={decks ?? []} />
-                    </>
-                )}
             </div>
 
         </>
