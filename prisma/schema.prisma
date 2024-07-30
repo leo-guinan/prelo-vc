@@ -32,8 +32,8 @@ model User {
   sessions          Session[]
   accounts          Account[]
   memberships       Membership[]
-  initalDeckUUID    String?
-  initalReportUUID  String?
+  initialDeckUUID   String?
+  initialReportUUID String?
   connections       Connection[]
   activated         Boolean            @default(false)
 }
