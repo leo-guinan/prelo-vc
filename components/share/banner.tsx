@@ -1,6 +1,6 @@
 
 
-export async function Banner() {
+export function Banner() {
 
     return (
 

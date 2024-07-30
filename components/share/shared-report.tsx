@@ -2,7 +2,6 @@
 import {ScrollArea} from "@/components/ui/scroll-area";
 import MarkdownBlock from "@/components/ui/markdown-block";
 import {Banner} from "@/components/share/banner";
-import {auth} from "@/auth";
 import Link from "next/link";
 import {Button, buttonVariants} from "../ui/button";
 import {IconCheck, IconCopy, IconShare} from "@/components/ui/icons";
@@ -19,19 +18,17 @@ import {
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {cn} from "@/lib/utils";
 import {useCopyToClipboard} from "@/lib/hooks/use-copy-to-clipboard";
-import { User } from "@prisma/client/edge";
 
 interface SharedReportProps {
     report: string
     company_name: string
     reportUUID: string
     deckUUID: string
-    user?: User
 
 }
 
-export default function SharedReport({report, company_name, deckUUID, reportUUID, user}: SharedReportProps) {
-    const copyShareLink = async () => {
+export default function SharedReport({report, company_name, deckUUID, reportUUID}: SharedReportProps) {
+    const copyShareLink = () => {
         if (isCopied) return
         copyToClipboard(`${window.location.origin}/share/${deckUUID}/${reportUUID}`)
     }
@@ -39,7 +36,7 @@ export default function SharedReport({report, company_name, deckUUID, reportUUID
 
     return (
         <div className="relative">
-            {!user && <Banner/>}
+            <Banner/>
 
             <div className="container w-full max-w-3xl mx-auto mt-24">
                 <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}>
@@ -51,15 +48,15 @@ export default function SharedReport({report, company_name, deckUUID, reportUUID
 
                     </div>
                     <div className="flex flex-row space-x-4">
-                        {!user && (
-                            <Link href={`/login?redirect=/view/${deckUUID}/${reportUUID}`}
-                            >
-                                <Button
-                                    className="rounded bg-objections px-6 py-3 h-10 text-sm font-semibold text-standard shadow-sm hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
-                                    Create Account
-                                </Button>
-                            </Link>
-                        )}
+
+                        <Link href={`/login?redirect=/view/${deckUUID}/${reportUUID}`}
+                        >
+                            <Button
+                                className="rounded bg-objections px-6 py-3 h-10 text-sm font-semibold text-standard shadow-sm hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
+                                Create Account
+                            </Button>
+                        </Link>
+
                         <Dialog>
                             <DialogTrigger>
                                 <>
