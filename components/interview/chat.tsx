@@ -124,6 +124,16 @@ export default function InterviewChat({
                     id: nanoid(),
                     type: "deck_report"
                 }
+                void mutate([...(decks?.map(deck => {
+                    if (deck.uuid === parsedData.deck_uuid) {
+                        return {
+                            ...deck,
+                            status: PitchDeckProcessingStatus.COMPLETE,
+                            reportUUID: parsedData.report_uuid
+                        }
+                    }
+                    return deck
+                }) ?? [])])
                 setDisplayedMessages([...displayedMessages, newMessage])
                 scrollToEnd()
             }
