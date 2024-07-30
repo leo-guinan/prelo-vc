@@ -51,9 +51,9 @@ export async function getInterviewChat(userId?: string) {
     }
 
     const history = new MongoDBChatMessageHistory({
-            collection,
-            sessionId: `custom_claude_${lookupUUID}_chat`,
-        })
+        collection,
+        sessionId: `custom_claude_${lookupUUID}_chat`,
+    })
 
 
     const memory = new BufferMemory({
@@ -257,7 +257,8 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             },
             body: JSON.stringify({
                 deck_uuid: queryParams.deck_uuid,
-                investor_id: session.user.id
+                investor_id: session.user.id,
+                submind_id: (session.user as User).submindId
             })
 
         })
@@ -273,14 +274,16 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             }
         }
     } else if (view === 'meeting_email') {
-       const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/meeting/`, {
+        const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/meeting/`, {
             method: "POST",
             headers: {
                 Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
             },
             body: JSON.stringify({
                 deck_uuid: queryParams.deck_uuid,
-                investor_id: session.user.id
+                investor_id: session.user.id,
+                submind_id: (session.user as User).submindId
+
             })
 
         })
