@@ -31,16 +31,16 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
         <>
             {nextStep.next_step_id === "1" && (
 
-                <p>Based on the score, we recommend that you request a meeting.</p>
+                <p>This deck is a no. Write a rejection letter to the founders</p>
             )}
 
             {nextStep.next_step_id === "2" && (
-                <p>This deck is in the middle. We would love your feedback on what the next steps should be.</p>
+                <p>This deck is a maybe. Request more information from the founders.</p>
             )}
 
             {nextStep.next_step_id === "3" && (
 
-                <p>Based on the score, we recommend that you write a rejection email.</p>
+                <p>This deck is a yes. Invite the founders to have a meeting.</p>
 
             )}
 
