@@ -12,10 +12,10 @@ export default function PitchDeckList({decks}: PitchDeckListProps) {
 
 
     return (
-        <div className="p-4">
-            <ul className="space-y-4">
+        <div className="p-2">
+            <ul className="">
                 {decks?.map((deck) => (
-                    <li key={deck.id} className="flex items-center justify-between p-4 rounded-lg">
+                    <li key={deck.id} className="flex items-center p-4 rounded-lg">
                         <ViewPitchDeck deck={deck}/>
                     </li>
                 ))}

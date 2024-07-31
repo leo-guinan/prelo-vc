@@ -135,6 +135,7 @@ model PitchDeck {
   uuid       String                    @unique
   status     PitchDeckProcessingStatus @default(PROCESSING)
   reportUUID String?
+  matchScore Int?
 }
 
 enum PitchDeckProcessingStatus {

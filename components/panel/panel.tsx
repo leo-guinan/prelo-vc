@@ -46,7 +46,7 @@ export default function Panel({decks,user}: PanelProps) {
                     report_uuid={searchParams.get('report_uuid') as string}
                     user={user}
                 />}
-                {data && (searchParams.get('view') === 'rejection_email' || searchParams.get('view') === 'meeting_email') && (
+                {data && (searchParams.get('view')?.includes("_email")) && (
                     <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
 
                 )}

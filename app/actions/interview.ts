@@ -298,6 +298,56 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
             }
         }
+    } else if (view === "more_info_email") {
+       const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/more_info/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: queryParams.deck_uuid,
+                investor_id: session.user.id,
+                submind_id: (session.user as User).submindId
+
+            })
+
+        })
+        const parsed = await getMeetingEmailResponse.json()
+        console.log("Parsed", parsed)
+        return {
+            type: "more_info_email",
+            data: {
+                email: parsed.email,
+                content: parsed.content,
+                subject: parsed.subject
+
+            }
+        }
+    } else if (view === "coinvestor_email") {
+        const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/coninvestor/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                deck_uuid: queryParams.deck_uuid,
+                investor_id: session.user.id,
+                submind_id: (session.user as User).submindId
+
+            })
+
+        })
+        const parsed = await getMeetingEmailResponse.json()
+        console.log("Parsed", parsed)
+        return {
+            type: "coninvestor_email",
+            data: {
+                email: parsed.email,
+                content: parsed.content,
+                subject: parsed.subject
+
+            }
+        }
     }
 
     return {
@@ -374,7 +424,7 @@ export async function getDeck(deckUUID: string) {
         return null
     }
 
-    if (!deck.reportUUID) {
+    if (!deck.reportUUID || !deck.matchScore) {
         const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/status/`, {
             method: "POST",
             headers: {
@@ -393,7 +443,8 @@ export async function getDeck(deckUUID: string) {
                 },
                 data: {
                     reportUUID: parsed.report_uuid,
-                    status: PitchDeckProcessingStatus.COMPLETE
+                    status: PitchDeckProcessingStatus.COMPLETE,
+                    matchScore: parsed.match_score
                 }
             })
         }

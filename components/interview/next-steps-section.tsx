@@ -2,6 +2,8 @@
 import Link from "next/link";
 import ReportSection from "./report-section";
 import {useSearchParams} from "next/navigation";
+import {MinusIcon} from "../ui/icons";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 interface NextStepsSectionProps {
     nextStep: {
@@ -28,11 +30,8 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
     const content = (
         <>
             {nextStep.next_step_id === "1" && (
-                <Link
-                    className="ml-4 w-4/5 text-base underline text-objections items-center flex"
-                    href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=meeting_email`}>
-                    {nextStep.next_step_description}
-                </Link>
+
+                <p>Based on the score, we recommend that you request a meeting.</p>
             )}
 
             {nextStep.next_step_id === "2" && (
@@ -40,18 +39,47 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
             )}
 
             {nextStep.next_step_id === "3" && (
-                <Link
-                    className="ml-4 w-4/5 text-base underline text-objections items-center flex"
-                    href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
-                    {nextStep.next_step_description}
-                </Link>
+
+                <p>Based on the score, we recommend that you write a rejection email.</p>
+
             )}
+
+            <Link
+                className="ml-4 w-4/5 text-base underline items-center flex"
+                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
+                write rejection email <MinusIcon className="size-6" overrideColor="#FF7878"/>
+            </Link>
+            <Link
+                className="ml-4 w-4/5 text-base underline items-center flex"
+                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=more_info_email`}>
+                write email for more info
+            </Link>
+            <Link
+                className="ml-4 w-4/5 text-base underline items-center flex"
+                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=meeting_email`}>
+                write email to book meeting 🗓️
+            </Link>
+            <Link
+                className="ml-4 w-4/5 text-base underline items-center flex"
+                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=coinvestor_email`}>
+                write email to invite co-investors
+            </Link>
+
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className="ml-4 w-4/5 text-base underline items-center flex">start due diligence on the founders ❓</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs text-left">
+                            <p className="break-words">This is available for white-label implementations only. Please contact support to learn more.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+
         </>
     )
 
-    // {nextStep.next_step_id === "3" && (
 
-    //                             )}
 
     return (
         <ReportSection
