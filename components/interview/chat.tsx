@@ -106,7 +106,8 @@ export default function InterviewChat({
                     createdAt: new Date(),
                     updatedAt: new Date(),
                     status: PitchDeckProcessingStatus.PROCESSING,
-                    reportUUID: null
+                    reportUUID: null,
+                    matchScore: null
                 }])
                 setLastUploadedFileName(null)
 
