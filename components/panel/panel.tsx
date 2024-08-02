@@ -5,15 +5,16 @@ import useSWR from "swr";
 import {getPanelDetails} from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
 import {PitchDeck, User} from "@prisma/client/edge";
-import PitchDeckList from "@/components/interview/pitch-deck-list";
 import Spinner from "@/components/spinner";
+import Link from "next/link";
+import {ArrowLeftIcon, IconChevronLeft, IconChevronUpDown} from "../ui/icons";
 
 interface PanelProps {
     decks?: PitchDeck[]
     user: User
 }
 
-export default function Panel({decks,user}: PanelProps) {
+export default function Panel({decks, user}: PanelProps) {
 
     const searchParams = useSearchParams()
 
@@ -25,9 +26,9 @@ export default function Panel({decks,user}: PanelProps) {
         <>
             <div className="h-full">
                 {!data && (
-                    <Spinner size="xxxl" />
+                    <Spinner size="xxxl"/>
                 )}
-                
+
                 {data && searchParams.get('view') === 'report' && <ReportPanel
                     companyName={data.data.companyName}
                     pitchDeckSummary={data.data.executiveSummary}
@@ -47,8 +48,10 @@ export default function Panel({decks,user}: PanelProps) {
                     user={user}
                 />}
                 {data && (searchParams.get('view')?.includes("_email")) && (
-                    <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
+                    <>
 
+                        <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
+                    </>
                 )}
 
             </div>

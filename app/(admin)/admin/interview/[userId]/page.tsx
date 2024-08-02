@@ -29,6 +29,9 @@ export default async function AdminInterviewPage({params}: AdminInterviewPagePro
     const user = await prisma.user.findUnique({
         where: {
             id: params.userId
+        },
+        include: {
+            memberships: true
         }
     })
 

@@ -543,6 +543,28 @@ function IconChevronUpDown({
     )
 }
 
+function IconChevronLeft({
+                             className,
+                             ...props
+                         }: React.ComponentProps<'svg'>) {
+
+
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg"
+             fill="currentColor"
+             className={cn('size-4', className)}
+
+             width="24"
+            height="24"
+            viewBox="0 0 24 24"
+        {...props}
+        >
+            <path fillRule="evenodd"
+                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+        </svg>
+    )
+}
+
 function SendIcon(props: React.ComponentProps<'svg'>) {
     return (
         <svg
@@ -825,5 +847,6 @@ export {
     CloudUploadIcon,
     CheckmarkIcon,
     IconDollarSign,
-    IconEmail
+    IconEmail,
+    IconChevronLeft
 }

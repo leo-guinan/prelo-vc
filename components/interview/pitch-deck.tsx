@@ -44,7 +44,7 @@ export default function ViewPitchDeck({deck}: PitchDeckProps) {
                 <div className="flex flex-row items-center space-x-4 ">
                     {deck.status === PitchDeckProcessingStatus.COMPLETE && (
                         <Link href={`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`}
-                              className={cn("cursor-pointer hover:bg-[#27272A] py-2 flex flex-row justify-start items-center space-x-2 rounded-lg w-full", isCurrentDeck ? "bg-[#27272A]" : "")}
+                              className={cn("cursor-pointer hover:text-zinc-50 hover:bg-[#27272A] py-2 flex flex-row justify-start items-center space-x-2 rounded-lg w-full", isCurrentDeck ? "bg-[#27272A] text-zinc-50" : "")}
                         >
                             <div className="w-1/8">
                                 <BarChart className={cn("text-blue-500 items-center", deckColor)}/>

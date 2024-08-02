@@ -31,44 +31,44 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
         <>
             {nextStep.next_step_id === "1" && (
 
-                <p>This deck is a no. Write a rejection letter to the founders</p>
+                <p>This deck is a no. <br /> Write a rejection letter to the founders</p>
             )}
 
             {nextStep.next_step_id === "2" && (
-                <p>This deck is a maybe. Request more information from the founders.</p>
+                <p>This deck is a maybe. <br />Request more information from the founders.</p>
             )}
 
             {nextStep.next_step_id === "3" && (
 
-                <p>This deck is a yes. Invite the founders to have a meeting.</p>
+                <p>This deck is a yes. <br/>Invite the founders to have a meeting.</p>
 
             )}
 
             <Link
                 className="ml-4 w-4/5 text-base underline items-center flex"
                 href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
-                write rejection email <MinusIcon className="size-6" overrideColor="#FF7878"/>
+                1. write rejection email
             </Link>
             <Link
                 className="ml-4 w-4/5 text-base underline items-center flex"
                 href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=more_info_email`}>
-                write email for more info
+                2. write email for more info
             </Link>
             <Link
                 className="ml-4 w-4/5 text-base underline items-center flex"
                 href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=meeting_email`}>
-                write email to book meeting 🗓️
+                3. write email to book meeting
             </Link>
             <Link
                 className="ml-4 w-4/5 text-base underline items-center flex"
                 href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=coinvestor_email`}>
-                write email to invite co-investors
+                4. write email to invite co-investors
             </Link>
 
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <span className="ml-4 w-4/5 text-base underline items-center flex">start due diligence on the founders ❓</span>
+                            <span className="ml-4 w-4/5 text-base underline items-center flex">5. start due diligence on the founders</span>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs text-left">
                             <p className="break-words">This is available for white-label implementations only. Please contact support to learn more.</p>

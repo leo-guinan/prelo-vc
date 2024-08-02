@@ -9,9 +9,8 @@ import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import {PitchDeckProcessingStatus, User} from "@prisma/client/edge";
 import {createPitchDeck, getDecks, sendInterviewChatMessage} from "@/app/actions/interview";
-import {Message, PreloChatMessageType} from "@/lib/types";
+import {Message, PreloChatMessageType, UserWithMemberships} from "@/lib/types";
 import Panel from "@/components/panel/panel";
-import {useScrollAnchor} from "@/lib/hooks/use-scroll-anchor";
 import useSwr from "swr";
 import {useScrollToBottom} from 'react-scroll-to-bottom';
 
@@ -19,7 +18,7 @@ import {useScrollToBottom} from 'react-scroll-to-bottom';
 interface AnalysisChatProps {
     messages: Message[]
     uuid: string
-    user: User
+    user: UserWithMemberships
 }
 
 
@@ -102,7 +101,7 @@ export default function InterviewChat({
                     uuid: parsedData.deck_uuid,
                     name: lastUploadedFileName ?? "Pitch Deck",
                     id: -1,
-                    ownerId: -1,
+                    ownerId: user.memberships[0].id,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                     status: PitchDeckProcessingStatus.PROCESSING,
@@ -288,8 +287,6 @@ export default function InterviewChat({
         }
     }
 
-    const {messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom} =
-        useScrollAnchor()
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
@@ -316,7 +313,7 @@ export default function InterviewChat({
                                     <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
 
                                         <ChatList messages={displayedMessages} user={user}
-                                                  chatMessageLoading={chatMessageLoading} />
+                                                  chatMessageLoading={chatMessageLoading}/>
 
                                         <ChatPanel
                                             isLoading={isLoading}

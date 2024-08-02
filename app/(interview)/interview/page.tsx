@@ -38,7 +38,21 @@ export default async function InterviewPage() {
         return null
     }
 
+    const userWithMemberships = await prisma.user.findUnique({
+        where: {
+            id: user.id
+        },
+        include: {
+            memberships: true
+        }
+    })
+
+    if (!userWithMemberships) {
+        return null
+    }
 
 
-    return <InterviewChat messages={response.messages} uuid={(session.user as User).interviewUUID ?? ""} user={user} />
+
+
+    return <InterviewChat messages={response.messages} uuid={(session.user as User).interviewUUID ?? ""} user={userWithMemberships} />
 }

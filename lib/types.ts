@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client/edge"
+
 export interface PitchDeckScores {
 
     market: {
@@ -57,3 +59,7 @@ export interface FileMessage extends PreloChatMessage {
 }
 
 export type Message = DeckReportMessage | PreloChatMessage | FileMessage
+
+export type UserWithMemberships = Prisma.UserGetPayload<{
+  include: { memberships: true }
+}>
