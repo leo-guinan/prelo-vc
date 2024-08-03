@@ -16,6 +16,7 @@ export default async function AnalysisLayout({children}: ContextLayoutProps) {
         redirect(`/sign-in?next=/admin`)
     }
     if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
+        console.log("Redirecting user from sidebar, not superadmin", session.user.id)
         redirect(`/`)
     }
 

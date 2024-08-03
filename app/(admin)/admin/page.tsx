@@ -14,7 +14,7 @@ export default async function AdminDashboardPage() {
     }
 
     if ((session.user as User).globalRole !== GlobalRole.SUPERADMIN) {
-        console.log("User is not superadmin", session.user.id)
+        console.log("Redirecting user from dashboard, not superadmin", session.user.id)
         redirect(`/`)
     }
 
