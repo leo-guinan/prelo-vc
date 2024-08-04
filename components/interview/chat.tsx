@@ -7,7 +7,7 @@ import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components
 import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
-import {PitchDeckProcessingStatus, User} from "@prisma/client/edge";
+import {PitchDeckProcessingStatus} from "@prisma/client/edge";
 import {createPitchDeck, getDecks, sendInterviewChatMessage} from "@/app/actions/interview";
 import {Message, PreloChatMessageType, UserWithMemberships} from "@/lib/types";
 import Panel from "@/components/panel/panel";
@@ -110,6 +110,14 @@ export default function InterviewChat({
                 }])
                 setLastUploadedFileName(null)
 
+                if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                    socketRef.current.send(JSON.stringify({
+                        deck_uuid: parsedData.deck_uuid,
+                        type: "acknowledge_received",
+                        message: "Got it."
+                    }));
+                }
+
             } else if (parsedData.status === "analyzed") {
                 console.log(parsedData.company_name)
                 const newMessage = {
@@ -136,6 +144,15 @@ export default function InterviewChat({
                 }) ?? [])])
                 setDisplayedMessages([...displayedMessages, newMessage])
                 scrollToEnd()
+                if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                    socketRef.current.send(JSON.stringify({
+                        report_uuid: parsedData.report_uuid,
+                        deck_uuid: parsedData.deck_uuid,
+                        type: "acknowledge_analyzed",
+                        message: "Got it."
+
+                    }));
+                }
             }
         }
 
