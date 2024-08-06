@@ -29,7 +29,7 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
     </span>)
     const content = (
         <>
-            {nextStep.next_step_id == "1" && (
+            {nextStep.next_step_id == "3" && (
 
                 <p>This deck is a no. <br /> Write a rejection letter to the founders</p>
             )}
@@ -38,7 +38,7 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
                 <p>This deck is a maybe. <br />Request more information from the founders.</p>
             )}
 
-            {nextStep.next_step_id == "3" && (
+            {nextStep.next_step_id == "1" && (
 
                 <p>This deck is a yes. <br/>Invite the founders to have a meeting.</p>
 
