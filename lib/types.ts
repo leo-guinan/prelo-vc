@@ -47,7 +47,7 @@ export interface DeckReportMessage extends PreloChatMessage {
     report_uuid: string
     report_summary: string
     recommended_next_steps: {
-        next_step_id: string
+        next_step_id: string | number
         next_step_description: string
     }
     deck_score: number
