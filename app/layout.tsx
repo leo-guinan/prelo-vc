@@ -17,7 +17,7 @@ export const metadata = {
         default: 'PreloVC',
         template: `%s - PreloVC`
     },
-    description: "The Investor's Digital Twin that thinks like they do",
+    description: "Your Investor Digital Twin that thinks just like you.",
     icons: {
         icon: '/favicon.ico',
         shortcut: '/favicon-16x16.png',
