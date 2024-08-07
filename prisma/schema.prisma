@@ -36,8 +36,10 @@ model User {
   initalReportUUID  String?
   initialDeckUUID   String?
   initialReportUUID String?
-  connections       Connection[]
-  activated         Boolean            @default(false)
+  loopsId           String?
+
+  connections Connection[]
+  activated   Boolean      @default(false)
 }
 
 enum PitchDeckStatus {
