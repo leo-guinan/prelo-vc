@@ -2,7 +2,6 @@
 import Link from "next/link";
 import ReportSection from "./report-section";
 import {useSearchParams} from "next/navigation";
-import {MinusIcon} from "../ui/icons";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 interface NextStepsSectionProps {
@@ -10,10 +9,11 @@ interface NextStepsSectionProps {
         next_step_id: string;
         next_step_description: string;
     }
+    sample?: boolean
 
 }
 
-export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
+export default function NextStepsSection({nextStep, sample}: NextStepsSectionProps) {
 
     const searchParams = useSearchParams()
     const description = (<span>Here we want to give you some options on how to proceed.
@@ -31,11 +31,11 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
         <>
             {nextStep.next_step_id == "3" && (
 
-                <p>This deck is a no. <br /> Write a rejection letter to the founders</p>
+                <p>This deck is a no. <br/> Write a rejection letter to the founders</p>
             )}
 
             {nextStep.next_step_id == "2" && (
-                <p>This deck is a maybe. <br />Request more information from the founders.</p>
+                <p>This deck is a maybe. <br/>Request more information from the founders.</p>
             )}
 
             {nextStep.next_step_id == "1" && (
@@ -43,42 +43,110 @@ export default function NextStepsSection({nextStep}: NextStepsSectionProps) {
                 <p>This deck is a yes. <br/>Invite the founders to have a meeting.</p>
 
             )}
+            {!sample && (
+                <>
+                    <Link
+                        className="ml-4 w-4/5 text-base underline items-center flex"
+                        href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
+                        1. write rejection email
+                    </Link>
+                    <Link
+                        className="ml-4 w-4/5 text-base underline items-center flex"
+                        href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=more_info_email`}>
+                        2. write email for more info
+                    </Link>
+                    <Link
+                        className="ml-4 w-4/5 text-base underline items-center flex"
+                        href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=meeting_email`}>
+                        3. write email to book meeting
+                    </Link>
+                    <Link
+                        className="ml-4 w-4/5 text-base underline items-center flex"
+                        href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=coinvestor_email`}>
+                        4. write email to invite co-investors
+                    </Link>
 
-            <Link
-                className="ml-4 w-4/5 text-base underline items-center flex"
-                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=rejection_email`}>
-                1. write rejection email
-            </Link>
-            <Link
-                className="ml-4 w-4/5 text-base underline items-center flex"
-                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=more_info_email`}>
-                2. write email for more info
-            </Link>
-            <Link
-                className="ml-4 w-4/5 text-base underline items-center flex"
-                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=meeting_email`}>
-                3. write email to book meeting
-            </Link>
-            <Link
-                className="ml-4 w-4/5 text-base underline items-center flex"
-                href={`?report_uuid=${searchParams.get('report_uuid')}&deck_uuid=${searchParams.get('deck_uuid')}&view=coinvestor_email`}>
-                4. write email to invite co-investors
-            </Link>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">5. start due diligence on the founders</span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">This is available for white-label implementations only.
+                                    Please contact support to learn more.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </>
+            )}
+            {sample && (
+                <>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">
+                                    1. write rejection email
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">Not available on the sample deck. Load a real deck to use this feature.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">
+                                    2. write email for more info
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">Not available on the sample deck. Load a real deck to use this feature.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">
+                                    3. write email to book meeting
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">Not available on the sample deck. Load a real deck to use this feature.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">
+                                    4. write email to invite co-investors
+                                </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">Not available on the sample deck. Load a real deck to use this feature.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <span className="ml-4 w-4/5 text-base underline items-center flex">5. start due diligence on the founders</span>
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs text-left">
-                            <p className="break-words">This is available for white-label implementations only. Please contact support to learn more.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className="ml-4 w-4/5 text-base underline items-center flex">5. start due diligence on the founders</span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-left">
+                                <p className="break-words">This is available for white-label implementations only.
+                                    Please contact support to learn more.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </>
+            )}
+
 
         </>
     )
-
 
 
     return (

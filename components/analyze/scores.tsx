@@ -31,7 +31,7 @@ interface ScoresProps {
 export default function Scores({scores}: ScoresProps) {
     const [displayScores, setDisplayScores] = useState<boolean>(false)
     const theme = useTheme()
-    const overrideColor = theme.theme === "dark" ? "#F9F9F9" : "#242424"
+    const overrideColor = theme.resolvedTheme === "dark" ? "#F9F9F9" : "#242424"
 
     useEffect(() => {
         if (scores) {

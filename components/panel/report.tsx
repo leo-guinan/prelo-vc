@@ -73,21 +73,18 @@ export default function ReportPanel({
                                         pitchDeckSummary,
                                         traction,
                                         concerns,
-                                        believe,
-                                        recommendation,
                                         companyName,
                                         amountRaising,
-                                        investmentScore,
                                         nextStep,
                                         founders,
                                         scores,
-                                        founderContactInfo,
                                         scoreExplanation,
                                         deck_uuid,
                                         report_uuid,
                                         user
 
                                     }: ReportPanelProps) {
+
     const [openSections, setOpenSections] = useState<string[]>([]);
     const {isCopied, copyToClipboard} = useCopyToClipboard({timeout: 2000})
 

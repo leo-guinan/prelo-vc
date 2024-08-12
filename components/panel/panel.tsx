@@ -6,8 +6,7 @@ import {getPanelDetails} from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
 import {PitchDeck, User} from "@prisma/client/edge";
 import Spinner from "@/components/spinner";
-import Link from "next/link";
-import {ArrowLeftIcon, IconChevronLeft, IconChevronUpDown} from "../ui/icons";
+import SampleReportPanel from "@/components/panel/sample-report";
 
 interface PanelProps {
     decks?: PitchDeck[]
@@ -24,9 +23,16 @@ export default function Panel({decks, user}: PanelProps) {
 
     return (
         <>
+
             <div className="h-full">
                 {!data && (
                     <Spinner size="xxxl"/>
+                )}
+
+                {data && decks?.length === 0 && (
+                    <>
+                        <SampleReportPanel/>
+                    </>
                 )}
 
                 {data && searchParams.get('view') === 'report' && <ReportPanel

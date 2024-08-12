@@ -7,6 +7,7 @@ import ChatMessageLoading from "@/components/analyze/chat-message-loading";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {useScrollAnchor} from "@/lib/hooks/use-scroll-anchor";
 import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
+import FAQ from "@/components/analyze/faq";
 
 export interface ChatList {
     messages: PreloChatMessage[]
@@ -45,6 +46,11 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                                 <ChatMessageLoading circleColors={circleColors}/>
 
                             </div>
+                        </>
+                    )}
+                    {!chatMessageLoading && (
+                        <>
+                            <FAQ user={user} />
                         </>
                     )}
                 </div>
