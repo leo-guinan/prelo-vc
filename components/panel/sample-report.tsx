@@ -22,7 +22,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 export default function SampleReportPanel() {
     const {isCopied, copyToClipboard} = useCopyToClipboard({timeout: 2000})
 
-    const companyName = "Beehiiv"
+    const companyName = "Beehiiv (Sample)"
     const pitchDeckSummary = "**Beehiiv - Executive Summary ✍️**\n" +
         "\n" +
         "Beehiv empowers creators to build, grow, and monetize their audience via advanced email newsletter tools.\n" +
