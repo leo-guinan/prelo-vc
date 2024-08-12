@@ -45,7 +45,7 @@ export const authOptions = {
             }
 
             if (user && !user.loopsId) {
-                await fetch("https://n8n-e50h.onrender.com/webhook-test/85ed86de-07ad-4e14-a5f8-3f202f30eb27", {
+                await fetch("https://n8n-e50h.onrender.com/webhook/85ed86de-07ad-4e14-a5f8-3f202f30eb27", {
                     method: "POST",
                     body: JSON.stringify({
                         name: user.name,
