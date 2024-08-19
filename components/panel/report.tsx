@@ -100,7 +100,7 @@ export default function ReportPanel({
         if (isCopied) return
         copyToClipboard(`${window.location.origin}/share/${deck_uuid}/${report_uuid}`)
     }
-
+    console.log(scoreExplanation)
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex flex-col justify-center items-center">

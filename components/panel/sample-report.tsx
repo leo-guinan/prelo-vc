@@ -160,11 +160,11 @@ export default function SampleReportPanel() {
     }
 ]
     const scoreExplanation = {
-        "Market": "",
-        "Team": "",
-        "Deck": "",
-        "Product": "",
-    }
+    "market": "The market opportunity for beehiv is strong, given the rapid growth of the creator economy and the increasing popularity of email newsletters. The company's comprehensive feature set addresses specific pain points in the market, providing a competitive advantage. However, the presence of established competitors like Substack and the challenges of user acquisition and retention slightly diminish the score.",
+    "team": "The team has significant relevant industry experience, particularly with the cofounders' background at Morning Brew, which adds credibility. They possess complementary skill sets necessary for the business, and their track record of success is demonstrated through their previous achievements. However, there may be some uncertainty regarding the depth of the team's experience in scaling a startup in a competitive landscape, which prevents a perfect score.",
+    "product": "The product offers a comprehensive solution for creators, addressing specific pain points with existing platforms. Its unique features and positive user feedback indicate strong potential. However, challenges in user acquisition, competition, and scalability slightly hinder the score.",
+    "traction": "The company has shown some initial traction with positive user feedback from beta users and commitments from current Substack users. However, there is no current revenue or user base data provided, which limits the score. The growth rate is not explicitly mentioned, but the financial projections indicate a path to profitability within 12 months, suggesting potential for growth. There are no strategic partnerships or pilot programs mentioned, which also affects the score."
+}
     const nextStep = {
     "next_step_id": "2",
     "next_step_description": "Learn more about the company"
