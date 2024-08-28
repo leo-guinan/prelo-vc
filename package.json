@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "format:write": "prettier --write \"{app,lib,components}/**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"{app,lib,components}**/*.{ts,tsx,mdx}\" --cache",
-    "postinstall": "prisma generate --no-engine"
+    "postinstall": "prisma generate --no-engine",
+    "migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@auth/core": "^0.28.2",

@@ -1,4 +1,3 @@
-'use client'
 import {CircularProgressBar} from "@/components/analyze/score";
 import Link from "next/link";
 import {type DeckReportMessage} from "@/lib/types";

@@ -138,6 +138,8 @@ model PitchDeck {
   status     PitchDeckProcessingStatus @default(PROCESSING)
   reportUUID String?
   matchScore Int?
+  companyName String?
+
 }
 
 enum PitchDeckProcessingStatus {

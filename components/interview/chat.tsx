@@ -42,7 +42,7 @@ export default function InterviewChat({
     const scrollToEnd = useScrollToBottom();
 
     const {data: decks, mutate} = useSwr(user.id, getDecks)
-
+    
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
         const socket = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`);
@@ -106,7 +106,8 @@ export default function InterviewChat({
                     updatedAt: new Date(),
                     status: PitchDeckProcessingStatus.PROCESSING,
                     reportUUID: null,
-                    matchScore: null
+                    matchScore: null,
+                    companyName: null
                 }])
                 setLastUploadedFileName(null)
 
