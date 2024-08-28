@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import {prisma} from "@/lib/utils";
 import { PitchDeck, PitchDeckProcessingStatus, Organization } from '@prisma/client/edge';
 import { auth } from '@/auth';
+import { headers } from 'next/headers';
 
 export async function POST() {
-
+  
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -75,12 +76,16 @@ export async function POST() {
 }
 
 export async function OPTIONS() {
-    return new NextResponse(null, {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
-    });
+    const headersList = headers();
+  const origin = headersList.get('origin') || 'https://your-extension-origin.com';
+
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true'
+    },
+  });
   }
