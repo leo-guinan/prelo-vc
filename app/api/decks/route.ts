@@ -4,6 +4,7 @@ import { PitchDeck, PitchDeckProcessingStatus, Organization } from '@prisma/clie
 import { auth } from '@/auth';
 
 export async function POST() {
+
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -72,3 +73,14 @@ export async function POST() {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
