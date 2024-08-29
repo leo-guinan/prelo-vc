@@ -139,6 +139,7 @@ model PitchDeck {
   reportUUID String?
   matchScore Int?
   companyName String?
+  recommendedNextStep String?
 
 }
 

@@ -64,8 +64,28 @@ export async function POST() {
             console.error(`Failed to fetch company name for deck ${deck.id}:`, error);
           }
         }
+        if (!deck.recommendedNextStep) {
+            if (deck.matchScore) {
+             if (deck.matchScore < 75) {
+                deck.recommendedNextStep = `${deck.companyName} is not an investment opportunity at this point. Read this report to find out why. 👉`
+             } else if (deck.matchScore < 85) {
+                deck.recommendedNextStep = `${deck.companyName} could be an investment opportunity. Read this report to find out why. 👉`
+             } else {
+                deck.recommendedNextStep = `${deck.companyName} is a great investment opportunity for you. Read this report to find out why. 👉`
+             }
+            }
+            await prisma.pitchDeck.update({
+                where: {
+                    uuid: deck.uuid
+                },
+                data: {
+                    recommendedNextStep: deck.recommendedNextStep
+                }
+            })
+        }
         return deck;
       })
+      
     );
 
     return NextResponse.json(updatedDecks);
