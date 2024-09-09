@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');  // Assuming you're using PostgreSQL
 
@@ -11,12 +12,11 @@ const pool = new Pool({
 
 app.get('/:slug', async (req, res) => {
   const { slug } = req.params;
-
   try {
-    const result = await pool.query('SELECT chat_url FROM User WHERE slug = $1', [slug]);
+    const result = await pool.query('SELECT "chatUrl" FROM "User" WHERE slug = $1', [slug]);
     
     if (result.rows.length > 0) {
-      const chatUrl = result.rows[0].chat_url;
+      const chatUrl = result.rows[0].chatUrl;
       res.redirect(301, `${chatUrl}`);
     } else {
       res.status(404).send('User not found');
