@@ -8,6 +8,9 @@ console.log("process.env.DIRECT_DATABASE_URL", process.env.DIRECT_DATABASE_URL)
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DIRECT_DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: true
+  }
 });
 
 app.get('/:slug', async (req, res) => {
