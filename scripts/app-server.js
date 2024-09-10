@@ -4,13 +4,15 @@ const { Pool } = require('pg');  // Assuming you're using PostgreSQL
 
 const app = express();
 const port = process.env.PORT || 3000;
-console.log("process.env.DIRECT_DATABASE_URL", process.env.DIRECT_DATABASE_URL)
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DIRECT_DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: true
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
 });
 
 app.get('/:slug', async (req, res) => {
@@ -25,7 +27,7 @@ app.get('/:slug', async (req, res) => {
       res.status(404).send('User not found');
     }
   } catch (err) {
-    console.error(err);
+    console.error('Database query error:', err);
     res.status(500).send('Server error');
   }
 });
