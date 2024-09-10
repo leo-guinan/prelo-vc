@@ -34,6 +34,10 @@ app.get('/:slug', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('Health check');
+});
+
 app.listen(port, () => {
   console.log(`Redirect server running on port ${port}`);
 });
