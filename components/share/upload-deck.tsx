@@ -10,7 +10,7 @@ interface UploadDeckProps {
 export default function UploadDeck({ user }: UploadDeckProps) {
     const [uploaded, setUploaded] = useState(false)
 
-    const handleUploadSuccess = () => {
+    const handleUploadSuccess = (message: string) => {
         console.log('Upload success')
         setUploaded(true)
     }

@@ -1,13 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "../../extensions/prelo-vc"
-		},
-		{
 			"path": "."
-		},
-		{
-			"path": "../../extensions/react-markdown"
 		}
 	],
 	"settings": {}
