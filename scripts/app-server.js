@@ -4,7 +4,7 @@ const { Pool } = require('pg');  // Assuming you're using PostgreSQL
 
 const app = express();
 const port = process.env.PORT || 3000;
-
+console.log("process.env.DIRECT_DATABASE_URL", process.env.DIRECT_DATABASE_URL)
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DIRECT_DATABASE_URL,

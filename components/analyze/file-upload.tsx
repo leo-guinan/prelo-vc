@@ -8,6 +8,8 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {CloudUploadIcon} from "@/components/ui/icons";
+import { User } from '@prisma/client/edge';
+import { uploadDeckFromSharedLink } from '@/app/actions/share';
 
 function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
@@ -31,21 +33,26 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
     return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-const FileUpload: React.FC = () => {
+interface FileUploadProps {
+    user: User
+    onUploadSuccess: () => void
+}
+
+export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [uploadUrl, setUploadUrl] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-    const [pitchDeckId, setPitchDeckId] = useState<number | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
-    const router = useRouter()
+
+    const [show, setShow] = useState<boolean>(true)
 
 
     useEffect(() => {
-        if (uploadSuccess && pitchDeckId) {
-            router.push(`/report/${pitchDeckId.toString()}`)
+        if (uploadSuccess) {
+            onUploadSuccess()
+            setShow(false)
         }
-    }, [uploadSuccess, pitchDeckId])
+    }, [uploadSuccess])
 
     // Handle file change event from input
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,15 +66,6 @@ const FileUpload: React.FC = () => {
         if (selectedFile) {
             if (selectedFile.type === 'application/pdf') {
                 setLoading(true);
-                const newUploadUrl = await getUploadUrl(selectedFile.name);
-                if ('error' in newUploadUrl) {
-                    setErrorMessage('Error getting upload URL. Please try again.');
-                    setFile(null);
-                    setLoading(false);
-                    return;
-                }
-                setUploadUrl(newUploadUrl.url)
-                setPitchDeckId(newUploadUrl.pitchDeckId)
                 setFile(selectedFile);
                 setErrorMessage('');
                 setLoading(false);
@@ -88,23 +86,20 @@ const FileUpload: React.FC = () => {
         try {
             setLoading(true);
             // Example: POST request using fetch
-            const response = await fetch(uploadUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/pdf'  // Must match with the content type used to generate the pre-signed URL
-                },
-                body: file,
-            });
 
-            if (response.ok) {
-                console.log('File uploaded successfully');
-                setUploadSuccess(true)
-                // Handle response here
-            } else {
-                setLoading(false);
-                throw new Error('Failed to upload file');
+            const formData = new FormData()
+            formData.append('file', file)
 
+            const response = await uploadDeckFromSharedLink(user.slug ?? "", formData)
+
+            if ('error' in response) {
+                throw new Error(response.error)
             }
+
+           
+            console.log('File uploaded successfully');
+            setUploadSuccess(true)
+          
         } catch (error) {
             console.error('Error uploading file:', error);
             setErrorMessage('Error uploading file. Please try again.');
@@ -144,9 +139,13 @@ const FileUpload: React.FC = () => {
         }
     };
 
+    if (!show) {
+        return null
+    }
+
     return (
-        <div
-            className={`flex items-center justify-center`}
+            <div
+                className={`flex items-center justify-center`}
             onDrop={handleDrop}
             onDragOver={handleDrag}
             onDragEnter={handleDragIn}
@@ -186,4 +185,3 @@ const FileUpload: React.FC = () => {
     );
 }
 
-export default FileUpload;

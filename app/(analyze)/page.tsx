@@ -13,7 +13,5 @@ export default async function UploadPitchDeckPage() {
     }
 
     redirect(`/interview`)
-
-
-    return <FileUpload/>
+    
 }
