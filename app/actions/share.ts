@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from "@/lib/utils"
+import { User } from "@prisma/client/edge"
 import { headers } from "next/headers"
 
 export async function getSharedReport(deck_uuid:string, report_uuid: string) {
@@ -90,5 +91,59 @@ export async function uploadDeckFromSharedLink(slug:string, formData: FormData) 
 
     return {
         message: parsed.message,
+        uuid: parsed.deck_uuid
     }
+}
+
+export async function sendSimpleMessage(slug: string, message: string, deck_uuid: string) {
+    console.log("Sending simple message for deck", deck_uuid)
+    const user = await getUserBySlug(slug)
+
+    if (!user?.submindId) {
+        return {
+            error: "Configure submind before running this step."
+        }
+    }
+
+    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/chat/`, {
+        method: "POST",
+        headers: {
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({
+            message,
+            investor_id: user.id,
+            deck_uuid: deck_uuid,
+            submind_id: user.submindId,
+            source: slug
+        })
+    })
+
+    const parsed = await sendMessageResponse.json()
+
+    return {
+        message: parsed.message,
+    }
+    
+}
+
+export async function getMessages(user: User, uuid: string) {
+
+    console.log("Getting messages for deck", uuid)
+
+    // get them from the api
+    const messages = await fetch(`${process.env.PRELO_API_URL as string}deck/chat/messages/`, {
+        method: "POST",
+        headers: {
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({
+            source: user.slug,
+            deck_uuid: uuid
+        })
+    })
+
+    const parsed = await messages.json()
+
+    return parsed.messages
 }

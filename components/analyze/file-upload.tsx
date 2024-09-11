@@ -35,7 +35,7 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
 
 interface FileUploadProps {
     user: User
-    onUploadSuccess: (message: string) => void
+    onUploadSuccess: (message: string, uuid: string) => void
 }
 
 export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
@@ -44,13 +44,14 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
     const [uploadMessage, setUploadMessage] = useState<string>('');
+    const [uuid, setUuid] = useState<string>('');
 
     const [show, setShow] = useState<boolean>(true)
 
 
     useEffect(() => {
         if (uploadSuccess) {
-            onUploadSuccess(uploadMessage)
+            onUploadSuccess(uploadMessage, uuid)
             setShow(false)
         }
     }, [uploadSuccess])
@@ -92,12 +93,13 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
             formData.append('file', file)
 
             const response = await uploadDeckFromSharedLink(user.slug ?? "", formData)
-            setUploadMessage(response.message)
-
+          
             if ('error' in response) {
                 throw new Error(response.error)
             }
 
+            setUploadMessage(response.message)
+            setUuid(response.uuid)
            
             console.log('File uploaded successfully');
             setUploadSuccess(true)
