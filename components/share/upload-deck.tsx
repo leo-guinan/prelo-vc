@@ -19,8 +19,6 @@ interface UploadDeckProps {
             invitedEmail: string | null
         }[]
     }
-    messages: PreloChatMessage[]
-    uuid: string
 }
 
 export default function UploadDeck({ user }: UploadDeckProps) {

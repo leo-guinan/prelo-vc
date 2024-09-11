@@ -96,7 +96,6 @@ export async function uploadDeckFromSharedLink(slug:string, formData: FormData) 
 }
 
 export async function sendSimpleMessage(slug: string, message: string, deck_uuid: string) {
-    console.log("Sending simple message for deck", deck_uuid)
     const user = await getUserBySlug(slug)
 
     if (!user?.submindId) {
@@ -129,7 +128,6 @@ export async function sendSimpleMessage(slug: string, message: string, deck_uuid
 
 export async function getMessages(user: User, uuid: string) {
 
-    console.log("Getting messages for deck", uuid)
 
     // get them from the api
     const messages = await fetch(`${process.env.PRELO_API_URL as string}deck/chat/messages/`, {
