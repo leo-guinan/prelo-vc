@@ -18,8 +18,9 @@ pool.on('error', (err) => {
 });
 
 app.get('/:slug', async (req, res) => {
-    console.log("Looking for slug", slug)
+    
     const { slug } = req.params;
+    console.log("Looking for slug", slug)
     try {
         const result = await pool.query('SELECT "chatUrl" FROM "User" WHERE slug = $1', [slug]);
         console.log("Number of results", result.rows.length)
