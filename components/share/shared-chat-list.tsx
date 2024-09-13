@@ -9,6 +9,7 @@ import { useScrollAnchor } from "@/lib/hooks/use-scroll-anchor";
 import { ChatScrollAnchor } from "@/components/chat-scroll-anchor";
 import { UserIcon } from 'lucide-react';
 import { SharedChatMessage } from "./shared-chat-message";
+import ChatUser from '../analyze/chat-user';
 
 export interface ChatList {
     messages: PreloChatMessage[]
@@ -18,10 +19,9 @@ export interface ChatList {
     }
     chatMessageLoading: boolean
     ref?: React.RefObject<HTMLDivElement>
-    anonymous?: boolean
 }
 
-export function SharedChatList({ messages, user, chatMessageLoading, anonymous }: ChatList) {
+export function SharedChatList({ messages, user, chatMessageLoading }: ChatList) {
     const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
         useScrollAnchor()
 
@@ -30,7 +30,7 @@ export function SharedChatList({ messages, user, chatMessageLoading, anonymous }
     if (!messages.length) {
         return (
             <>
-                <div className="relative px-4 h-full pb-[225px]" ref={scrollRef}>
+                <div className="relative px-4 h-full" ref={scrollRef}>
 
                     {chatMessageLoading && (
                         <>
@@ -42,14 +42,11 @@ export function SharedChatList({ messages, user, chatMessageLoading, anonymous }
                                     className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
                                 >
-                                    {!anonymous && (
-                                        <Image src="/logo.png" width={32} height={32} alt="PreloVC" />
-                                    )}
-                                    {anonymous && (
-                                        <div className="size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground">
-                                            <UserIcon className="w-4 h-4" />
-                                        </div>
-                                    )}
+
+                                    <div className="size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                        <ChatUser user={user}/>
+                                    </div>
+
 
 
                                 </div>
@@ -57,19 +54,14 @@ export function SharedChatList({ messages, user, chatMessageLoading, anonymous }
 
                             </div>
                         </>
-                    )}
-                    {!chatMessageLoading && (
-                        <>
-                            <h1>Need something to put here.</h1>
-                        </>
-                    )}
+                    )}        
                 </div>
             </>
         )
     }
 
     return (
-        <div className="relative px-4 h-full pb-[225px]" ref={scrollRef}>
+        <div className="relative px-4 h-full" ref={scrollRef}>
             <ScrollArea className="flex flex-col size-full pb-8" ref={messagesRef}>
                 {messages.map((message, index) => (
                     <div key={index}>
@@ -93,7 +85,9 @@ export function SharedChatList({ messages, user, chatMessageLoading, anonymous }
                                 className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
                             >
-                                <Image src="/logo.png" width={32} height={32} alt="PreloVC Logo" className="rounded-full" />
+                                <div className="size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                    <ChatUser user={user}/>
+                                </div>
 
 
                             </div>
@@ -102,7 +96,7 @@ export function SharedChatList({ messages, user, chatMessageLoading, anonymous }
                         </div>
                     </>
                 )}
-               
+
             </ScrollArea>
         </div>
 

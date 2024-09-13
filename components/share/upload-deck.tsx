@@ -37,11 +37,14 @@ export default function UploadDeck({ user }: UploadDeckProps) {
 
     useEffect(() => {
         if (messages) {
-            console.log('Messages', messages)
+            console.log('Messages upload deck', messages)
             setDisplayedMessages(messages)
         }
     }, [messages])
 
+    useEffect(() => {
+        console.log('Displayed messages upload deck', displayedMessages)
+    }, [displayedMessages])
 
     const handleUploadSuccess = (message: string, uuid: string) => {
         console.log('Upload success')

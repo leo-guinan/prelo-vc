@@ -1,10 +1,13 @@
 'use server'
 
-import { prisma } from "@/lib/utils"
+import { nanoid, prisma } from "@/lib/utils"
+import { MongoDBChatMessageHistory } from "@langchain/mongodb"
 import { User } from "@prisma/client/edge"
+import { BufferMemory } from "langchain/memory"
+import { MongoClient } from "mongodb"
 import { headers } from "next/headers"
 
-export async function getSharedReport(deck_uuid:string, report_uuid: string) {
+export async function getSharedReport(deck_uuid: string, report_uuid: string) {
     const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/shared/report/`, {
         method: "POST",
         headers: {
@@ -43,11 +46,11 @@ export async function getUserBySlug(slug: string) {
     return user
 }
 
-export async function uploadDeckFromSharedLink(slug:string, formData: FormData) {
+export async function uploadDeckFromSharedLink(slug: string, formData: FormData) {
     const headersList = headers()
     const xForwardedFor = headersList.get('x-forwarded-for')
     const ip = xForwardedFor ? xForwardedFor.split(',')[0].trim() : ""
-  
+
     const user = await getUserBySlug(slug)
 
     if (!user?.submindId) {
@@ -123,25 +126,55 @@ export async function sendSimpleMessage(slug: string, message: string, deck_uuid
     return {
         message: parsed.message,
     }
-    
+
 }
 
 export async function getMessages(user: User, uuid: string) {
-
-
-    // get them from the api
-    const messages = await fetch(`${process.env.PRELO_API_URL as string}deck/chat/messages/`, {
-        method: "POST",
-        headers: {
-            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
-        },
-        body: JSON.stringify({
-            source: user.slug,
-            deck_uuid: uuid
-        })
+    const client = new MongoClient(process.env.MONGO_URL || "");
+    await client.connect();
+    const collection = client.db("prelovc").collection("prelovc_memory");
+    const lookupUUID = `${user.slug}_${uuid}`
+    const history = new MongoDBChatMessageHistory({
+        collection,
+        sessionId: `${lookupUUID}_chat`,
     })
 
-    const parsed = await messages.json()
 
-    return parsed.messages
+
+    const messages = await history.getMessages();
+    console.log("Messages: ", messages)
+    const interpretedMessages = messages.map((message) => {
+
+
+        return {
+            id: nanoid(),
+            content: message.content.toString(),
+            role: message._getType() === "human" ? "user" : "assistant",
+            type: "text"
+
+        }
+        }
+    )
+
+
+    return interpretedMessages
+
+
+
+    // // get them from the api
+    // const messages = await fetch(`${process.env.PRELO_API_URL as string}deck/chat/messages/`, {
+    //     method: "POST",
+    //     headers: {
+    //         Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+    //     },
+    //     body: JSON.stringify({
+    //         source: user.slug,
+    //         deck_uuid: uuid
+    //     })
+    // })
+
+
+    // const parsed = await messages.json()
+    // console.log("Messages: ", parsed.messages)
+    // return parsed.messages
 }

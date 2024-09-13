@@ -9,7 +9,7 @@ import type { SWRSubscriptionOptions } from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import { PitchDeckProcessingStatus } from "@prisma/client/edge";
 import { createPitchDeck, getDecks, sendInterviewChatMessage } from "@/app/actions/interview";
-import { Message, PreloChatMessageType, UserWithMemberships } from "@/lib/types";
+import { Message, PreloChatMessage, PreloChatMessageType, UserWithMemberships } from "@/lib/types";
 import Panel from "@/components/panel/panel";
 import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
@@ -18,7 +18,7 @@ import { SharedChatList } from "./shared-chat-list";
 
 
 interface AnalysisChatProps {
-    messages: Message[]
+    messages: PreloChatMessage[]
     uuid: string
     user: UserWithMemberships
 }
@@ -29,7 +29,7 @@ export default function InvestorChat({
     uuid,
     user
 }: AnalysisChatProps) {
-    const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
+    const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
     const [dragActive, setDragActive] = useState(false)
@@ -44,6 +44,14 @@ export default function InvestorChat({
     const scrollToEnd = useScrollToBottom();
 
     const { data: decks, mutate } = useSwr(user.id, getDecks)
+
+    useEffect(() => {
+        console.log('Displayed messages investor chat', displayedMessages)
+    }, [displayedMessages])
+
+    useEffect(() => {
+        console.log('Messages investor chat', messages)
+    }, [messages])
 
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
@@ -206,6 +214,7 @@ export default function InvestorChat({
                 type: "text",
             }
 
+            setDisplayedMessages((prevMessages) => [...prevMessages, newUserMessage])
 
             setChatMessageLoading(true)
             // Create a FormData object to send both text and file
@@ -215,7 +224,6 @@ export default function InvestorChat({
                 return
             }
             
-            setDisplayedMessages((prevMessages) => [...prevMessages, newUserMessage])
             scrollToEnd()
 
 
