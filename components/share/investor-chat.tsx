@@ -14,6 +14,7 @@ import Panel from "@/components/panel/panel";
 import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { sendSimpleMessage } from "@/app/actions/share";
+import { SharedChatList } from "./shared-chat-list";
 
 
 interface AnalysisChatProps {
@@ -214,9 +215,7 @@ export default function InvestorChat({
                 return
             }
             
-            setDisplayedMessages([...displayedMessages,
-                newUserMessage
-            ])
+            setDisplayedMessages((prevMessages) => [...prevMessages, newUserMessage])
             scrollToEnd()
 
 
@@ -245,7 +244,7 @@ export default function InvestorChat({
             }
 
 
-            setDisplayedMessages([...displayedMessages, newUserMessage, newMessage]);
+            setDisplayedMessages((prevMessages) => [...prevMessages, newMessage]);
 
             setChatMessageLoading(false)
 
@@ -273,7 +272,7 @@ export default function InvestorChat({
                             className="flex flex-col w-full h-full">
                             <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
 
-                                <ChatList messages={displayedMessages} user={user}
+                                <SharedChatList messages={displayedMessages} user={user}
                                     chatMessageLoading={chatMessageLoading} />
 
                                 <SimpleChatPanel

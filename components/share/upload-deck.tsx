@@ -48,7 +48,7 @@ export default function UploadDeck({ user }: UploadDeckProps) {
         setDisplayedMessages([{
             id: nanoid(),
             content: message,
-            role: "user",
+            role: "assistant",
             type: "text"
         }])
         localStorage.setItem("upload_uuid", uuid)   

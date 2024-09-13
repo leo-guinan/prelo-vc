@@ -1,5 +1,5 @@
+"use client"
 import { Separator } from '@/components/ui/separator'
-import { ChatMessage } from '@/components/chat-message'
 import { PreloChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -7,9 +7,8 @@ import ChatMessageLoading from "@/components/analyze/chat-message-loading";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useScrollAnchor } from "@/lib/hooks/use-scroll-anchor";
 import { ChatScrollAnchor } from "@/components/chat-scroll-anchor";
-import FAQ from "@/components/analyze/faq";
-import { useState } from 'react';
-import { CheckmarkIcon } from './ui/icons';
+import { UserIcon } from 'lucide-react';
+import { SharedChatMessage } from "./shared-chat-message";
 
 export interface ChatList {
     messages: PreloChatMessage[]
@@ -19,9 +18,10 @@ export interface ChatList {
     }
     chatMessageLoading: boolean
     ref?: React.RefObject<HTMLDivElement>
+    anonymous?: boolean
 }
 
-export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
+export function SharedChatList({ messages, user, chatMessageLoading, anonymous }: ChatList) {
     const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
         useScrollAnchor()
 
@@ -30,7 +30,7 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
     if (!messages.length) {
         return (
             <>
-                <div className="relative px-4 h-full pb-[210px]" ref={scrollRef}>
+                <div className="relative px-4 h-full pb-[225px]" ref={scrollRef}>
 
                     {chatMessageLoading && (
                         <>
@@ -42,7 +42,14 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
                                     className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
                                 >
-                                    <Image src="/logo.png" width={32} height={32} alt="PreloVC" />
+                                    {!anonymous && (
+                                        <Image src="/logo.png" width={32} height={32} alt="PreloVC" />
+                                    )}
+                                    {anonymous && (
+                                        <div className="size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                            <UserIcon className="w-4 h-4" />
+                                        </div>
+                                    )}
 
 
                                 </div>
@@ -53,7 +60,7 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
                     )}
                     {!chatMessageLoading && (
                         <>
-                            <FAQ user={user} />
+                            <h1>Need something to put here.</h1>
                         </>
                     )}
                 </div>
@@ -62,14 +69,14 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
     }
 
     return (
-        <div className="relative px-4 h-full pb-[210px]" ref={scrollRef}>
+        <div className="relative px-4 h-full pb-[225px]" ref={scrollRef}>
             <ScrollArea className="flex flex-col size-full pb-8" ref={messagesRef}>
                 {messages.map((message, index) => (
                     <div key={index}>
                         {index === messages.length - 1 && (
                             <ChatScrollAnchor trackVisibility={true} />
                         )}
-                        <ChatMessage message={message} user={user} />
+                        <SharedChatMessage message={message} user={user} />
                         {index < messages.length - 1 && (
                             <Separator className="my-4 md:my-8" />
                         )}
