@@ -1,6 +1,6 @@
 'use client'
 import { MembershipRole, User } from "@prisma/client/edge"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import FileUpload from "@/components/analyze/file-upload"
 import InvestorChat from "./investor-chat"
 import { Message, PreloChatMessage } from "@/lib/types"
@@ -25,7 +25,10 @@ export default function UploadDeck({ user }: UploadDeckProps) {
     const [uploaded, setUploaded] = useState(false)
     const [conversationUuid, setConversationUuid] = useState<string>("")
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>([])
-    const { data: messages } = useSwr(conversationUuid ? [user, conversationUuid] : null, () => getMessages(user, conversationUuid!))
+    const { data: messages, mutate } = useSwr(
+        conversationUuid ? [user.slug, conversationUuid] : null, 
+        () => getMessages(user, conversationUuid!)
+    )
 
     useEffect(() => {
         let uuid = localStorage.getItem("upload_uuid");
@@ -37,35 +40,34 @@ export default function UploadDeck({ user }: UploadDeckProps) {
 
     useEffect(() => {
         if (messages) {
-            console.log('Messages upload deck', messages)
             setDisplayedMessages(messages)
         }
     }, [messages])
 
-    useEffect(() => {
-        console.log('Displayed messages upload deck', displayedMessages)
-    }, [displayedMessages])
-
-    const handleUploadSuccess = (message: string, uuid: string) => {
+    const handleUploadSuccess = useCallback((message: string, uuid: string) => {
         console.log('Upload success')
-        setDisplayedMessages([{
+        const newMessage = {
             id: nanoid(),
             content: message,
             role: "assistant",
             type: "text"
-        }])
+        }
+        setDisplayedMessages([newMessage])
+        mutate([newMessage], false) // Update the SWR cache
         localStorage.setItem("upload_uuid", uuid)   
         setConversationUuid(uuid)
         setUploaded(true)
-        
-    }
-
-
+    }, [mutate])
 
     return (
         <>
             {uploaded ? (
-                <InvestorChat user={user} messages={displayedMessages} uuid={conversationUuid}/>
+                <InvestorChat 
+                    user={user} 
+                    messages={displayedMessages} 
+                    uuid={conversationUuid}
+                    onMessagesUpdate={setDisplayedMessages} // New prop
+                />
             ) : (
                 <FileUpload user={user} onUploadSuccess={handleUploadSuccess}/>
             )}

@@ -30,7 +30,7 @@ export function SharedChatList({ messages, user, chatMessageLoading }: ChatList)
     if (!messages.length) {
         return (
             <>
-                <div className="relative px-4 h-full" ref={scrollRef}>
+                <div className="relative px-4 h-full pb-[125px]" ref={scrollRef}>
 
                     {chatMessageLoading && (
                         <>
@@ -61,7 +61,7 @@ export function SharedChatList({ messages, user, chatMessageLoading }: ChatList)
     }
 
     return (
-        <div className="relative px-4 h-full" ref={scrollRef}>
+        <div className="relative px-4 h-full pb-[125px]" ref={scrollRef}>
             <ScrollArea className="flex flex-col size-full pb-8" ref={messagesRef}>
                 {messages.map((message, index) => (
                     <div key={index}>

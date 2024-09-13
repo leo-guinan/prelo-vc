@@ -16,18 +16,18 @@ import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { sendSimpleMessage } from "@/app/actions/share";
 import { SharedChatList } from "./shared-chat-list";
 
-
 interface AnalysisChatProps {
     messages: PreloChatMessage[]
     uuid: string
     user: UserWithMemberships
+    onMessagesUpdate: (messages: PreloChatMessage[]) => void // New prop
 }
-
 
 export default function InvestorChat({
     messages,
     uuid,
-    user
+    user,
+    onMessagesUpdate
 }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
@@ -52,6 +52,11 @@ export default function InvestorChat({
     useEffect(() => {
         console.log('Messages investor chat', messages)
     }, [messages])
+
+    useEffect(() => {
+        setDisplayedMessages(messages)
+        onMessagesUpdate(messages) // Update parent component's state
+    }, [messages, onMessagesUpdate])
 
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
@@ -171,35 +176,6 @@ export default function InvestorChat({
         setCompletedDialogOpen(true)
     }, [data])
 
-    // const pickFile = async (selectedFile: File | null) => {
-    //     // Check if the file is a PDF
-    //     if (selectedFile) {
-    //         if (selectedFile.type === 'application/pdf') {
-    //             setLoading(true);
-    //             const newUploadUrl = await getUploadUrl(selectedFile.name);
-    //             if ('error' in newUploadUrl) {
-    //                 setErrorMessage('Error getting upload URL. Please try again.');
-    //                 setFile(null);
-    //                 setLoading(false);
-    //                 return;
-    //             }
-    //             setNewUUID(newUploadUrl.uuid)
-    //             setNewBackendId(newUploadUrl.backendId)
-    //
-    //
-    //             setUploadUrl(newUploadUrl.url)
-    //             setFile(selectedFile);
-    //             setErrorMessage('');
-    //             setLoading(false);
-    //         } else {
-    //             setErrorMessage('Please upload a valid PDF file.');
-    //             setFile(null);
-    //         }
-    //     }
-    // }
-
-
-
     const sendMessage = async (message: { content: string, role: "user" }) => {
         console.log("Sending Message...")
         console.log("Content:", message.content)
@@ -214,7 +190,11 @@ export default function InvestorChat({
                 type: "text",
             }
 
-            setDisplayedMessages((prevMessages) => [...prevMessages, newUserMessage])
+            setDisplayedMessages((prevMessages) => {
+                const newMessages = [...prevMessages, newUserMessage]
+                onMessagesUpdate(newMessages) // Update parent component's state
+                return newMessages
+            });
 
             setChatMessageLoading(true)
             // Create a FormData object to send both text and file
@@ -252,7 +232,11 @@ export default function InvestorChat({
             }
 
 
-            setDisplayedMessages((prevMessages) => [...prevMessages, newMessage]);
+            setDisplayedMessages((prevMessages) => {
+                const newMessages = [...prevMessages, newMessage]
+                onMessagesUpdate(newMessages) // Update parent component's state
+                return newMessages
+            });
 
             setChatMessageLoading(false)
 
@@ -268,7 +252,7 @@ export default function InvestorChat({
 
     return (
         <>
-            <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
+            <div className={'pt-4 md:pt-10 size-full mx-auto box-border h-screen'}
 
 
             >
