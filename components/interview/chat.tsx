@@ -1,18 +1,19 @@
 'use client'
-import {ChatList} from "@/components/chat-list";
-import {ChatPanel} from "@/components/chat-panel";
-import {useCallback, useEffect, useRef, useState} from "react";
-import {nanoid} from "@/lib/utils";
-import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import type {SWRSubscriptionOptions} from 'swr/subscription'
+import { ChatList } from "@/components/chat-list";
+import { ChatPanel } from "@/components/chat-panel";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { nanoid } from "@/lib/utils";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { SWRSubscriptionOptions } from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
-import {PitchDeckProcessingStatus} from "@prisma/client/edge";
-import {createPitchDeck, getDecks, sendInterviewChatMessage} from "@/app/actions/interview";
-import {Message, PreloChatMessageType, UserWithMemberships} from "@/lib/types";
+import { PitchDeckProcessingStatus } from "@prisma/client/edge";
+import { createPitchDeck, getDecks, sendInterviewChatMessage } from "@/app/actions/interview";
+import { Message, PreloChatMessageType, UserWithMemberships } from "@/lib/types";
 import Panel from "@/components/panel/panel";
 import useSwr from "swr";
-import {useScrollToBottom} from 'react-scroll-to-bottom';
+import { useScrollToBottom } from 'react-scroll-to-bottom';
+import { CheckmarkIcon } from "../ui/icons";
 
 
 interface AnalysisChatProps {
@@ -23,10 +24,10 @@ interface AnalysisChatProps {
 
 
 export default function InterviewChat({
-                                          messages,
-                                          uuid,
-                                          user
-                                      }: AnalysisChatProps) {
+    messages,
+    uuid,
+    user
+}: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
@@ -41,8 +42,10 @@ export default function InterviewChat({
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const scrollToEnd = useScrollToBottom();
 
-    const {data: decks, mutate} = useSwr(user.id, getDecks)
-    
+
+   
+    const { data: decks, mutate } = useSwr(user.id, getDecks)
+
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
         const socket = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`);
@@ -75,7 +78,7 @@ export default function InterviewChat({
     const {
         data,
         error
-    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key, {next}: SWRSubscriptionOptions<number, Error>) => {
+    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key, { next }: SWRSubscriptionOptions<number, Error>) => {
         console.log("key", key)
         connectWebSocket(); // initiate WebSocket connection
 
@@ -220,7 +223,7 @@ export default function InterviewChat({
             setSelectedFile(files[0])
             event.dataTransfer.clearData();
             console.log("Selected file set.")
-            await sendMessage({content: "File uploaded", role: "user", file: files[0]})
+            await sendMessage({ content: "File uploaded", role: "user", file: files[0] })
         }
     };
 
@@ -262,12 +265,12 @@ export default function InterviewChat({
                 console.error("Error sending message: ", response.error, response.message)
                 setDisplayedMessages([...displayedMessages,
                     newUserMessage,
-                    {
-                        content: "There was an error processing your request. Please try again.",
-                        role: 'assistant',
-                        id: nanoid(),
-                        type: "text" as PreloChatMessageType
-                    }
+                {
+                    content: "There was an error processing your request. Please try again.",
+                    role: 'assistant',
+                    id: nanoid(),
+                    type: "text" as PreloChatMessageType
+                }
                 ])
                 return
             }
@@ -306,13 +309,18 @@ export default function InterviewChat({
         }
     }
 
+    const selectedTemplate = (template: string) => {
+        console.log("Selected template: ", template)
+        sendMessage({ content: template, role: "user" })
+    }
+
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
-                 onDrop={handleDrop}
-                 onDragOver={handleDrag}
-                 onDragEnter={handleDragIn}
-                 onDragLeave={handleDragOut}
+                onDrop={handleDrop}
+                onDragOver={handleDrag}
+                onDragEnter={handleDragIn}
+                onDragLeave={handleDragOut}
 
             >
                 {dragActive && (
@@ -332,7 +340,9 @@ export default function InterviewChat({
                                     <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
 
                                         <ChatList messages={displayedMessages} user={user}
-                                                  chatMessageLoading={chatMessageLoading}/>
+                                            chatMessageLoading={chatMessageLoading}
+                                             />
+                                        
 
                                         <ChatPanel
                                             isLoading={isLoading}
@@ -345,10 +355,10 @@ export default function InterviewChat({
                                 </div>
 
                             </ResizablePanel>
-                            <ResizableHandle/>
+                            <ResizableHandle />
                             <ResizablePanel>
                                 <ScrollArea className="flex flex-col size-full pb-8">
-                                    <Panel user={user} decks={decks}/>
+                                    <Panel user={user} decks={decks} />
                                 </ScrollArea>
                             </ResizablePanel>
                         </ResizablePanelGroup>
