@@ -104,7 +104,7 @@ export function ChatPanel({
                         ))}
                         <button
                             onClick={() => setSelectedButton(null)}
-                            className="flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full bg-indigo-600 hover:bg-indigo-500 text-white text-zinc-50"
+                            className="flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full bg-indigo-600 hover:bg-indigo-500 text-white"
                         >
                             Back
                         </button>
