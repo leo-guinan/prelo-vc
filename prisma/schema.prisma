@@ -41,6 +41,8 @@ model User {
   chatUrl           String?
   connections Connection[]
   activated   Boolean      @default(false)
+  currentDeckUUID String?
+  currentReportUUID String?
 }
 
 enum PitchDeckStatus {

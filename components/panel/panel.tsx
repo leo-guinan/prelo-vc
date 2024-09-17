@@ -7,13 +7,16 @@ import EmailComposer from "@/components/panel/email-composer";
 import {PitchDeck, User} from "@prisma/client/edge";
 import Spinner from "@/components/spinner";
 import SampleReportPanel from "@/components/panel/sample-report";
+import MarkdownBlock from "../ui/markdown-block";
 
 interface PanelProps {
     decks?: PitchDeck[]
     user: User
+    view: null | string
+    content: null | string
 }
 
-export default function Panel({decks, user}: PanelProps) {
+export default function Panel({decks, user, view, content}: PanelProps) {
 
     const searchParams = useSearchParams()
 
@@ -25,17 +28,17 @@ export default function Panel({decks, user}: PanelProps) {
         <>
 
             <div className="h-full">
-                {!data && (
+                {!data && !view && (
                     <Spinner size="xxxl"/>
                 )}
 
-                {data && decks?.length === 0 && (
+                {!view &&data && decks?.length === 0 && (
                     <>
                         <SampleReportPanel/>
                     </>
                 )}
 
-                {data && searchParams.get('view') === 'report' && <ReportPanel
+                {!view && data && searchParams.get('view') === 'report' && <ReportPanel
                     companyName={data.data.companyName}
                     pitchDeckSummary={data.data.executiveSummary}
                     concerns={data.data.concerns}
@@ -53,10 +56,15 @@ export default function Panel({decks, user}: PanelProps) {
                     report_uuid={searchParams.get('report_uuid') as string}
                     user={user}
                 />}
-                {data && (searchParams.get('view')?.includes("_email")) && (
+                {!view && data && (searchParams.get('view')?.includes("_email")) && (
                     <>
 
                         <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
+                    </>
+                )}
+                {view === 'tool' && content && (
+                    <>
+                        <MarkdownBlock content={content}/>
                     </>
                 )}
 

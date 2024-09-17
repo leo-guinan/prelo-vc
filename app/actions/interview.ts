@@ -144,6 +144,9 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     formData.append('client', 'prelovc');
     formData.append('investor_id', user.id);
     formData.append('firm_id', '1');
+    if (user.currentDeckUUID) {
+        formData.append('deck_uuid', user.currentDeckUUID);
+    }
 
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}interview/send/`, {

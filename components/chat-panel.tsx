@@ -7,7 +7,7 @@ import { CheckmarkIcon } from './ui/icons'
 export interface ChatPanelProps {
     input: string
     setInput: React.Dispatch<React.SetStateAction<string>>
-    sendMessage: (message: { content: string; role: 'user'; file?: File }) => void
+    sendMessage: (message: { content: string; role: 'user'; file?: File }, quick?: boolean) => void
     isLoading: boolean
 }
 
@@ -21,6 +21,10 @@ export function ChatPanel({
     const [selectedButton, setSelectedButton] = useState<string | null>(null)
     const [selectedSubButton, setSelectedSubButton] = useState<string | null>(null)
 
+    const proOnlyButtons = [
+        'Due Diligence',
+    ]
+
     const buttons = [
         'Email Founders',
         'Share Concerns',
@@ -32,11 +36,11 @@ export function ChatPanel({
 
     const subButtons: { [key: string]: string[] } = {
         'Email Founders': ['Rejection Email', 'Follow Up Email', 'Book a call', 'Invite Co-Investors', "Request Info"],
-        'Share Concerns': ['To Investors', 'As Outline', 'As Questions'],
-        'List Competitors': ['With Funding', 'Without Funding', 'As Questions'],
-        'Prepare questions': ['To Founders', 'To Investors', 'To Team', 'To Me'],
-        'Research Founders': ['Twitter', 'LinkedIn'],
-        'Generate Deal Memo': ['From Firm', 'From Me']
+        'Share Concerns': ['Traction Concerns', 'Market Size Concerns', 'Team Concerns', 'Product Concerns', 'Competitor Concerns', 'Regulation Concerns'],
+        'List Competitors': ['Competitor Matrix', 'Key Differentiator', 'How Much They Raised', 'Competitor Market Share', 'Competitor Prices', 'Target Market'],
+        'Prepare questions': ['Competition Questions', 'Go To Market Questions', 'Traction Questions', 'Team Questions', 'Shuffle Questions', 'Moat Questions'],
+        'Research Founders': ['Founder Social Media', 'Founder Summary/Bio', 'Due Dilligence', 'Founder Domain Experience', 'Why we rate the founder?'],
+        'Generate Deal Memo': ['Standard Deal Memo', 'With Option Pool Shuffle', 'With Non-Standard Liquidation Preferences']
     }
 
     const toggleButton = (button: string) => {
@@ -49,7 +53,7 @@ export function ChatPanel({
         sendMessage({
             content: `${selectedButton} - ${subButton}`,
             role: 'user'
-        })
+        }, true)
     }
 
     return (
@@ -87,7 +91,8 @@ export function ChatPanel({
                                 className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${selectedSubButton === subButton
                                     ? 'bg-gray-300 text-gray-800'
                                     : 'bg-[#27272A] text-zinc-50'
-                                    }`}
+                                    } ${proOnlyButtons.includes(subButton) ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''}`}
+                                disabled={proOnlyButtons.includes(subButton)}
                             >
                                 {subButton}
                                 {selectedSubButton !== subButton && (

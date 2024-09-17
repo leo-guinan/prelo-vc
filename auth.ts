@@ -88,6 +88,9 @@ export const authOptions = {
                                 }
                             })
                         };
+
+                        // should also trigger an "investor create" on the backend to link the user and their firm. 
+                        // and when that gets created, can run the submind creation. 
                         // eventually need to handle case when this fails, but for now, don't worry about it
                         const eventAnswer = await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
                         const eventAnswerJson = await eventAnswer.json()

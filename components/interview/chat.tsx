@@ -14,6 +14,7 @@ import Panel from "@/components/panel/panel";
 import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { CheckmarkIcon } from "../ui/icons";
+import { useSearchParams } from "next/navigation";
 
 
 interface AnalysisChatProps {
@@ -41,6 +42,9 @@ export default function InterviewChat({
     const [lastUploadedFileName, setLastUploadedFileName] = useState<string | null>(null)
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const scrollToEnd = useScrollToBottom();
+    const [panelView, setPanelView] = useState<string | null>(null)
+    const [panelContent, setPanelContent] = useState<string | null>(null)
+    const searchParams = useSearchParams()
 
 
    
@@ -91,6 +95,13 @@ export default function InterviewChat({
 
         return () => socket?.close();
     })
+
+
+    // Reset panel view and content when search params change
+    useEffect(() => {
+        setPanelView(null)
+        setPanelContent(null)
+    }, [searchParams])
 
 
     useEffect(() => {
@@ -227,7 +238,8 @@ export default function InterviewChat({
         }
     };
 
-    const sendMessage = async (message: { content: string, role: "user", file?: File }) => {
+    const sendMessage = async (message: { content: string, role: "user", file?: File }, quick?: boolean) => {
+        // if quick message, think about how to handle it. Set view to tool and content to message.content
         console.log("Sending Message...")
         console.log("Content:", message.content)
         if (!message.content) return
@@ -272,6 +284,20 @@ export default function InterviewChat({
                     type: "text" as PreloChatMessageType
                 }
                 ])
+                return
+            }
+            if (quick) {
+                setPanelView("tool")
+                setPanelContent(response.message)
+                const newMessage = {
+                    content: "Output displayed in panel 👉",
+                    role: 'assistant',
+                    id: nanoid(),
+                    type: "text" as PreloChatMessageType
+                }
+                setDisplayedMessages([...displayedMessages, newUserMessage, newMessage]);
+                setChatMessageLoading(false)
+                scrollToEnd()
                 return
             }
 
@@ -358,7 +384,7 @@ export default function InterviewChat({
                             <ResizableHandle />
                             <ResizablePanel>
                                 <ScrollArea className="flex flex-col size-full pb-8">
-                                    <Panel user={user} decks={decks} />
+                                    <Panel user={user} decks={decks} view={panelView} content={panelContent} />
                                 </ScrollArea>
                             </ResizablePanel>
                         </ResizablePanelGroup>

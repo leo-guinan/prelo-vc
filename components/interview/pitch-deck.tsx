@@ -6,6 +6,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {getDeck} from "@/app/actions/interview";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
+import { setCurrentContext } from "@/app/actions/context";
 
 interface PitchDeckProps {
     deck: PitchDeck
@@ -15,6 +16,7 @@ interface PitchDeckProps {
 export default function ViewPitchDeck({deck}: PitchDeckProps) {
     const [displayedDeck, setDisplayedDeck] = useState<PitchDeck | null>(deck);
     const searchParams = useSearchParams()
+    const router = useRouter()
     const isCurrentDeck = searchParams.get('deck_uuid') === deck.uuid
     const pickColor = (score?: number | null) => {
         if (!score) return 'text-gray-500'
@@ -37,6 +39,14 @@ export default function ViewPitchDeck({deck}: PitchDeckProps) {
         void updateDeck(deck.uuid)
     }, [deck]);
 
+    const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault()
+        if (deck.status === PitchDeckProcessingStatus.COMPLETE && deck.reportUUID) {
+            await setCurrentContext(deck.uuid, deck.reportUUID)
+            router.push(`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`)
+        }
+    }
+
 
     return (
         <>
@@ -45,6 +55,7 @@ export default function ViewPitchDeck({deck}: PitchDeckProps) {
                     {deck.status === PitchDeckProcessingStatus.COMPLETE && (
                         <Link href={`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`}
                               className={cn("cursor-pointer hover:text-zinc-50 hover:bg-[#27272A] py-2 flex flex-row justify-start items-center space-x-2 rounded-lg w-full", isCurrentDeck ? "bg-[#27272A] text-zinc-50" : "")}
+                              onClick={handleClick}
                         >
                             <div className="w-1/8">
                                 <BarChart className={cn("text-blue-500 items-center", deckColor)}/>

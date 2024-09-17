@@ -142,7 +142,6 @@ export async function getMessages(user: User, uuid: string) {
 
 
     const messages = await history.getMessages();
-    console.log("Messages: ", messages)
     const interpretedMessages = messages.map((message) => {
 
 
