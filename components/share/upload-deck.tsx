@@ -56,7 +56,7 @@ export default function UploadDeck({ user }: UploadDeckProps) {
         mutate([newMessage], false) // Update the SWR cache
         const lookupUUID = `${user.slug}_${uuid}`
         localStorage.setItem(`${user.slug}_upload_uuid`, lookupUUID)   
-        setConversationUuid(lookupUUID)
+        setConversationUuid(uuid)
         setUploaded(true)
     }, [mutate])
 
