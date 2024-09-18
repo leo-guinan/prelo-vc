@@ -1,15 +1,17 @@
 'use client'
-import React, {useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {getUploadUrl} from "@/app/actions/analyze";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getUploadUrl } from "@/app/actions/analyze";
 import DisplayFile from "@/components/analyze/file";
-import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {CloudUploadIcon} from "@/components/ui/icons";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { CloudUploadIcon } from "@/components/ui/icons";
 import { User } from '@prisma/client/edge';
 import { uploadDeckFromSharedLink } from '@/app/actions/share';
+import ChatUser from './chat-user';
+import { UserWithMemberships } from '@/lib/types';
 
 function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
@@ -34,7 +36,7 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
 }
 
 interface FileUploadProps {
-    user: User
+    user: UserWithMemberships
     onUploadSuccess: (message: string, uuid: string) => void
 }
 
@@ -45,6 +47,8 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
     const [uploadMessage, setUploadMessage] = useState<string>('');
     const [uuid, setUuid] = useState<string>('');
+    const [investorName, setInvestorName] = useState<string>(user.firstName ?? 'Investor');
+    const [investorCompany, setInvestorCompany] = useState<string>(user.memberships[0].organization.name ?? 'Early Stage');
 
     const [show, setShow] = useState<boolean>(true)
 
@@ -93,17 +97,17 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
             formData.append('file', file)
 
             const response = await uploadDeckFromSharedLink(user.slug ?? "", formData)
-          
+
             if ('error' in response) {
                 throw new Error(response.error)
             }
 
             setUploadMessage(response.message)
             setUuid(response.uuid)
-           
+
             console.log('File uploaded successfully');
             setUploadSuccess(true)
-          
+
         } catch (error) {
             console.error('Error uploading file:', error);
             setErrorMessage('Error uploading file. Please try again.');
@@ -148,18 +152,27 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
     }
 
     return (
-            <div
-                className={`flex items-center justify-center`}
+        <div
+            className={`flex items-center justify-center h-screen`}
             onDrop={handleDrop}
             onDragOver={handleDrag}
             onDragEnter={handleDragIn}
             onDragLeave={handleDragOut}
         >
-            <Card className="w-full max-w-lg">
-                <CardHeader>
-                    {errorMessage && <div style={{color: 'red'}}>{errorMessage}</div>}
+            <Card className="w-full h-full py-48"
+                        style={{ backgroundImage: 'url(/share-hero.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center' }}
+
+            >
+                <CardHeader className='flex flex-col items-center justify-center'>                
+                    <div className='flex flex-col items-center justify-center gap-4'>
+                        <ChatUser user={user} height={128} width={128} />
+
+                    </div>
+                    <h1 className="text-5xl font-bold">Hey, I&apos;m {investorName}</h1>
+                    <h2 className='text-5xl font-bold'>Investor at <span className="text-objections">{investorCompany}</span></h2>
+                    {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
                 </CardHeader>
-                <CardContent className="flex items-center gap-4 py-6">
+                <CardContent className="flex items-center gap-4 py-8 max-w-lg mx-auto">
                     <div className="grid w-full gap-1.5">
                         <Label
                             className="border border-dashed bg-standard dark:bg-zinc-50 text-zinc-50 dark:text-gray-900 rounded-lg w-4/5 mx-auto p-8 flex items-center justify-center gap-2 text-xl cursor-pointer hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50"
@@ -167,20 +180,20 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
                         >
                             <span>Upload your Pitch Deck</span>
                             <span className="ml-auto font-semibold">
-                                <CloudUploadIcon className="size-16"/>
+                                <CloudUploadIcon className="size-16" />
                             </span>
                             <Input className="sr-only" id="pdf" type="file" onChange={handleFileChange}
-                                   disabled={loading}
-                                   accept="application/pdf"/>
+                                disabled={loading}
+                                accept="application/pdf" />
                         </Label>
                         {file && (
                             <>
-                                <DisplayFile name={file.name} size={humanFileSize(file.size)} type={file.type}/>
+                                <DisplayFile name={file.name} size={humanFileSize(file.size)} type={file.type} />
                             </>
                         )}
                     </div>
                 </CardContent>
-                <CardFooter className="flex p-3 border-t justify-end">
+                <CardFooter className="flex p-3 border-t justify-end max-w-lg mx-auto">
                     <Button size="sm" onClick={handleUpload} disabled={loading || !file}>Submit</Button>
                 </CardFooter>
             </Card>

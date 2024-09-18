@@ -39,6 +39,8 @@ model User {
   loopsId           String?
   slug              String? @unique
   chatUrl           String?
+  firstName         String?
+  lastName          String?
   connections Connection[]
   activated   Boolean      @default(false)
   currentDeckUUID String?

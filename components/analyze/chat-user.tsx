@@ -6,9 +6,11 @@ interface ChatUserProps {
         image?: string | null
 
     }
+    height?: number
+    width?: number
 }
 
-export default function ChatUser({user}: ChatUserProps) {
+export default function ChatUser({user, height, width}: ChatUserProps) {
     function getUserInitials(name?: string) {
         if (!name) return "US"
         const [firstName, lastName] = name.split(' ')
@@ -22,8 +24,8 @@ export default function ChatUser({user}: ChatUserProps) {
                     className="transition-opacity duration-300 rounded-full select-none hover:opacity-80"
                     src={user?.image ? `${user.image}` : ''}
                     alt={user?.name ?? 'Avatar'}
-                    height={32}
-                    width={32}
+                    height={height ?? 32}
+                    width={width ?? 32}
                 />
             ) : (
                 <div

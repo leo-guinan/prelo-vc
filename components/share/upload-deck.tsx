@@ -3,22 +3,13 @@ import { MembershipRole, User } from "@prisma/client/edge"
 import { useEffect, useState, useCallback } from "react"
 import FileUpload from "@/components/analyze/file-upload"
 import InvestorChat from "./investor-chat"
-import { Message, PreloChatMessage } from "@/lib/types"
+import { Message, PreloChatMessage, UserWithMemberships } from "@/lib/types"
 import { nanoid } from "@/lib/utils"
 import useSwr from "swr"
 import { getMessages } from "@/app/actions/share"
 
 interface UploadDeckProps {
-    user: User & {
-        memberships: {
-            id: number
-            role: MembershipRole
-            organizationId: number
-            userId: string | null
-            invitedName: string | null
-            invitedEmail: string | null
-        }[]
-    }
+    user: UserWithMemberships 
 }
 
 export default function UploadDeck({ user }: UploadDeckProps) {
@@ -61,7 +52,7 @@ export default function UploadDeck({ user }: UploadDeckProps) {
     }, [mutate])
 
     return (
-        <>
+        <div className="flex flex-col h-screen" >
             {uploaded ? (
                 <InvestorChat 
                     user={user} 
@@ -72,6 +63,6 @@ export default function UploadDeck({ user }: UploadDeckProps) {
             ) : (
                 <FileUpload user={user} onUploadSuccess={handleUploadSuccess}/>
             )}
-        </>
+        </div>
     )
 }

@@ -61,5 +61,9 @@ export interface FileMessage extends PreloChatMessage {
 export type Message = DeckReportMessage | PreloChatMessage | FileMessage
 
 export type UserWithMemberships = Prisma.UserGetPayload<{
-  include: { memberships: true }
+  include: { memberships: {
+    include: {
+      organization: true
+    }
+  } }
 }>

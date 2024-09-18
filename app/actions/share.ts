@@ -35,7 +35,11 @@ export async function getUserBySlug(slug: string) {
             slug
         },
         include: {
-            memberships: true
+            memberships: {
+                include: {
+                    organization: true
+                }
+            }
         }
     })
 
