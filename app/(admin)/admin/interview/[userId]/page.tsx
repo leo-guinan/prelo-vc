@@ -31,7 +31,12 @@ export default async function AdminInterviewPage({params}: AdminInterviewPagePro
             id: params.userId
         },
         include: {
-            memberships: true
+            memberships: {
+                include: {
+                    organization: true
+                }
+            },
+            shareProfile: true
         }
     })
 
