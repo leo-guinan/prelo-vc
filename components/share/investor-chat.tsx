@@ -15,6 +15,7 @@ import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { sendSimpleMessage } from "@/app/actions/share";
 import { SharedChatList } from "./shared-chat-list";
+import ShareProfile from "./share-profile";
 
 interface InvestorChatProps {
     messages: PreloChatMessage[]
@@ -78,7 +79,7 @@ export default function InvestorChat({
                 console.error("Error sending message: ", response.error, response.message)
                 return
             }
-            
+
             scrollToEnd()
 
 
@@ -117,25 +118,33 @@ export default function InvestorChat({
 
                 <>
                     <div className="flex flex-col-reverse sm:flex-row h-full">
+                        <ResizablePanelGroup direction="horizontal">
+                            <ResizablePanel>
+                                <div
+                                    className="flex flex-col w-full h-full">
 
-                        <div
-                            className="flex flex-col w-full h-full">
-                            <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
+                                    <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
 
-                                <SharedChatList messages={displayedMessages} user={user}
-                                    chatMessageLoading={chatMessageLoading} />
+                                        <SharedChatList messages={displayedMessages} user={user}
+                                            chatMessageLoading={chatMessageLoading} />
 
-                                <SimpleChatPanel
-                                    isLoading={isLoading}
-                                    input={input}
-                                    setInput={setInput}
-                                    sendMessage={sendMessage}
+                                        <SimpleChatPanel
+                                            isLoading={isLoading}
+                                            input={input}
+                                            setInput={setInput}
+                                            sendMessage={sendMessage}
 
-                                />
-                            </div>
-                        </div>
-
-
+                                        />
+                                    </div>
+                                </div>
+                            </ResizablePanel>
+                            <ResizableHandle />
+                            <ResizablePanel>
+                                <div className="flex flex-col size-full pb-8">
+                                    <ShareProfile user={user} />
+                                </div>
+                            </ResizablePanel>
+                        </ResizablePanelGroup>
 
 
                     </div>

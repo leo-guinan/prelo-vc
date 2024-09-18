@@ -35,11 +35,12 @@ export async function getUserBySlug(slug: string) {
             slug
         },
         include: {
+            shareProfile: true,
             memberships: {
                 include: {
-                    organization: true
+                    organization: true,
                 }
-            }
+            },
         }
     })
 
@@ -156,7 +157,7 @@ export async function getMessages(user: User, uuid: string) {
             type: "text"
 
         }
-        }
+    }
     )
 
 

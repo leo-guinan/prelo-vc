@@ -45,6 +45,22 @@ model User {
   activated   Boolean      @default(false)
   currentDeckUUID String?
   currentReportUUID String?
+  shareProfile      ShareProfile?
+}
+
+model ShareProfile {
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime?       @updatedAt
+  userId    String          @unique
+  user      User            @relation(fields: [userId], references: [id])
+  name      String
+  company   String
+  avatarUrl String
+  passion   String
+  thesis    String
+  industries  String
+  checkSize   String
 }
 
 enum PitchDeckStatus {
