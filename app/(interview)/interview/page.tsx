@@ -43,7 +43,12 @@ export default async function InterviewPage() {
             id: user.id
         },
         include: {
-            memberships: true
+            memberships: {
+                include: {
+                    organization: true
+                }
+            },
+            shareProfile: true
         }
     })
 
