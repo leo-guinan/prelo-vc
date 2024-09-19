@@ -22,9 +22,10 @@ export default function UploadDeck({ user }: UploadDeckProps) {
     )
 
     useEffect(() => {
-        let uuid = localStorage.getItem("upload_uuid");
+        let uuid = localStorage.getItem(`${user.slug}_upload_uuid`);
         if (uuid) {
-            setConversationUuid(uuid)
+            const parts = uuid.split("_")
+            setConversationUuid(parts[1])
             setUploaded(true)
         }
     }, [])
