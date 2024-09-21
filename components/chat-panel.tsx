@@ -35,7 +35,7 @@ export function ChatPanel({
     ]
 
     const subButtons: { [key: string]: string[] } = {
-        'Email Founders': ['Rejection Email', 'Follow Up Email', 'Book a call', 'Invite Co-Investors', "Request Info"],
+        'Email Founders': ['Rejection Email', 'Book a call', 'Invite Co-Investors', "Request Info"],
         'Share Concerns': ['Traction Concerns', 'Market Size Concerns', 'Team Concerns', 'Product Concerns', 'Competitor Concerns', 'Regulation Concerns'],
         'List Competitors': ['Competitor Matrix', 'Key Differentiator', 'How Much They Raised', 'Competitor Market Share', 'Competitor Prices', 'Target Market'],
         'Prepare questions': ['Competition Questions', 'Go To Market Questions', 'Traction Questions', 'Team Questions', 'Shuffle Questions', 'Moat Questions'],
