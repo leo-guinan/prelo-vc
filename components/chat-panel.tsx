@@ -39,8 +39,8 @@ export function ChatPanel({
         'Share Concerns': ['Traction Concerns', 'Market Size Concerns', 'Team Concerns', 'Product Concerns', 'Competitor Concerns', 'Regulation Concerns'],
         'List Competitors': ['Competitor Matrix', 'Key Differentiator', 'How Much They Raised', 'Competitor Market Share', 'Competitor Prices', 'Target Market'],
         'Prepare questions': ['Competition Questions', 'Go To Market Questions', 'Traction Questions', 'Team Questions', 'Shuffle Questions', 'Moat Questions'],
-        'Research Founders': ['Founder Social Media', 'Founder Summary/Bio', 'Due Dilligence', 'Founder Domain Experience', 'Why we rate the founder?'],
-        'Generate Deal Memo': ['Standard Deal Memo', 'With Option Pool Shuffle', 'With Non-Standard Liquidation Preferences']
+        'Research Founders': ['Founder Social Media', 'Founder Summary/Bio', 'Founder Domain Experience', 'Why we rate the founder?'],
+        'Generate Deal Memo': ['Deal Memo Template', 'Generate Deal Memo', 'Standard Term Sheet']
     }
 
     const toggleButton = (button: string) => {

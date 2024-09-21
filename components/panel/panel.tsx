@@ -9,11 +9,18 @@ import Spinner from "@/components/spinner";
 import SampleReportPanel from "@/components/panel/sample-report";
 import MarkdownBlock from "../ui/markdown-block";
 
+
+export interface EmailContent {
+    to: string
+    body: string
+    subject: string
+}
+
 interface PanelProps {
     decks?: PitchDeck[]
     user: User
     view: null | string
-    content: null | string
+    content: null | string | EmailContent
 }
 
 export default function Panel({decks, user, view, content}: PanelProps) {
@@ -62,9 +69,14 @@ export default function Panel({decks, user, view, content}: PanelProps) {
                         <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
                     </>
                 )}
-                {view === 'tool' && content && (
+                {view === 'tool' && content && typeof content === 'string' && (
                     <>
                         <MarkdownBlock content={content}/>
+                    </>
+                )}
+                {view === 'email' && content && typeof content === 'object' && (
+                    <>
+                        <EmailComposer to={content.to} body={content.body} subject={content.subject}/>
                     </>
                 )}
 

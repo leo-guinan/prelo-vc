@@ -159,9 +159,22 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
 
     const parsed = await sendMessageResponse.json()
 
-    return {
-        message: parsed.message,
+    if (parsed.type === "email") {
+        return {
+            type: "email",
+            message: {
+                to: parsed.email,
+                subject: parsed.subject,
+                body: parsed.content
+            }
+        }
+    } else if (parsed.type === "message") {
+        return {
+            type: "message",
+            message: parsed.message
+        }
     }
+
 }
 
 export async function createPitchDeck(deckUUID: string, userId: string, fileName: string | null) {

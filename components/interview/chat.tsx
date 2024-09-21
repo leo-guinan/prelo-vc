@@ -10,7 +10,7 @@ import useSWRSubscription from 'swr/subscription'
 import { PitchDeckProcessingStatus } from "@prisma/client/edge";
 import { createPitchDeck, getDecks, sendInterviewChatMessage } from "@/app/actions/interview";
 import { Message, PreloChatMessageType, UserWithMemberships } from "@/lib/types";
-import Panel from "@/components/panel/panel";
+import Panel, { EmailContent } from "@/components/panel/panel";
 import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { CheckmarkIcon } from "../ui/icons";
@@ -43,7 +43,7 @@ export default function InterviewChat({
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const scrollToEnd = useScrollToBottom();
     const [panelView, setPanelView] = useState<string | null>(null)
-    const [panelContent, setPanelContent] = useState<string | null>(null)
+    const [panelContent, setPanelContent] = useState<string | EmailContent | null>(null)
     const searchParams = useSearchParams()
 
 
@@ -272,9 +272,10 @@ export default function InterviewChat({
 
             const response = await sendInterviewChatMessage(uuid, formData, user.id);
 
+
             if (!response || 'error' in response) {
                 setLastUploadedFileName(null)
-                console.error("Error sending message: ", response.error, response.message)
+                console.error("Error sending message: ", response?.error, response?.message)
                 setDisplayedMessages([...displayedMessages,
                     newUserMessage,
                 {
@@ -287,8 +288,14 @@ export default function InterviewChat({
                 return
             }
             if (quick) {
-                setPanelView("tool")
-                setPanelContent(response.message)
+                if (response.type === "email") {
+                    setPanelView("email")
+                    setPanelContent(response.message as EmailContent)
+                } else {
+                    setPanelView("tool")
+                    setPanelContent(response.message)
+                }
+                
                 const newMessage = {
                     content: "Output displayed in panel 👉",
                     role: 'assistant',
