@@ -53,7 +53,9 @@ export function ChatPanel({
         sendMessage({
             content: `${selectedButton} - ${subButton}`,
             role: 'user'
-        }, true)
+        }, true)  // Pass true for quick messages
+        
+        setInput(`${selectedButton} - ${subButton}`)
     }
 
     return (

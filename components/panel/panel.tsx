@@ -8,6 +8,7 @@ import {PitchDeck, User} from "@prisma/client/edge";
 import Spinner from "@/components/spinner";
 import SampleReportPanel from "@/components/panel/sample-report";
 import MarkdownBlock from "../ui/markdown-block";
+import { useEffect } from "react";
 
 
 export interface EmailContent {
@@ -24,6 +25,7 @@ interface PanelProps {
 }
 
 export default function Panel({decks, user, view, content}: PanelProps) {
+
 
     const searchParams = useSearchParams()
 

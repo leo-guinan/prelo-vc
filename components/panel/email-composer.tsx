@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import {useCopyToClipboard} from "@/lib/hooks/use-copy-to-clipboard";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
@@ -21,6 +21,12 @@ export default function EmailCompose({to, subject, body}: EmailComposeProps) {
         const mailtoLink = `mailto:${displayedTo}?body=${encodeURIComponent(displayedBody)}&subject=${encodeURIComponent(displayedSubject)}`;
         window.location.href = mailtoLink;
     };
+
+    useEffect(() => {
+        setDisplayedTo(to)
+        setDisplayedSubject(subject)
+        setDisplayedBody(body)
+    }, [to, subject, body])
 
     return (
         <div className="max-w-2xl mx-auto mt-8 p-6 rounded-lg">
