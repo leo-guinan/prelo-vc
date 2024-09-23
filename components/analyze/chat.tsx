@@ -58,7 +58,6 @@ export default function AnalysisChat({
                                      }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
-    const [input, setInput] = useState('')
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -189,8 +188,6 @@ export default function AnalysisChat({
                                             <div className="relative">
                                                 <ChatPanel
                                                     isLoading={isLoading}
-                                                    input={input}
-                                                    setInput={setInput}
                                                     sendMessage={sendMessage}
 
                                                 />
