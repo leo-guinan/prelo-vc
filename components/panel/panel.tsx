@@ -1,14 +1,15 @@
 'use client'
-import {useSearchParams} from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import ReportPanel from "@/components/panel/report";
 import useSWR from "swr";
-import {getPanelDetails} from "@/app/actions/interview";
+import { getPanelDetails } from "@/app/actions/interview";
 import EmailComposer from "@/components/panel/email-composer";
-import {PitchDeck, User} from "@prisma/client/edge";
+import { PitchDeck, User } from "@prisma/client/edge";
 import Spinner from "@/components/spinner";
 import SampleReportPanel from "@/components/panel/sample-report";
 import MarkdownBlock from "../ui/markdown-block";
 import { useEffect } from "react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 
 export interface EmailContent {
@@ -24,13 +25,13 @@ interface PanelProps {
     content: null | string | EmailContent
 }
 
-export default function Panel({decks, user, view, content}: PanelProps) {
+export default function Panel({ decks, user, view, content }: PanelProps) {
 
 
     const searchParams = useSearchParams()
 
 
-    const {data} = useSWR(`${window.location.href}/api/panelData?${searchParams}`, getPanelDetails)
+    const { data } = useSWR(`${window.location.href}/api/panelData?${searchParams}`, getPanelDetails)
 
 
     return (
@@ -38,12 +39,12 @@ export default function Panel({decks, user, view, content}: PanelProps) {
 
             <div className="h-full">
                 {!data && !view && (
-                    <Spinner size="xxxl"/>
+                    <Spinner size="xxxl" />
                 )}
 
-                {!view &&data && decks?.length === 0 && (
+                {!view && data && decks?.length === 0 && (
                     <>
-                        <SampleReportPanel/>
+                        <SampleReportPanel />
                     </>
                 )}
 
@@ -68,17 +69,21 @@ export default function Panel({decks, user, view, content}: PanelProps) {
                 {!view && data && (searchParams.get('view')?.includes("_email")) && (
                     <>
 
-                        <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject}/>
+                        <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject} />
                     </>
                 )}
                 {view === 'tool' && content && typeof content === 'string' && (
                     <>
-                        <MarkdownBlock content={content}/>
+                        <ScrollArea className="flex flex-row justify-between w-4/5 mx-auto">
+                            <ScrollBar orientation="horizontal" />
+                            <ScrollBar orientation="vertical" />
+                            <MarkdownBlock content={content} />
+                        </ScrollArea>
                     </>
                 )}
                 {view === 'email' && content && typeof content === 'object' && (
                     <>
-                        <EmailComposer to={content.to} body={content.body} subject={content.subject}/>
+                        <EmailComposer to={content.to} body={content.body} subject={content.subject} />
                     </>
                 )}
 
