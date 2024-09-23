@@ -30,6 +30,17 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
 
     const searchParams = useSearchParams()
 
+    useEffect(() => {
+        console.log("panel: searchParams", searchParams)
+    }, [searchParams])
+
+    useEffect(() => {
+        console.log("panel: view", view)
+    }, [view])
+
+    useEffect(() => {
+        console.log("panel: content", content)
+    }, [content])
 
     const { data } = useSWR(`${window.location.href}/api/panelData?${searchParams}`, getPanelDetails)
 

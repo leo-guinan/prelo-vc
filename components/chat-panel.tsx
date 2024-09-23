@@ -5,18 +5,15 @@ import { useState } from 'react'
 import { CheckmarkIcon } from './ui/icons'
 
 export interface ChatPanelProps {
-    input: string
-    setInput: React.Dispatch<React.SetStateAction<string>>
     sendMessage: (message: { content: string; role: 'user'; file?: File }, quick?: boolean) => void
     isLoading: boolean
 }
 
 export function ChatPanel({
-    input,
-    setInput,
     sendMessage,
     isLoading
-}: ChatPanelProps) {
+}: Omit<ChatPanelProps, 'input' | 'setInput'>) {
+    const [input, setInput] = useState('');
 
     const [selectedButton, setSelectedButton] = useState<string | null>(null)
     const [selectedSubButton, setSelectedSubButton] = useState<string | null>(null)
@@ -49,13 +46,13 @@ export function ChatPanel({
     }
 
     const toggleSubButton = (subButton: string) => {
-        setSelectedSubButton(subButton)
+        setSelectedSubButton(subButton);
         sendMessage({
             content: `${selectedButton} - ${subButton}`,
             role: 'user'
-        }, true)  // Pass true for quick messages
+        }, true);  // Pass true for quick messages
         
-        setInput(`${selectedButton} - ${subButton}`)
+        setInput('');  // Clear the input after sending the message
     }
 
     return (

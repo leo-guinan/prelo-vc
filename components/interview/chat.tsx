@@ -83,7 +83,6 @@ export default function InterviewChat({
         data,
         error
     } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key, { next }: SWRSubscriptionOptions<number, Error>) => {
-        console.log("key", key)
         connectWebSocket(); // initiate WebSocket connection
 
         const socket = socketRef.current;
@@ -102,6 +101,8 @@ export default function InterviewChat({
         setPanelView(null)
         setPanelContent(null)
     }, [searchParams])
+
+
 
 
     useEffect(() => {
@@ -135,7 +136,6 @@ export default function InterviewChat({
                 }
 
             } else if (parsedData.status === "analyzed") {
-                console.log(parsedData.company_name)
                 const newMessage = {
                     content: parsedData.report_summary,
                     deck_uuid: parsedData.deck_uuid,
@@ -202,9 +202,7 @@ export default function InterviewChat({
     //     }
     // }
 
-    useEffect(() => {
-        console.log("User id: ", user.id)
-    }, [user])
+
 
     const handleDrag = (event: React.DragEvent<HTMLDivElement>): void => {
         event.preventDefault();
@@ -240,9 +238,9 @@ export default function InterviewChat({
 
     const sendMessage = async (message: { content: string, role: "user", file?: File }, quick?: boolean) => {
         // if quick message, think about how to handle it. Set view to tool and content to message.content
-        console.log("Sending Message...")
-        console.log("Content:", message.content)
+        
         if (!message.content) return
+        setInput('')
         setIsLoading(true)
         try {
             const newUserMessage = {
@@ -341,12 +339,6 @@ export default function InterviewChat({
 
         }
     }
-
-    const selectedTemplate = (template: string) => {
-        console.log("Selected template: ", template)
-        sendMessage({ content: template, role: "user" })
-    }
-
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
@@ -379,8 +371,6 @@ export default function InterviewChat({
 
                                         <ChatPanel
                                             isLoading={isLoading}
-                                            input={input}
-                                            setInput={setInput}
                                             sendMessage={sendMessage}
 
                                         />

@@ -106,24 +106,22 @@ export default function ReportPanel({
                 <h1 className="flex align-middle justify-center items-center text-3xl font-bold text-center mr-2">{companyName}</h1>
                 <div className="flex flex-row justify-center gap-x-2 my-2">
                     <Dialog>
-                        <DialogTrigger>
-                            <>
+                        <DialogTrigger asChild>
+                            <div className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button type="button" variant="default"
-                                                    className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                            <div className="flex items-center">
                                                 <IconShare className="mr-2"/>
                                                 <span>Share</span>
-                                            </Button>
+                                            </div>
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-xs">
                                             <p className="break-words">Share with another investor</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-
-                            </>
+                            </div>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>

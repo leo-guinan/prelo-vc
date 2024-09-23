@@ -1,11 +1,11 @@
 'use server'
 
-import {MongoClient} from "mongodb";
-import {auth} from "@/auth";
-import {nanoid, prisma} from "@/lib/utils";
-import {BufferMemory} from "langchain/memory";
-import {MongoDBChatMessageHistory} from "@langchain/mongodb";
-import {GlobalRole, PitchDeckProcessingStatus, User} from "@prisma/client/edge";
+import { MongoClient } from "mongodb";
+import { auth } from "@/auth";
+import { nanoid, prisma } from "@/lib/utils";
+import { BufferMemory } from "langchain/memory";
+import { MongoDBChatMessageHistory } from "@langchain/mongodb";
+import { GlobalRole, PitchDeckProcessingStatus, User } from "@prisma/client/edge";
 
 export async function getInterviewChat(userId?: string) {
 
@@ -63,41 +63,41 @@ export async function getInterviewChat(userId?: string) {
     const messages = await history.getMessages();
 
     const interpretedMessages = messages.map((message) => {
-            try {
-                const parsed = JSON.parse(message.content.toString())
-                switch (parsed.status) {
-                    case 'analyzed':
-                        return {
-                            type: "deck_report",
-                            id: nanoid(),
-                            deck_uuid: parsed.deck_uuid,
-                            report_uuid: parsed.report_uuid,
-                            deck_score: parsed.deck_score,
-                            report_summary: parsed.report_summary,
-                            role: "assistant",
-                            recommended_next_steps: JSON.parse(parsed.recommended_next_steps),
-                            content: parsed.report_summary,
-                            company_name: parsed.company_name
+        try {
+            const parsed = JSON.parse(message.content.toString())
+            switch (parsed.status) {
+                case 'analyzed':
+                    return {
+                        type: "deck_report",
+                        id: nanoid(),
+                        deck_uuid: parsed.deck_uuid,
+                        report_uuid: parsed.report_uuid,
+                        deck_score: parsed.deck_score,
+                        report_summary: parsed.report_summary,
+                        role: "assistant",
+                        recommended_next_steps: JSON.parse(parsed.recommended_next_steps),
+                        content: parsed.report_summary,
+                        company_name: parsed.company_name
 
-                        }
-                    default:
-                        return {
-                            id: nanoid(),
-                            content: message.content.toString(),
-                            role: message._getType() === "human" ? "user" : "assistant",
-                            type: "text"
-                        }
-                }
-            } catch (e: any) {
-                return {
-                    id: nanoid(),
-                    content: message.content.toString(),
-                    role: message._getType() === "human" ? "user" : "assistant",
-                    type: "text"
+                    }
+                default:
+                    return {
+                        id: nanoid(),
+                        content: message.content.toString(),
+                        role: message._getType() === "human" ? "user" : "assistant",
+                        type: "text"
+                    }
+            }
+        } catch (e: any) {
+            return {
+                id: nanoid(),
+                content: message.content.toString(),
+                role: message._getType() === "human" ? "user" : "assistant",
+                type: "text"
 
-                }
             }
         }
+    }
     )
 
 
@@ -158,7 +158,7 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     })
 
     const parsed = await sendMessageResponse.json()
-
+    console.log("parsed", parsed)
     if (parsed.type === "email") {
         return {
             type: "email",
@@ -169,6 +169,11 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
             }
         }
     } else if (parsed.type === "message") {
+        return {
+            type: "message",
+            message: parsed.message
+        }
+    } else {
         return {
             type: "message",
             message: parsed.message
@@ -246,25 +251,49 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
         //                 investmentScore={0}
         //              traction={''}
         const parsed = await getInvestorReportResponse.json()
-        return {
-            type: "deck_report",
-            data: {
-                companyName: parsed.company_name,
-                pitchDeckSummary: parsed.summary,
-                believe: parsed.believe,
-                traction: parsed.traction,
-                concerns: JSON.parse(parsed.concerns).concerns,
-                investmentScore: parsed.investment_potential_score,
-                amountRaising: parsed.amount_raising,
-                recommendation: parsed.recommendation_reasons,
-                nextStep: JSON.parse(parsed.recommended_next_steps),
-                executiveSummary: parsed.executive_summary,
-                founders: JSON.parse(parsed.founders),
-                scores: parsed.scores,
-                founderContactInfo: JSON.parse(parsed.founders_contact_info).results,
-                scoreExplanation: parsed.score_explanation
+        try {
+            return {
+                type: "deck_report",
+                data: {
+                    companyName: parsed.company_name,
+                    pitchDeckSummary: parsed.summary,
+                    believe: parsed.believe,
+                    traction: parsed.traction,
+                    concerns: JSON.parse(parsed.concerns).concerns,
+                    investmentScore: parsed.investment_potential_score,
+                    amountRaising: parsed.amount_raising,
+                    recommendation: parsed.recommendation_reasons,
+                    nextStep: JSON.parse(parsed.recommended_next_steps),
+                    executiveSummary: parsed.executive_summary,
+                    founders: JSON.parse(parsed.founders),
+                    scores: parsed.scores,
+                    founderContactInfo: JSON.parse(parsed.founders_contact_info).results,
+                    scoreExplanation: parsed.score_explanation
+                }
+            }
+        } catch (e: any) {
+            console.log("Error, returning empty json objects", e)
+            return {
+                type: "deck_report",
+                data: {
+                    companyName: parsed.company_name,
+                    pitchDeckSummary: parsed.summary,
+                    believe: parsed.believe,
+                    traction: parsed.traction,
+                    concerns: [],
+                    investmentScore: parsed.investment_potential_score,
+                    amountRaising: parsed.amount_raising,
+                    recommendation: parsed.recommendation_reasons,
+                    nextStep: [],
+                    executiveSummary: parsed.executive_summary,
+                    founders: JSON.parse(parsed.founders),
+                    scores: parsed.scores,
+                    founderContactInfo: [],
+                    scoreExplanation: parsed.score_explanation
+                }
             }
         }
+
     } else if (view === "rejection_email") {
         const getRejectionEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/reject/`, {
             method: "POST",
@@ -279,7 +308,6 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
         })
         const parsed = await getRejectionEmailResponse.json()
-        console.log("Parsed", parsed)
         return {
             type: "rejection_email",
             data: {
@@ -304,7 +332,6 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
         })
         const parsed = await getMeetingEmailResponse.json()
-        console.log("Parsed", parsed)
         return {
             type: "rejection_email",
             data: {
@@ -315,7 +342,7 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
             }
         }
     } else if (view === "more_info_email") {
-       const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/more_info/`, {
+        const getMeetingEmailResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/more_info/`, {
             method: "POST",
             headers: {
                 Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
@@ -329,7 +356,6 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
         })
         const parsed = await getMeetingEmailResponse.json()
-        console.log("Parsed", parsed)
         return {
             type: "more_info_email",
             data: {
@@ -354,7 +380,6 @@ export async function getPanelDetails(urlWithParams: string): Promise<PanelDetai
 
         })
         const parsed = await getMeetingEmailResponse.json()
-        console.log("Parsed", parsed)
         return {
             type: "coninvestor_email",
             data: {

@@ -41,7 +41,9 @@ export default function ViewPitchDeck({deck}: PitchDeckProps) {
 
     const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault()
+        console.log("deck clicked", deck)
         if (deck.status === PitchDeckProcessingStatus.COMPLETE && deck.reportUUID) {
+            console.log("ready for setting context", deck)
             await setCurrentContext(deck.uuid, deck.reportUUID)
             router.push(`?report_uuid=${deck.reportUUID}&deck_uuid=${deck.uuid}&view=report`)
         }
