@@ -158,7 +158,6 @@ export async function sendInterviewChatMessage(uuid: string, formData: FormData,
     })
 
     const parsed = await sendMessageResponse.json()
-    console.log("parsed", parsed)
     if (parsed.type === "email") {
         return {
             type: "email",
@@ -464,7 +463,6 @@ export async function getDeck(deckUUID: string) {
     if (!deck) {
         return null
     }
-    console.log("deck", deck)
 
     if (!deck.reportUUID || !deck.matchScore) {
         const getInvestorReportResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/report/status/`, {
