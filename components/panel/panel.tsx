@@ -11,6 +11,7 @@ import MarkdownBlock from "../ui/markdown-block";
 import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import Link from "next/link";
+import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard";
 
 
 export interface EmailContent {
@@ -35,6 +36,8 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
     const searchParams = useSearchParams()
     const [displayedView, setDisplayedView] = useState<string | null>(null)
     const [displayedContent, setDisplayedContent] = useState<string | EmailContent | null>(null)
+    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+
     const [navigateToReport, setNavigateToReport] = useState<NavigateToReport>({
         report_uuid: searchParams.get('report_uuid') ?? user.currentReportUUID ?? '',
         deck_uuid: searchParams.get('deck_uuid') ?? user.currentDeckUUID ?? ''
@@ -120,6 +123,20 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
                             <ScrollBar orientation="horizontal" />
                             <ScrollBar orientation="vertical" />
                             <MarkdownBlock content={displayedContent} />
+                            <div className="flex flex-row justify-center mt-8">
+                            <button
+                                type="button"
+                                className="mr-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                onClick={() => copyToClipboard(displayedContent)}
+                            >
+                                {!isCopied && (
+                                    <span>Copy To Clipboard</span>
+                                )}
+                                {isCopied && (
+                                    <span>Copied!</span>
+                                )}
+                            </button>
+                            </div>
                         </ScrollArea>
                     </>
                 )}
