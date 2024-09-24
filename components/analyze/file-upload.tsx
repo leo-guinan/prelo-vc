@@ -12,7 +12,7 @@ import { User } from '@prisma/client/edge';
 import { uploadDeckFromSharedLink } from '@/app/actions/share';
 import ChatUser from './chat-user';
 import { UserWithMemberships } from '@/lib/types';
-
+import Image from 'next/image';
 function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
 
@@ -160,12 +160,18 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
             onDragLeave={handleDragOut}
         >
             <Card className="w-full h-full py-48"
-                        style={{ backgroundImage: 'url(/share-hero.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center' }}
+                style={{ backgroundImage: 'url(/share-hero.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center' }}
 
             >
-                <CardHeader className='flex flex-col items-center justify-center'>                
+                <CardHeader className='flex flex-col items-center justify-center'>
                     <div className='flex flex-col items-center justify-center gap-4'>
-                        <ChatUser user={user} height={128} width={128} />
+                        <Image
+                            src={user.shareProfile?.avatarUrl ?? user.image ?? ""}
+                            alt={`${user.shareProfile?.name}'s avatar`}
+                            width={128}
+                            height={128}
+                            className="rounded-full mb-4"
+                        />
 
                     </div>
                     <h1 className="text-5xl font-bold">Hey, I&apos;m {investorName}</h1>
