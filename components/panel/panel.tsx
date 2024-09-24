@@ -8,8 +8,9 @@ import { PitchDeck, User } from "@prisma/client/edge";
 import Spinner from "@/components/spinner";
 import SampleReportPanel from "@/components/panel/sample-report";
 import MarkdownBlock from "../ui/markdown-block";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import Link from "next/link";
 
 
 export interface EmailContent {
@@ -24,11 +25,31 @@ interface PanelProps {
     view: null | string
     content: null | string | EmailContent
 }
-
+export interface NavigateToReport {
+    report_uuid: string;
+    deck_uuid: string;
+}
 export default function Panel({ decks, user, view, content }: PanelProps) {
 
 
     const searchParams = useSearchParams()
+    const [displayedView, setDisplayedView] = useState<string | null>(null)
+    const [displayedContent, setDisplayedContent] = useState<string | EmailContent | null>(null)
+    const [navigateToReport, setNavigateToReport] = useState<NavigateToReport>({
+        report_uuid: searchParams.get('report_uuid') ?? user.currentReportUUID ?? '',
+        deck_uuid: searchParams.get('deck_uuid') ?? user.currentDeckUUID ?? ''
+    });
+    useEffect(() => {
+        setDisplayedView(view)
+        setDisplayedContent(content)
+    }, [view, content])
+
+    useEffect(() => {
+        setNavigateToReport({
+            report_uuid: searchParams.get('report_uuid') ?? user.currentReportUUID ?? '',
+            deck_uuid: searchParams.get('deck_uuid') ?? user.currentDeckUUID ?? ''
+        })
+    }, [searchParams, user])
 
     useEffect(() => {
         console.log("panel: searchParams", searchParams)
@@ -49,17 +70,17 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
         <>
 
             <div className="h-full">
-                {!data && !view && (
+                {!data && !displayedView && (
                     <Spinner size="xxxl" />
                 )}
 
-                {!view && data && decks?.length === 0 && (
+                {!displayedView && data && decks?.length === 0 && (
                     <>
                         <SampleReportPanel />
                     </>
                 )}
 
-                {!view && data && searchParams.get('view') === 'report' && <ReportPanel
+                {!displayedView && data && searchParams.get('view') === 'report' && <ReportPanel
                     companyName={data.data.companyName}
                     pitchDeckSummary={data.data.executiveSummary}
                     concerns={data.data.concerns}
@@ -77,24 +98,34 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
                     report_uuid={searchParams.get('report_uuid') as string}
                     user={user}
                 />}
-                {!view && data && (searchParams.get('view')?.includes("_email")) && (
+                {!displayedView && data && (searchParams.get('view')?.includes("_email")) && (
                     <>
 
-                        <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject} />
+                        <EmailComposer to={data.data.email} body={data.data.content} subject={data.data.subject} user={user} />
                     </>
                 )}
-                {view === 'tool' && content && typeof content === 'string' && (
+                {displayedView === 'tool' && displayedContent && typeof displayedContent === 'string' && (
                     <>
+                        <Link
+                            href={`?report_uuid=${navigateToReport.report_uuid}&deck_uuid=${navigateToReport.deck_uuid}&view=report`}
+                            onClick={() => {
+                                setDisplayedView(null)
+                                setDisplayedContent(null)
+                            }}
+                            className="flex flex-row text-objections text-xl align-text-top mb-8">
+
+                            <span className=""> {'<'} Back</span>
+                        </Link>
                         <ScrollArea className="flex flex-row justify-between w-4/5 mx-auto">
                             <ScrollBar orientation="horizontal" />
                             <ScrollBar orientation="vertical" />
-                            <MarkdownBlock content={content} />
+                            <MarkdownBlock content={displayedContent} />
                         </ScrollArea>
                     </>
                 )}
-                {view === 'email' && content && typeof content === 'object' && (
+                {displayedView === 'email' && displayedContent && typeof displayedContent === 'object' && (
                     <>
-                        <EmailComposer to={content.to} body={content.body} subject={content.subject} />
+                        <EmailComposer to={displayedContent.to} body={displayedContent.body} subject={displayedContent.subject} user={user} />
                     </>
                 )}
 

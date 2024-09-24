@@ -98,8 +98,10 @@ export default function InterviewChat({
 
     // Reset panel view and content when search params change
     useEffect(() => {
-        setPanelView(null)
-        setPanelContent(null)
+        if (searchParams.get('view') && searchParams.get('deck_uuid') && searchParams.get('report_uuid')) {
+            setPanelView(null)
+            setPanelContent(null)
+        }
     }, [searchParams])
 
 
@@ -108,7 +110,6 @@ export default function InterviewChat({
     useEffect(() => {
         if (!data) return
         const parsedData = JSON.parse(data.toString())
-        console.log("parsedData", parsedData)
         if (parsedData.deck_uuid) {
             if (parsedData.status === "received") {
                 void createPitchDeck(parsedData.deck_uuid, user.id, lastUploadedFileName)
@@ -286,24 +287,40 @@ export default function InterviewChat({
                 return
             }
             if (quick) {
-                if (response.type === "email") {
-                    setPanelView("email")
-                    setPanelContent(response.message as EmailContent)
-                } else {
-                    setPanelView("tool")
-                    setPanelContent(response.message)
-                }
-                
-                const newMessage = {
-                    content: "Output displayed in panel 👉",
-                    role: 'assistant',
-                    id: nanoid(),
-                    type: "text" as PreloChatMessageType
-                }
-                setDisplayedMessages(prevMessages => [...prevMessages, newUserMessage, newMessage]);
-                setChatMessageLoading(false)
-                scrollToEnd()
-                return
+                console.log("Quick message sent. Removing url params for report and deck.");
+                // set url params to null for report and deck
+                const url = new URL(window.location.href);
+                url.searchParams.delete('report_uuid');
+                url.searchParams.delete('deck_uuid');
+                url.searchParams.delete('view');
+
+                console.log("New URL: ", url.toString());
+                window.history.replaceState({}, '', url.toString());
+
+                // Ensure URL params are removed before setting panel view and content
+                setTimeout(() => {
+                    if (response.type === "email") {
+                        setPanelView("email");
+                        setPanelContent(response.message as EmailContent);
+                    } else {
+                        setPanelView("tool");
+                        setPanelContent(response.message);
+                    }
+
+                    console.log("Panel view and content set.");
+
+                    const newMessage = {
+                        content: "Output displayed in panel 👉",
+                        role: 'assistant',
+                        id: nanoid(),
+                        type: "text" as PreloChatMessageType
+                    };
+                    setDisplayedMessages(prevMessages => [...prevMessages, newUserMessage, newMessage]);
+                    setChatMessageLoading(false);
+                    scrollToEnd();
+                }, 0);
+
+                return;
             }
 
             const newMessage = {
