@@ -13,7 +13,7 @@ import { uploadDeckFromSharedLink } from '@/app/actions/share';
 import ChatUser from './chat-user';
 import { UserWithMemberships } from '@/lib/types';
 import Image from 'next/image';
-function humanFileSize(bytes: number, si = false, dp = 1) {
+export function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
 
     if (Math.abs(bytes) < thresh) {
@@ -38,16 +38,17 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
 interface FileUploadProps {
     user: UserWithMemberships
     onUploadSuccess: (message: string, uuid: string) => void
+    showDetails?: boolean
 }
 
-export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
+export default function FileUpload({ user, onUploadSuccess, showDetails = true }: FileUploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
     const [uploadMessage, setUploadMessage] = useState<string>('');
     const [uuid, setUuid] = useState<string>('');
-    const [investorName, setInvestorName] = useState<string>(user.firstName ?? 'Investor');
+    const [investorName, setInvestorName] = useState<string>(user?.firstName ?? 'Investor');
     const [investorCompany, setInvestorCompany] = useState<string>(user.memberships[0].organization.name ?? 'Early Stage');
 
     const [show, setShow] = useState<boolean>(true)
@@ -164,18 +165,23 @@ export default function FileUpload({ user, onUploadSuccess }: FileUploadProps) {
 
             >
                 <CardHeader className='flex flex-col items-center justify-center'>
-                    <div className='flex flex-col items-center justify-center gap-4'>
-                        <Image
-                            src={user.shareProfile?.avatarUrl ?? user.image ?? ""}
-                            alt={`${user.shareProfile?.name}'s avatar`}
-                            width={128}
-                            height={128}
-                            className="rounded-full mb-4"
-                        />
+                    {showDetails && (
+                        <>
+                            <div className='flex flex-col items-center justify-center gap-4'>
+                                <Image
+                                    src={user.shareProfile?.avatarUrl ?? user.image ?? ""}
+                                    alt={`${user.shareProfile?.name}'s avatar`}
+                                    width={128}
+                                    height={128}
+                                    className="rounded-full mb-4"
+                                />
 
-                    </div>
-                    <h1 className="text-5xl font-bold">Hey, I&apos;m {investorName}</h1>
-                    <h2 className='text-5xl font-bold'>Investor at <span className="text-objections">{investorCompany}</span></h2>
+                            </div>
+
+                            <h1 className="text-5xl font-bold">Hey, I&apos;m {investorName}</h1>
+                            <h2 className='text-5xl font-bold'>Investor at <span className="text-objections">{investorCompany}</span></h2>
+                        </>
+                    )}
                     {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
                 </CardHeader>
                 <CardContent className="flex items-center gap-4 py-8 max-w-lg mx-auto">

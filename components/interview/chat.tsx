@@ -15,6 +15,7 @@ import useSwr from "swr";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { CheckmarkIcon } from "../ui/icons";
 import { useSearchParams } from "next/navigation";
+import { UploadModal } from '@/components/upload-modal'
 
 
 interface AnalysisChatProps {
@@ -45,6 +46,7 @@ export default function InterviewChat({
     const [panelView, setPanelView] = useState<string | null>(null)
     const [panelContent, setPanelContent] = useState<string | EmailContent | null>(null)
     const searchParams = useSearchParams()
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
 
    
@@ -356,6 +358,13 @@ export default function InterviewChat({
 
         }
     }
+
+    const handleUploadSuccess = (message: string, uuid: string) => {
+        // Handle successful upload (e.g., refresh the deck list)
+        mutate();
+        setIsUploadModalOpen(false)
+    };
+
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
@@ -363,7 +372,6 @@ export default function InterviewChat({
                 onDragOver={handleDrag}
                 onDragEnter={handleDragIn}
                 onDragLeave={handleDragOut}
-
             >
                 {dragActive && (
                     <div
@@ -377,23 +385,21 @@ export default function InterviewChat({
                     <div className="flex flex-col-reverse sm:flex-row h-full">
                         <ResizablePanelGroup direction="horizontal">
                             <ResizablePanel>
-                                <div
-                                    className="flex flex-col w-full h-full">
+                                <div className="flex flex-col w-full h-full">
                                     <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
-
                                         <ChatList messages={displayedMessages} user={user}
                                             chatMessageLoading={chatMessageLoading}
-                                             />
+                                        />
                                         
-
                                         <ChatPanel
                                             isLoading={isLoading}
                                             sendMessage={sendMessage}
-
+                                            user={user}
+                                            decks={decks ?? []}
+                                            onUploadSuccess={handleUploadSuccess}
                                         />
                                     </div>
                                 </div>
-
                             </ResizablePanel>
                             <ResizableHandle />
                             <ResizablePanel>
@@ -402,12 +408,16 @@ export default function InterviewChat({
                                 </ScrollArea>
                             </ResizablePanel>
                         </ResizablePanelGroup>
-
-
                     </div>
-
                 </>
 
+                <UploadModal
+                    isOpen={isUploadModalOpen}
+                    onClose={() => setIsUploadModalOpen(false)}
+                    user={user}
+                    onUploadSuccess={handleUploadSuccess}
+                    message="Upload a deck to start chatting"
+                />
             </div>
         </>
     )

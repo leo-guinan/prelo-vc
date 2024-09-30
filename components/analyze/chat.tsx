@@ -4,7 +4,7 @@ import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
-import {Message, PitchDeckScores} from "@/lib/types";
+import {Message, PitchDeckScores, UserWithMemberships} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
@@ -15,6 +15,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import AnalysisCompletedModal from "@/components/analyze/analysis-completed-modal";
+import { UploadModal } from '@/components/upload-modal';
 
 interface PreloChatMessage {
     id: string
@@ -32,10 +33,7 @@ interface AnalysisChatProps {
     traction: string
     recommendation: string
     summary: string
-    user: {
-        name?: string | null
-        image?: string | null
-    }
+    user: UserWithMemberships
     recommendationOption: RecommendationOption
 }
 
@@ -69,6 +67,13 @@ export default function AnalysisChat({
     const [displayedConcerns, setDisplayedConcerns] = useState<string>(concerns)
     const [displayedBelieve, setDisplayedBelieve] = useState<string>(believe)
     const [displayedRecommendationOption, setDisplayedRecommendationOption] = useState<RecommendationOption | null>(recommendationOption)
+
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+    const handleUploadSuccess = (message: string, uuid: string) => {
+        // Handle successful upload (e.g., refresh the analysis)
+        // You might want to trigger a new analysis here
+    };
 
     const {
         data,
@@ -177,8 +182,7 @@ export default function AnalysisChat({
                         <div className="flex flex-col-reverse sm:flex-row h-full">
                             <ResizablePanelGroup direction="horizontal">
                                 <ResizablePanel>
-                                    <div
-                                        className="flex flex-col w-full h-full">
+                                    <div className="flex flex-col w-full h-full">
                                         <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
                                             <ScrollArea className="flex flex-col size-full pb-8">
                                                 <ChatList messages={displayedMessages} user={user}
@@ -189,13 +193,14 @@ export default function AnalysisChat({
                                                 <ChatPanel
                                                     isLoading={isLoading}
                                                     sendMessage={sendMessage}
-
+                                                    user={user}
+                                                    decks={[]} // You might want to pass the current deck here
+                                                    onUploadSuccess={handleUploadSuccess}
                                                 />
                                             </div>
                                             <div ref={bottomRef}/>
                                         </div>
                                     </div>
-
                                 </ResizablePanel>
                                 <ResizableHandle/>
                                 <ResizablePanel>
@@ -242,6 +247,13 @@ export default function AnalysisChat({
                 )}
             </div>
             <AnalysisCompletedModal open={completedDialogOpen} setOpen={setCompletedDialogOpen}/>
+            <UploadModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                user={user}
+                onUploadSuccess={handleUploadSuccess}
+                message="Upload a deck to analyze"
+            />
         </>
     )
 

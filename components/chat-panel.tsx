@@ -3,20 +3,29 @@ import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { useState } from 'react'
 import { CheckmarkIcon } from './ui/icons'
+import { UploadModal } from '@/components/upload-modal'
+import { UserWithMemberships } from '@/lib/types'
 
 export interface ChatPanelProps {
     sendMessage: (message: { content: string; role: 'user'; file?: File }, quick?: boolean) => void
     isLoading: boolean
+    user: UserWithMemberships
+    decks: any[] // Replace 'any' with the correct type for your decks
+    onUploadSuccess: (message: string, uuid: string) => void
 }
 
 export function ChatPanel({
     sendMessage,
-    isLoading
-}: Omit<ChatPanelProps, 'input' | 'setInput'>) {
+    isLoading,
+    user,
+    decks,
+    onUploadSuccess
+}: ChatPanelProps) {
     const [input, setInput] = useState('');
-
     const [selectedButton, setSelectedButton] = useState<string | null>(null)
     const [selectedSubButton, setSelectedSubButton] = useState<string | null>(null)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [uploadModalMessage, setUploadModalMessage] = useState<string>('Upload a deck to start chatting');
 
     const proOnlyButtons = [
         'Due Diligence',
@@ -40,19 +49,36 @@ export function ChatPanel({
         'Generate Deal Memo': ['Deal Memo Template', 'Generate Deal Memo', 'Standard Term Sheet']
     }
 
+    const uploadModalMessages: { [key: string]: string } = {
+        'Email Founders': 'Upload a pitch deck to generate personalized Emails to founders',
+        'Share Concerns': 'Upload a pitch deck to uncover key investment concerns about a deal you\'re considering',
+        'List Competitors': 'Upload a pitch deck to gather deep competitor insights and specific market trends',
+        'Prepare questions': 'Upload a pitch deck and let PreloVC get you ready for a founder meeting in a few seconds',
+        'Research Founders': 'Upload a pitch deck to start a deep-dive founder screening analysis. Get feedback in seconds',
+        'Generate Deal Memo': 'Upload a pitch deck to craft a deal memo that give your team the conviction it needs to move forward.'
+    };
+
     const toggleButton = (button: string) => {
-        setSelectedButton((prev: string | null) => prev === button ? null : button)
-        setSelectedSubButton(null)
+        if (decks.length === 0) {
+            setUploadModalMessage(uploadModalMessages[button] || 'Upload a deck to start chatting');
+            setIsUploadModalOpen(true);
+        } else {
+            setSelectedButton((prev: string | null) => prev === button ? null : button)
+            setSelectedSubButton(null)
+        }
     }
 
     const toggleSubButton = (subButton: string) => {
-        setSelectedSubButton(subButton);
-        sendMessage({
-            content: `${selectedButton} - ${subButton}`,
-            role: 'user'
-        }, true);  // Pass true for quick messages
-        
-        setInput('');  // Clear the input after sending the message
+        if (decks.length === 0) {
+            setIsUploadModalOpen(true);
+        } else {
+            setSelectedSubButton(subButton);
+            sendMessage({
+                content: `${selectedButton} - ${subButton}`,
+                role: 'user'
+            }, true);
+            setInput('');
+        }
     }
 
     return (
@@ -63,22 +89,16 @@ export function ChatPanel({
                         <button
                             key={button}
                             onClick={() => toggleButton(button)}
-                            className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${selectedButton === button
-                                ? 'bg-gray-300 text-gray-800'
-                                : 'bg-[#27272A] text-zinc-50'
-                                }`}
+                            className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${
+                                selectedButton === button
+                                    ? 'bg-gray-300 text-gray-800'
+                                    : 'bg-[#27272A] text-zinc-50'
+                            }`}
                         >
                             {button}
-                            {selectedButton !== button && (
-                                <>
-                                    <CheckmarkIcon className="w-4 h-4 ml-1 text-gray-500" />
-                                </>
-                            )}
-                            {selectedButton === button && (
-                                <>
-                                    <CheckmarkIcon className="w-4 h-4 ml-1 text-green-500" />
-                                </>
-                            )}
+                            <CheckmarkIcon className={`w-4 h-4 ml-1 ${
+                                selectedButton === button ? 'text-green-500' : 'text-gray-500'
+                            }`} />
                         </button>
                     ))
                 ) : (
@@ -87,23 +107,17 @@ export function ChatPanel({
                             <button
                                 key={subButton}
                                 onClick={() => toggleSubButton(subButton)}
-                                className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${selectedSubButton === subButton
-                                    ? 'bg-gray-300 text-gray-800'
-                                    : 'bg-[#27272A] text-zinc-50'
-                                    } ${proOnlyButtons.includes(subButton) ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''}`}
+                                className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${
+                                    selectedSubButton === subButton
+                                        ? 'bg-gray-300 text-gray-800'
+                                        : 'bg-[#27272A] text-zinc-50'
+                                } ${proOnlyButtons.includes(subButton) ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''}`}
                                 disabled={proOnlyButtons.includes(subButton)}
                             >
                                 {subButton}
-                                {selectedSubButton !== subButton && (
-                                    <>
-                                        <CheckmarkIcon className="w-4 h-4 ml-1 text-gray-500" />
-                                    </>
-                                )}
-                                {selectedSubButton === subButton && (
-                                    <>
-                                        <CheckmarkIcon className="w-4 h-4 ml-1 text-green-500" />
-                                    </>
-                                )}
+                                <CheckmarkIcon className={`w-4 h-4 ml-1 ${
+                                    selectedSubButton === subButton ? 'text-green-500' : 'text-gray-500'
+                                }`} />
                             </button>
                         ))}
                         <button
@@ -134,6 +148,16 @@ export function ChatPanel({
                     </div>
                 </div>
             </div>
+            <UploadModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                user={user}
+                onUploadSuccess={(message, uuid) => {
+                    onUploadSuccess(message, uuid);
+                    setIsUploadModalOpen(false);
+                }}
+                message={uploadModalMessage}
+            />
         </div>
     )
 }
