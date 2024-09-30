@@ -20,7 +20,16 @@ export default async function AnalysisLayout({children}: ContextLayoutProps) {
         redirect(`/`)
     }
 
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+        include: {
+            memberships: {
+                include: {
+                    organization: true
+                }
+            },
+            shareProfile: true
+        }
+    });
 
     return (
         <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
