@@ -47,6 +47,22 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
             currentDeckId: Number(params.id)
         }
     })
+    const userWithMemberships = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        },
+        include: {
+            memberships: {
+                include: {
+                    organization: true
+                }
+            },
+            shareProfile: true,
+        }
+    })  
+    if (!userWithMemberships) {
+        return null
+    }
     // "concerns": analysis.concerns,
     //             "believe": analysis.believe,
     //             "traction": analysis.traction,
@@ -55,7 +71,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     //             "recommendation_reasons": analysis.investor_report.recommendation_reasons,
 
     return <AnalysisChat
-        user={session.user}
+        user={userWithMemberships}
         uuid={pitchDeck.uuid}
         scores={{
             market: {
