@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SWRSubscriptionOptions } from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import { PitchDeckProcessingStatus } from "@prisma/client/edge";
-import { createPitchDeck, getDecks, sendInterviewChatMessage } from "@/app/actions/interview";
+import { configureSubmind, createPitchDeck, createSubmind, getDecks, sendInterviewChatMessage } from "@/app/actions/interview";
 import { Message, PreloChatMessageType, UserWithMemberships } from "@/lib/types";
 import Panel, { EmailContent } from "@/components/panel/panel";
 import useSwr from "swr";
@@ -16,6 +16,8 @@ import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { CheckmarkIcon } from "../ui/icons";
 import { useSearchParams } from "next/navigation";
 import { UploadModal } from '@/components/upload-modal'
+import { CreateSubmindModal, SubmindFormData } from '@/components/CreateSubmindModal';
+import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
 
 
 interface AnalysisChatProps {
@@ -48,9 +50,10 @@ export default function InterviewChat({
     const searchParams = useSearchParams()
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-
    
     const { data: decks, mutate } = useSwr(user.id, getDecks)
+    const { submindPending, mutate: mutateSubmindPending } = useSubmindPending(user.id);
+    const [isCreateSubmindModalOpen, setIsCreateSubmindModalOpen] = useState(!user.shareProfile && !submindPending);
 
     const connectWebSocket = useCallback(() => {
         if (!process.env.NEXT_PUBLIC_WEBSOCKET_URL) return;
@@ -112,6 +115,7 @@ export default function InterviewChat({
     useEffect(() => {
         if (!data) return
         const parsedData = JSON.parse(data.toString())
+        console.log("Parsed data: ", parsedData)
         if (parsedData.deck_uuid) {
             if (parsedData.status === "received") {
                 void createPitchDeck(parsedData.deck_uuid, user.id, lastUploadedFileName)
@@ -172,6 +176,19 @@ export default function InterviewChat({
 
                     }));
                 }
+            } 
+        } else if (parsedData.status === "configured") {
+            // get the submind id. Anything else needed?
+            console.log("Submind ID: ", parsedData.submind_id)
+            void configureSubmind(parsedData.submind_id, parsedData.company, parsedData.thesis, parsedData.industries, parsedData.check_size, parsedData.passion, parsedData.slug, parsedData.name)
+            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                console.log("Sending acknowledge_created message.")
+                socketRef.current.send(JSON.stringify({                        
+                    type: "acknowledge_created",
+                    message: "Got it.",
+                    conversation_uuid: uuid
+
+                }));
             }
         }
 
@@ -365,6 +382,15 @@ export default function InterviewChat({
         setIsUploadModalOpen(false)
     };
 
+    const handleCreateSubmind = async (data: SubmindFormData) => {
+        // Here you would typically send this data to your backend to create the ShareProfile
+        // For now, we'll just close the modal and log the data
+        console.log('Submind data:', data);
+        await createSubmind(data);
+        setIsCreateSubmindModalOpen(false);
+        mutateSubmindPending(); // Trigger a revalidation of the submindPending state
+    };
+
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
@@ -419,6 +445,12 @@ export default function InterviewChat({
                     message="Upload a deck to start chatting"
                 />
             </div>
+            
+            <CreateSubmindModal
+                isOpen={isCreateSubmindModalOpen}
+                onClose={() => setIsCreateSubmindModalOpen(false)}
+                onSubmit={handleCreateSubmind}
+            />
         </>
     )
 

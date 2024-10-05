@@ -6,6 +6,7 @@ import { nanoid, prisma } from "@/lib/utils";
 import { BufferMemory } from "langchain/memory";
 import { MongoDBChatMessageHistory } from "@langchain/mongodb";
 import { GlobalRole, PitchDeckProcessingStatus, User } from "@prisma/client/edge";
+import { SubmindFormData } from "@/components/CreateSubmindModal";
 
 export async function getInterviewChat(userId?: string) {
 
@@ -491,4 +492,180 @@ export async function getDeck(deckUUID: string) {
     }
 
     return deck
+}
+
+
+export async function createSubmind(data: SubmindFormData) {
+    console.log("Creating submind", data)
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        },
+        include: {
+            memberships: true
+        }
+    })
+    await prisma.user.update({
+        where: {
+            id: session.user.id
+        },
+        data: {
+            submindPending: true
+        }
+    })
+    console.log("Set submind pending to true")
+    if (!user || !user.interviewUUID) {
+        return {
+            error: "User not found"
+        }
+    }
+    const submindResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/submind/`, {
+        method: "POST",
+        headers: {
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({
+            first_name: data.firstName,
+            last_name: data.lastName,
+            firm_name: data.firmName,
+            firm_url: data.firmUrl,
+            conversation_uuid: user.interviewUUID,
+            special_notes: data.specialNotes,
+            user_id: user.id,
+            organization_id: user.memberships[0].organizationId,
+            slug: data.slug,
+        })
+
+    })
+
+
+    const parsed = await submindResponse.json()
+    console.log("Submind created", parsed)
+    return parsed
+}
+
+
+export async function configureSubmind(submindId: number, organizationName: string, thesis: string, industries: string, checkSize: string, passion: string, slug: string, name:string) {
+    console.log("Configuring submind", submindId)
+    // what do we need to configure.
+    // add the submind id to the user.
+    // update the organization name
+    // create the shareprofile
+
+    // do I need an image url as well? Later.
+
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        },
+        include: {
+            memberships: true
+        }
+    })
+    if (!user) {
+        return {
+            error: "User not found"
+        }
+    }
+    await prisma.user.update({
+        where: {
+            id: session.user.id
+        },
+        data: {
+            submindId: submindId,
+            slug: slug,
+            submindPending: false,
+            chatUrl: `${process.env.NEXT_PUBLIC_APP_URL as string}/share/${slug}`
+        }
+    })
+    await prisma.organization.update({
+        where: {
+            id: user.memberships[0].organizationId
+        },
+        data: {
+            name: organizationName
+        }
+    })
+    await prisma.shareProfile.create({
+        data: {
+            name: name,
+            company: organizationName,
+            avatarUrl: user.image ?? "",
+            thesis: thesis,
+            industries: industries,
+            checkSize: checkSize,
+            passion: passion,
+            user: {
+                connect: {
+                    id: user.id
+                }
+            }
+        }
+    })
+}
+
+export async function getSubmindPending(key: string) {
+    // parse userid from string
+    const userId = key.split("/")[3]
+    console.log("Getting submind pending", userId)
+
+    if (!userId) {
+        return false
+    }
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
+
+    if (!user?.submindPending) {
+        return false
+    }
+
+    if (user.submindPending) {
+        console.log("User has submind pending, checking status")
+        const submindResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/submind/status/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            },
+            body: JSON.stringify({
+                user_id: userId
+            })
+
+        })
+        const parsed = await submindResponse.json()
+        console.log("Submind status", parsed)
+        if (parsed.submind_id) {
+            console.log("Submind id found, configuring submind")
+            configureSubmind(parsed.submind_id, parsed.company, parsed.thesis, parsed.industries, parsed.check_size, parsed.passion, parsed.slug, parsed.name)
+        }
+    }
+
+
+
+    return user?.submindPending
+}
+
+
+export async function checkSlugUniquenessAction(slug: string) {
+    const user = await prisma.user.findUnique({
+        where: {
+            slug: slug
+        }
+    })
+    return !user
 }

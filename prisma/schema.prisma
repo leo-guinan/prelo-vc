@@ -45,7 +45,9 @@ model User {
   activated   Boolean      @default(false)
   currentDeckUUID String?
   currentReportUUID String?
+  submindPending  Boolean      @default(false)
   shareProfile      ShareProfile?
+  subscriptions    Subscription[]
 }
 
 model ShareProfile {
@@ -187,4 +189,18 @@ model Connection {
   user       User     @relation(fields: [userId], references: [id])
 
   @@unique([deckUUID, reportUUID, userId])
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeSubscriptionId String    @unique
+  stripePriceId        String
+  stripeCurrentPeriodEnd DateTime
+  stripeCreatedAt      DateTime  @default(now())
+  stripeStatus         String
+  cancelAtPeriodEnd    Boolean   @default(false)
+
+  @@index([userId])
 }

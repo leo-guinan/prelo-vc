@@ -14,6 +14,8 @@ import { getDecks } from "@/app/actions/interview";
 import { Button } from "@/components/ui/button";
 import { UploadModal } from "@/components/upload-modal";
 import { UserWithMemberships } from '@/lib/types';
+import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
+import Spinner from './spinner';
 
 interface ChatHistoryProps {
     userId?: string
@@ -21,6 +23,8 @@ interface ChatHistoryProps {
 }
 
 export function DeckSidebar({ userId, user }: ChatHistoryProps) {
+    const { submindPending, isLoading } = useSubmindPending(userId as string);
+
 
     const router = useRouter();
 
@@ -40,6 +44,13 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
 
     return (
         <div className="flex flex-col h-full">
+             {!isLoading && submindPending && (
+                <div className="mt-auto p-4">
+                    <Spinner size="large" />
+                    
+                    <p>Your submind is being created. This usually takes about 15 minutes. This message will disappear once it is ready.</p>
+                </div>
+            )}
             <Button
                 onClick={() => setIsUploadModalOpen(true)}
                 className={cn(

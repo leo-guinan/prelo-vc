@@ -1,4 +1,3 @@
-import { SidebarDesktop } from '@/components/sidebar-desktop'
 
 interface ContextLayoutProps {
   children: React.ReactNode
