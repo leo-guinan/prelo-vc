@@ -31,7 +31,6 @@ export async function createCheckoutSession(userId: string) {
 
   const customerId = await createOrRetrieveCustomer(userId, user.email);
   const params: Stripe.Checkout.SessionCreateParams = {
-    submit_type: 'pay',
     payment_method_types: ['card'],
     mode: "subscription",
     line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
