@@ -3,7 +3,7 @@ import * as React from 'react'
 import { SyntheticEvent, useState } from 'react'
 import { SidebarList } from '@/components/sidebar-list'
 import { PitchDeck } from "@prisma/client/edge";
-import { MagnifyingGlassIcon } from "@/components/ui/icons";
+import { CloudUploadIcon, MagnifyingGlassIcon } from "@/components/ui/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -58,7 +58,9 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
                     'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
                 )}
             >
-                <MagnifyingGlassIcon className="-translate-x-2 stroke-2 size-8" />
+                <span className="ml-4">
+                    <CloudUploadIcon className="-translate-x-2 stroke-2 size-6" />
+                </span>
                 Upload New Deck
             </Button>
             <React.Suspense

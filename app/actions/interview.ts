@@ -540,6 +540,7 @@ export async function createSubmind(data: SubmindFormData) {
             user_id: user.id,
             organization_id: user.memberships[0].organizationId,
             slug: data.slug,
+            email: user.email
         })
 
     })
