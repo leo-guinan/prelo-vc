@@ -503,7 +503,7 @@ export async function createSubmind(data: SubmindFormData) {
             error: "User not found"
         }
     }
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
         where: {
             id: session.user.id
         },
@@ -511,9 +511,12 @@ export async function createSubmind(data: SubmindFormData) {
             memberships: true
         }
     })
-    await prisma.user.update({
+    user = await prisma.user.update({
         where: {
             id: session.user.id
+        },
+        include: {
+            memberships: true
         },
         data: {
             submindPending: true
@@ -525,6 +528,42 @@ export async function createSubmind(data: SubmindFormData) {
             error: "User not found"
         }
     }
+
+    if (!user.memberships[0]) {
+        const org = await prisma.organization.create({
+            data: {
+                name: "Default Organization",
+            }
+        })
+        const membership = await prisma.membership.create({
+            data: {
+                organizationId: org.id,
+                userId: user.id,
+                role: "OWNER"
+            }
+        })
+        user = await prisma.user.findUnique({
+            where: {
+                id: user.id
+            },
+            include: {
+                memberships: {
+                    include: {
+                        organization: true
+                    }
+                }
+            }
+        })
+
+
+    }
+
+    if (!user || !user.memberships[0]) {
+        return {
+            error: "User not found"
+        }
+    }
+
     const submindResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/investor/submind/`, {
         method: "POST",
         headers: {
