@@ -639,8 +639,20 @@ export async function configureSubmind(submindId: number, organizationName: stri
             name: organizationName
         }
     })
-    await prisma.shareProfile.create({
-        data: {
+    await prisma.shareProfile.upsert({
+        where: {
+            userId: user.id
+        },
+        update: {
+            name: name,
+            company: organizationName,
+            avatarUrl: user.image ?? "",
+            thesis: thesis,
+            industries: industries,
+            checkSize: checkSize,
+            passion: passion,            
+        },
+        create: {
             name: name,
             company: organizationName,
             avatarUrl: user.image ?? "",
