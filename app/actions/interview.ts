@@ -7,6 +7,7 @@ import { BufferMemory } from "langchain/memory";
 import { MongoDBChatMessageHistory } from "@langchain/mongodb";
 import { GlobalRole, PitchDeckProcessingStatus, User } from "@prisma/client/edge";
 import { SubmindFormData } from "@/components/CreateSubmindModal";
+import { logEvent } from "@/lib/telemetry";
 
 export async function getInterviewChat(userId?: string) {
 
@@ -593,6 +594,12 @@ export async function createSubmind(data: SubmindFormData) {
 
 export async function configureSubmind(submindId: number, organizationName: string, thesis: string, industries: string, checkSize: string, passion: string, slug: string, name:string) {
     console.log("Configuring submind", submindId)
+    logEvent("configure_submind", {
+        submind_id: submindId,
+        organization_name: organizationName,        
+        slug: slug,
+        name: name
+    })
     // what do we need to configure.
     // add the submind id to the user.
     // update the organization name

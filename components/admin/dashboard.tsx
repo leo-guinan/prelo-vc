@@ -1,10 +1,10 @@
 'use client'
-import AddInvestor from "@/components/admin/add-investor";
+import FixSubminds from "@/components/admin/fix-subminds";
 
 export default function Dashboard() {
     return (
         <>
-            <AddInvestor />
+            <FixSubminds />
         </>
     )
 }

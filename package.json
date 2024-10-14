@@ -108,6 +108,7 @@
     "stripe": "^14.25.0",
     "swr": "^2.2.5",
     "tailwindcss-text-border": "^1.0.4",
+    "telemetry-sh": "^1.0.10",
     "tiptap-markdown": "^0.8.10",
     "unified": "^11.0.4",
     "websocket": "^1.0.34"
