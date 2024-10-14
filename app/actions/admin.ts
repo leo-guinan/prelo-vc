@@ -2,8 +2,25 @@
 
 import { prisma } from "@/lib/utils";
 import { configureSubmind } from "./interview";
+import { auth } from "@/auth";
+import { User } from "@prisma/client/edge";
 
 export async function fixSubminds() {
+
+
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+    if ((session.user as User).globalRole !== "SUPERADMIN") {
+        return {
+            error: "You are not authorized to fix subminds"
+        }
+    }
+
     const users = await prisma.user.findMany({
         where: {
             submindId: null
