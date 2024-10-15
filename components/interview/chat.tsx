@@ -334,7 +334,7 @@ export default function InterviewChat({
                         id: nanoid(),
                         type: "text" as PreloChatMessageType
                     };
-                    setDisplayedMessages(prevMessages => [...prevMessages, newUserMessage, newMessage]);
+                    setDisplayedMessages(prevMessages => [...prevMessages, newMessage]);
                     setChatMessageLoading(false);
                     scrollToEnd();
                 }, 0);
