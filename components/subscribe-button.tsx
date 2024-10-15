@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 
-export function SubscribeButton({ userId }: { userId: string }) {
+export function SubscribeButton({ userId, disabled }: { userId: string, disabled: boolean }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
@@ -29,7 +29,7 @@ export function SubscribeButton({ userId }: { userId: string }) {
   };
 
   return (
-    <Button onClick={handleSubscribe} disabled={loading} className="w-full">
+    <Button onClick={handleSubscribe} disabled={disabled || loading} className="w-full">
       {loading ? 'Loading...' : 'Upgrade to Pro'}
     </Button>
   );

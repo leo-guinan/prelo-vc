@@ -3,7 +3,7 @@ import * as React from 'react'
 import { SyntheticEvent, useState } from 'react'
 import { SidebarList } from '@/components/sidebar-list'
 import { PitchDeck } from "@prisma/client/edge";
-import { CloudUploadIcon, MagnifyingGlassIcon } from "@/components/ui/icons";
+import { CloudUploadIcon, IconShare, MagnifyingGlassIcon } from "@/components/ui/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { UploadModal } from "@/components/upload-modal";
 import { UserWithMemberships } from '@/lib/types';
 import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
 import Spinner from './spinner';
+import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard';
 
 interface ChatHistoryProps {
     userId?: string
@@ -24,6 +25,7 @@ interface ChatHistoryProps {
 
 export function DeckSidebar({ userId, user }: ChatHistoryProps) {
     const { submindPending, isLoading } = useSubmindPending(userId as string);
+    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
 
 
     const router = useRouter();
@@ -42,6 +44,11 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
         mutate();
     };
 
+    const copyShareLink = () => {
+        if (isCopied) return
+        copyToClipboard(`https://investor.pitchin.bio/${user.slug}`)
+    };
+
     return (
         <div className="flex flex-col h-full">
              {!isLoading && submindPending && (
@@ -52,10 +59,22 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
                 </div>
             )}
             <Button
+                onClick={() => copyShareLink()}
+                className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50 my-2'
+                )}
+            >
+                <span className="ml-4">
+                    <IconShare className="-translate-x-2 stroke-2 size-6" />
+                </span>
+                {isCopied ? "Copied!" : "Share Your Link"}
+            </Button>
+            <Button
                 onClick={() => setIsUploadModalOpen(true)}
                 className={cn(
                     buttonVariants({ variant: 'outline' }),
-                    'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
+                    'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50 my-2'
                 )}
             >
                 <span className="ml-4">

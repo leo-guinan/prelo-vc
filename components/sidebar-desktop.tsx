@@ -38,7 +38,7 @@ export async function SidebarDesktop({ userId }: { userId: string }) {
             <DeckSidebar userId={userId} user={userWithMemberships} />
             {!hasActiveSubscription && (
                 <div className="mt-auto p-4">
-                    <SubscribeButton userId={userId} />
+                    <SubscribeButton userId={userId} disabled={true}/>
                 </div>
             )}
         </Sidebar>
