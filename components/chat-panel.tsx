@@ -82,52 +82,58 @@ export function ChatPanel({
     }
 
     return (
-        <div className="sticky bottom-0 w-full z-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4 px-4">
-                {selectedButton === null ? (
-                    buttons.map(button => (
-                        <button
-                            key={button}
-                            onClick={() => toggleButton(button)}
-                            className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${
-                                selectedButton === button
-                                    ? 'bg-gray-300 text-gray-800'
-                                    : 'bg-[#27272A] text-zinc-50'
-                            }`}
-                        >
-                            {button}
-                            <CheckmarkIcon className={`w-4 h-4 ml-1 ${
-                                selectedButton === button ? 'text-green-500' : 'text-gray-500'
-                            }`} />
-                        </button>
-                    ))
-                ) : (
-                    <>
-                        {subButtons[selectedButton].map(subButton => (
+        <div className="sticky bottom-0 w-full z-10 transition-all duration-300 ease-in-out">
+            <div className={`transition-all duration-300 ease-in-out ${selectedButton ? 'pb-4' : ''}`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4 px-4">
+                    {selectedButton === null ? (
+                        buttons.map(button => (
                             <button
-                                key={subButton}
-                                onClick={() => toggleSubButton(subButton)}
+                                key={button}
+                                onClick={() => toggleButton(button)}
                                 className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${
-                                    selectedSubButton === subButton
+                                    selectedButton === button
                                         ? 'bg-gray-300 text-gray-800'
                                         : 'bg-[#27272A] text-zinc-50'
-                                } ${proOnlyButtons.includes(subButton) ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''}`}
-                                disabled={proOnlyButtons.includes(subButton)}
+                                }`}
                             >
-                                {subButton}
+                                {button}
                                 <CheckmarkIcon className={`w-4 h-4 ml-1 ${
-                                    selectedSubButton === subButton ? 'text-green-500' : 'text-gray-500'
+                                    selectedButton === button ? 'text-green-500' : 'text-gray-500'
                                 }`} />
                             </button>
-                        ))}
-                        <button
-                            onClick={() => setSelectedButton(null)}
-                            className="flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full bg-indigo-600 hover:bg-indigo-500 text-white"
-                        >
-                            Back
-                        </button>
-                    </>
-                )}
+                        ))
+                    ) : (
+                        <>
+                            <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                {subButtons[selectedButton].map(subButton => (
+                                    <button
+                                        key={subButton}
+                                        onClick={() => toggleSubButton(subButton)}
+                                        className={`flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full ${
+                                            selectedSubButton === subButton
+                                                ? 'bg-gray-300 text-gray-800'
+                                                : 'bg-[#27272A] text-zinc-50'
+                                        } ${proOnlyButtons.includes(subButton) ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''}`}
+                                        disabled={proOnlyButtons.includes(subButton)}
+                                    >
+                                        {subButton}
+                                        <CheckmarkIcon className={`w-4 h-4 ml-1 ${
+                                            selectedSubButton === subButton ? 'text-green-500' : 'text-gray-500'
+                                        }`} />
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="col-span-full">
+                                <button
+                                    onClick={() => setSelectedButton(null)}
+                                    className="flex flex-row justify-center items-center px-3 py-2 text-sm rounded-lg transition-colors w-full bg-indigo-600 hover:bg-indigo-500 text-white"
+                                >
+                                    Back
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
             <div className="bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% animate-in duration-300 ease-in-out dark:from-background/10 dark:from-10% dark:to-background/80">
                 <ButtonScrollToBottom />

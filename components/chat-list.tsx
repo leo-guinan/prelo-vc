@@ -19,9 +19,10 @@ export interface ChatList {
     }
     chatMessageLoading: boolean
     ref?: React.RefObject<HTMLDivElement>
+    className?: string
 }
 
-export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
+export function ChatList({ messages, user, chatMessageLoading, className }: ChatList) {
     const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
         useScrollAnchor()
 
@@ -30,7 +31,7 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
     if (!messages.length) {
         return (
             <>
-                <div className="relative px-4 h-full pb-[225px]" ref={scrollRef}>
+                <div className={cn("relative px-4 h-full pb-[225px]", className)} ref={scrollRef}>
 
                     {chatMessageLoading && (
                         <>
@@ -62,10 +63,10 @@ export function ChatList({ messages, user, chatMessageLoading }: ChatList) {
     }
 
     return (
-        <div className="relative px-4 h-full pb-[200px]" ref={scrollRef}>
-            <ScrollArea className="flex flex-col size-full pb-4" ref={messagesRef}>
+        <div className={cn("relative px-4 h-full transition-all duration-300 ease-in-out", className)} ref={scrollRef}>
+            <ScrollArea className="flex flex-col size-full pb-4 transition-all duration-300 ease-in-out" ref={messagesRef}>
                 {messages.map((message, index) => (
-                    <div key={index}>
+                    <div key={index} className="scale-80">
                         {index === messages.length - 1 && (
                             <ChatScrollAnchor trackVisibility={true} />
                         )}

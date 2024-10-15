@@ -119,7 +119,7 @@ export default function Panel({ decks, user, view, content }: PanelProps) {
 
                             <span className=""> {'<'} Back</span>
                         </Link>
-                        <ScrollArea className="flex flex-row justify-between w-4/5 mx-auto">
+                        <ScrollArea className="flex flex-row justify-between w-4/5 mx-auto pb-8">
                             <ScrollBar orientation="horizontal" />
                             <ScrollBar orientation="vertical" />
                             <MarkdownBlock content={displayedContent} />

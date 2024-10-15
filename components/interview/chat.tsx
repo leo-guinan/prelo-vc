@@ -393,7 +393,7 @@ export default function InterviewChat({
 
     return (
         <>
-            <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}
+            <div className={'pt-3 md:pt-8 size-full mx-auto box-border flex flex-col'} // Added flex flex-col
                 onDrop={handleDrop}
                 onDragOver={handleDrag}
                 onDragEnter={handleDragIn}
@@ -408,15 +408,16 @@ export default function InterviewChat({
                     </div>
                 )}
                 <>
-                    <div className="flex flex-col-reverse sm:flex-row h-full">
+                    <div className="flex flex-col-reverse sm:flex-row flex-grow overflow-hidden">
                         <ResizablePanelGroup direction="horizontal">
                             <ResizablePanel>
                                 <div className="flex flex-col w-full h-full">
-                                    <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
-                                        <ChatList messages={displayedMessages} user={user}
-                                            chatMessageLoading={chatMessageLoading}
-                                        />
-                                        
+                                    <div className="flex flex-col py-2 w-4/5 mx-auto h-full overflow-hidden">
+                                        <div className="flex-grow overflow-auto">
+                                            <ChatList messages={displayedMessages} user={user}
+                                                chatMessageLoading={chatMessageLoading}
+                                            />
+                                        </div>
                                         <ChatPanel
                                             isLoading={isLoading}
                                             sendMessage={sendMessage}
@@ -429,7 +430,7 @@ export default function InterviewChat({
                             </ResizablePanel>
                             <ResizableHandle />
                             <ResizablePanel>
-                                <ScrollArea className="flex flex-col size-full pb-8">
+                                <ScrollArea className="flex flex-col size-full pb-6">
                                     <Panel user={user} decks={decks} view={panelView} content={panelContent} />
                                 </ScrollArea>
                             </ResizablePanel>
