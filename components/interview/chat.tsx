@@ -180,7 +180,7 @@ export default function InterviewChat({
         } else if (parsedData.status === "configured") {
             // get the submind id. Anything else needed?
             console.log("Submind ID: ", parsedData.submind_id)
-            void configureSubmind(parsedData.submind_id, parsedData.company, parsedData.thesis, parsedData.industries, parsedData.check_size, parsedData.passion, parsedData.slug, parsedData.name)
+            void configureSubmind(user.id,parsedData.submind_id, parsedData.company, parsedData.thesis, parsedData.industries, parsedData.check_size, parsedData.passion, parsedData.slug, parsedData.name)
             if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
                 console.log("Sending acknowledge_created message.")
                 socketRef.current.send(JSON.stringify({                        

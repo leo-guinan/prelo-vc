@@ -592,7 +592,7 @@ export async function createSubmind(data: SubmindFormData) {
 }
 
 
-export async function configureSubmind(submindId: number, organizationName: string, thesis: string, industries: string, checkSize: string, passion: string, slug: string, name:string) {
+export async function configureSubmind(userId: string, submindId: number, organizationName: string, thesis: string, industries: string, checkSize: string, passion: string, slug: string, name:string) {
     console.log("Configuring submind", submindId)
     logEvent("configure_submind", {
         submind_id: submindId,
@@ -607,16 +607,10 @@ export async function configureSubmind(submindId: number, organizationName: stri
 
     // do I need an image url as well? Later.
 
-    const session = await auth()
-    if (!session?.user) {
-        return {
-            error: "User not found"
-        }
-    }
-
+    
     const user = await prisma.user.findUnique({
         where: {
-            id: session.user.id
+            id: userId
         },
         include: {
             memberships: true
@@ -629,7 +623,7 @@ export async function configureSubmind(submindId: number, organizationName: stri
     }
     await prisma.user.update({
         where: {
-            id: session.user.id
+            id: userId
         },
         data: {
             submindId: submindId,
