@@ -520,7 +520,9 @@ export async function createSubmind(data: SubmindFormData) {
             memberships: true
         },
         data: {
-            submindPending: true
+            submindPending: true,
+            firstName: data.firstName,
+            lastName: data.lastName
         }
     })
     console.log("Set submind pending to true")
