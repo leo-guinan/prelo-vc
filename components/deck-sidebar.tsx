@@ -17,6 +17,7 @@ import { UserWithMemberships } from '@/lib/types';
 import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
 import Spinner from './spinner';
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ChatHistoryProps {
     userId?: string
@@ -58,18 +59,7 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
                     <p>Your submind is being created. This usually takes about 15 minutes. This message will disappear once it is ready.</p>
                 </div>
             )}
-            <Button
-                onClick={() => copyShareLink()}
-                className={cn(
-                    buttonVariants({ variant: 'outline' }),
-                    'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50 my-2'
-                )}
-            >
-                <span className="ml-4">
-                    <IconShare className="-translate-x-2 stroke-2 size-6" />
-                </span>
-                {isCopied ? "Copied!" : "Share Your Link"}
-            </Button>
+                  
             <Button
                 onClick={() => setIsUploadModalOpen(true)}
                 className={cn(
@@ -82,6 +72,27 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
                 </span>
                 Upload New Deck
             </Button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => copyShareLink()}
+                            className={cn(
+                                buttonVariants({ variant: 'outline' }),
+                                'h-10 w-full text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 px-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50 my-2'
+                            )}
+                        >
+                            <span className="ml-4">
+                                <IconShare className="-translate-x-2 stroke-2 size-6" />
+                            </span>
+                            {isCopied ? "Copied!" : "Share Your Link"}
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs text-left">    
+                        <p className="break-words">Receive founder pitch decks, and discover investment opportunities on autopilot</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>  
             <React.Suspense
                 fallback={
                     <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">

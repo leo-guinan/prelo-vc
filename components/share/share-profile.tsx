@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { IconCheck, IconCopy } from '../ui/icons';
 
 export default function ShareProfile({ user }: { user: UserWithMemberships }) {
-    const {isCopied, copyToClipboard} = useCopyToClipboard({timeout: 2000})
+    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
     const copyShareLink = async () => {
         if (isCopied) return
         copyToClipboard(`https://investor.pitchin.bio/${user.slug}`)
@@ -46,49 +46,49 @@ export default function ShareProfile({ user }: { user: UserWithMemberships }) {
                 </Section>
             </div>
             <div className="flex justify-center">
-            <Dialog>
-                        <DialogTrigger>
+                <Dialog>
+                    <DialogTrigger>
                         <button className="bg-blue-600 text-white p-4 rounded-lg mt-6 mx-auto">
-                    Share {user.shareProfile?.name}&apos;s Submind
-                </button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Share This Submind</DialogTitle>
-                                <DialogDescription>
+                            Share {user.shareProfile?.name}&apos;s Submind
+                        </button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Share This Submind</DialogTitle>
+                            <DialogDescription>
 
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="mt-4">
-                                <input
-                                    type="text"
-                                    value={`https://investor.pitchin.bio/${user.slug}`}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
-                                />
-                            </div>
-                            <DialogFooter className="sm:justify-start">
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="mt-4">
+                            <input
+                                type="text"
+                                value={`https://investor.pitchin.bio/${user.slug}`}
+                                disabled
+                                className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+                            />
+                        </div>
+                        <DialogFooter className="sm:justify-start">
 
-                                <DialogClose asChild>
-                                    <Button type="button" variant="secondary" className="p-4 h-10">
-                                        Close
-                                    </Button>
-                                </DialogClose>
-                                <Link
-                                    onClick={copyShareLink}
-                                    href="#"
-                                    className={cn(
-                                        buttonVariants({variant: 'outline'}),
-                                        'h-10 text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 p-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
-                                    )}
-                                >
-                                    {isCopied ? <IconCheck/> : <IconCopy/>}
-                                    Copy Share Link
-                                </Link>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary" className="p-4 h-10">
+                                    Close
+                                </Button>
+                            </DialogClose>
+                            <Link
+                                onClick={copyShareLink}
+                                href="#"
+                                className={cn(
+                                    buttonVariants({ variant: 'outline' }),
+                                    'h-10 text-zinc-50 dark:text-gray-900 justify-start bg-standard dark:bg-gray-100 p-4 shadow-none transition-colors hover:bg-gray-100 hover:text-gray-900  dark:hover:bg-standard dark:hover:text-zinc-50'
+                                )}
+                            >
+                                {isCopied ? <IconCheck /> : <IconCopy />}
+                                Copy Share Link
+                            </Link>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
             </div>
         </div>
     );
