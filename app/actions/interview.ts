@@ -704,7 +704,7 @@ export async function getSubmindPending(key: string) {
         console.log("Submind status", parsed)
         if (parsed.submind_id) {
             console.log("Submind id found, configuring submind")
-            configureSubmind(parsed.submind_id, parsed.company, parsed.thesis, parsed.industries, parsed.check_size, parsed.passion, parsed.slug, parsed.name)
+            configureSubmind(userId, parsed.submind_id, parsed.company, parsed.thesis, parsed.industries, parsed.check_size, parsed.passion, parsed.slug, parsed.name)
         }
     }
 
