@@ -631,7 +631,7 @@ export async function configureSubmind(userId: string, submindId: number, organi
             submindId: submindId,
             slug: slug,
             submindPending: false,
-            chatUrl: `${process.env.NEXT_PUBLIC_APP_URL as string}/share/${slug}`
+            chatUrl: `${process.env.NEXT_PUBLIC_APP_URL as string}share/investor/${slug}`
         }
     })
     await prisma.organization.update({
