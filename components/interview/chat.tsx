@@ -112,10 +112,6 @@ export default function InterviewChat({
         }
     }, [searchParams])
 
-    useEffect(() => {
-        toast("Testing toast");
-
-    }, [])
 
 
 
