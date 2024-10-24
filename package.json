@@ -99,6 +99,7 @@
     "react-scroll-to-bottom": "^4.2.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.5.3",
+    "react-toastify": "^10.0.6",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-collapse": "^0.1.2",
@@ -111,6 +112,7 @@
     "tailwindcss-text-border": "^1.0.4",
     "telemetry-sh": "^1.0.10",
     "tiptap-markdown": "^0.8.10",
+    "toastify-js": "^1.12.0",
     "unified": "^11.0.4",
     "websocket": "^1.0.34"
   },

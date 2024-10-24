@@ -18,6 +18,8 @@ import { useSearchParams } from "next/navigation";
 import { UploadModal } from '@/components/upload-modal'
 import { CreateSubmindModal, SubmindFormData } from '@/components/CreateSubmindModal';
 import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface AnalysisChatProps {
@@ -110,6 +112,10 @@ export default function InterviewChat({
         }
     }, [searchParams])
 
+    useEffect(() => {
+        toast("Testing toast");
+
+    }, [])
 
 
 
@@ -168,6 +174,7 @@ export default function InterviewChat({
                 }) ?? [])])
                 setDisplayedMessages([...displayedMessages, newMessage])
                 scrollToEnd()
+                toast("Your deck has been analyzed. You can now chat with the your submind about the deck.");
                 if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
                     socketRef.current.send(JSON.stringify({
                         report_uuid: parsedData.report_uuid,
@@ -449,7 +456,7 @@ export default function InterviewChat({
                     message={uploadMessage}
                 />
             </div>
-            
+            <ToastContainer />
             <CreateSubmindModal
                 isOpen={isCreateSubmindModalOpen}
                 onClose={() => setIsCreateSubmindModalOpen(false)}

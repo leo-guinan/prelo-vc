@@ -257,6 +257,9 @@ dependencies:
   react-textarea-autosize:
     specifier: ^8.5.3
     version: 8.5.3(@types/react@18.2.79)(react@18.2.0)
+  react-toastify:
+    specifier: ^10.0.6
+    version: 10.0.6(react-dom@18.2.0)(react@18.2.0)
   rehype-raw:
     specifier: ^7.0.0
     version: 7.0.0
@@ -293,6 +296,9 @@ dependencies:
   tiptap-markdown:
     specifier: ^0.8.10
     version: 0.8.10(@tiptap/core@2.3.0)
+  toastify-js:
+    specifier: ^1.12.0
+    version: 1.12.0
   unified:
     specifier: ^11.0.4
     version: 11.0.4
@@ -8113,6 +8119,17 @@ packages:
       - '@types/react'
     dev: false
 
+  /react-toastify@10.0.6(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-yYjp+omCDf9lhZcrZHKbSq7YMuK0zcYkDFTzfRFgTXkTFHZ1ToxwAonzA4JI5CxA91JpjFLmwEsZEgfYfOqI1A==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      clsx: 2.1.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -8925,6 +8942,10 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+
+  /toastify-js@1.12.0:
+    resolution: {integrity: sha512-HeMHCO9yLPvP9k0apGSdPUWrUbLnxUKNFzgUoZp1PHCLploIX/4DSQ7V8H25ef+h4iO9n0he7ImfcndnN6nDrQ==}
+    dev: false
 
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
