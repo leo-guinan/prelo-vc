@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useState, useEffect } from 'react'
 import { SidebarList } from '@/components/sidebar-list'
 import { PitchDeck } from "@prisma/client/edge";
 import { CloudUploadIcon, IconShare, MagnifyingGlassIcon } from "@/components/ui/icons";
@@ -15,9 +15,10 @@ import { Button } from "@/components/ui/button";
 import { UploadModal } from "@/components/upload-modal";
 import { UserWithMemberships } from '@/lib/types';
 import { useSubmindPending } from '@/lib/hooks/useSubmindPending';
-import Spinner from './spinner';
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 
 interface ChatHistoryProps {
     userId?: string
@@ -25,23 +26,39 @@ interface ChatHistoryProps {
 }
 
 export function DeckSidebar({ userId, user }: ChatHistoryProps) {
-    const { submindPending, isLoading } = useSubmindPending(userId as string);
+    const { submindPending, isLoading, mutate: mutateSubmindPending } = useSubmindPending(userId as string);
     const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
-
-
     const router = useRouter();
+    const { data: decks, mutate } = useSwr(userId, getDecks)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [isSubmindCompleteModalOpen, setIsSubmindCompleteModalOpen] = useState(false);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (submindPending) {
+            interval = setInterval(() => {
+                setProgress((prevProgress) => {
+                    if (prevProgress >= 100) {
+                        clearInterval(interval);
+                        return 100;
+                    }
+                    return prevProgress + (100 / (15 * 60)); // Increase by 1/900th every second (15 minutes total)
+                });
+            }, 1000);
+        } else if (progress === 100) {
+            setIsSubmindCompleteModalOpen(true);
+        }
+
+        return () => clearInterval(interval);
+    }, [submindPending, progress]);
 
     const clearExisting = async (e: SyntheticEvent) => {
         e.preventDefault()
         await clearCurrentDeck();
     }
 
-    const { data: decks, mutate } = useSwr(userId, getDecks)
-
-    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-
     const handleUploadSuccess = (message: string, uuid: string) => {
-        // Handle successful upload (e.g., refresh the deck list)
         mutate();
     };
 
@@ -52,11 +69,11 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
 
     return (
         <div className="flex flex-col h-full">
-             {!isLoading && submindPending && (
+            {!isLoading && submindPending && (
                 <div className="mt-auto p-4">
-                    <Spinner size="large" />
-                    
-                    <p>Your submind is being created. This usually takes about 15 minutes. This message will disappear once it is ready.</p>
+                    <Progress value={progress} className="w-full mb-2" />
+                    <p className="text-sm text-gray-500">Estimated time remaining: {Math.max(0, Math.ceil(15 - (progress / 100 * 15)))} minutes</p>
+                    <p className="mt-2">Your submind is being created. This usually takes about 15 minutes. This message will disappear once it is ready.</p>
                 </div>
             )}
                   
@@ -113,6 +130,22 @@ export function DeckSidebar({ userId, user }: ChatHistoryProps) {
                 user={user}
                 onUploadSuccess={handleUploadSuccess}
             />
+            <Dialog open={isSubmindCompleteModalOpen} onOpenChange={setIsSubmindCompleteModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Your Submind is Ready!</DialogTitle>
+                        <DialogDescription>
+                            Your submind has been successfully created. You can now upload a deck to get started with your AI-powered investment analysis.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <Button onClick={() => {
+                        setIsSubmindCompleteModalOpen(false);
+                        setIsUploadModalOpen(true);
+                    }}>
+                        Upload a Deck
+                    </Button>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

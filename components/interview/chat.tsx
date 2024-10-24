@@ -49,6 +49,7 @@ export default function InterviewChat({
     const [panelContent, setPanelContent] = useState<string | EmailContent | null>(null)
     const searchParams = useSearchParams()
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [uploadMessage, setUploadMessage] = useState("Upload a deck to start chatting")
 
    
     const { data: decks, mutate } = useSwr(user.id, getDecks)
@@ -181,6 +182,8 @@ export default function InterviewChat({
             // get the submind id. Anything else needed?
             console.log("Submind ID: ", parsedData.submind_id)
             void configureSubmind(user.id,parsedData.submind_id, parsedData.company, parsedData.thesis, parsedData.industries, parsedData.check_size, parsedData.passion, parsedData.slug, parsedData.name)
+            setUploadMessage(`Your submind is ready. Upload a deck to start chatting.`)
+            setIsUploadModalOpen(true)
             if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
                 console.log("Sending acknowledge_created message.")
                 socketRef.current.send(JSON.stringify({                        
@@ -443,7 +446,7 @@ export default function InterviewChat({
                     onClose={() => setIsUploadModalOpen(false)}
                     user={user}
                     onUploadSuccess={handleUploadSuccess}
-                    message="Upload a deck to start chatting"
+                    message={uploadMessage}
                 />
             </div>
             
